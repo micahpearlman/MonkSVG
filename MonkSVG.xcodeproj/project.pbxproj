@@ -1,0 +1,261 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FABCD82D12079E3600873255 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FABCD82712079E3600873255 /* tinystr.cpp */; };
+		FABCD82E12079E3600873255 /* tinystr.h in Headers */ = {isa = PBXBuildFile; fileRef = FABCD82812079E3600873255 /* tinystr.h */; };
+		FABCD82F12079E3600873255 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FABCD82912079E3600873255 /* tinyxml.cpp */; };
+		FABCD83012079E3600873255 /* tinyxml.h in Headers */ = {isa = PBXBuildFile; fileRef = FABCD82A12079E3600873255 /* tinyxml.h */; };
+		FABCD83112079E3600873255 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FABCD82B12079E3600873255 /* tinyxmlerror.cpp */; };
+		FABCD83212079E3600873255 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FABCD82C12079E3600873255 /* tinyxmlparser.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FABCD80912079CEE00873255 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FABCD80512079CEE00873255 /* MonkVG-Quartz.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC046055464E500DB518D /* libMonkVG-Quartz.a */;
+			remoteInfo = "MonkVG-Quartz";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D2AAC046055464E500DB518D /* libMonkSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FABCD80512079CEE00873255 /* MonkVG-Quartz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "MonkVG-Quartz.xcodeproj"; path = "../MonkVG/projects/MonkVG-Quartz/MonkVG-Quartz.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		FABCD82712079E3600873255 /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
+		FABCD82812079E3600873255 /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
+		FABCD82912079E3600873255 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
+		FABCD82A12079E3600873255 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
+		FABCD82B12079E3600873255 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
+		FABCD82C12079E3600873255 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289987405E68DCB004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* MonkSVG */ = {
+			isa = PBXGroup;
+			children = (
+				FABCD80512079CEE00873255 /* MonkVG-Quartz.xcodeproj */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = MonkSVG;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FABCD82612079E3600873255 /* tinyxml */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC046055464E500DB518D /* libMonkSVG.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		FABCD80612079CEE00873255 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FABCD80A12079CEE00873255 /* libMonkVG-Quartz.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FABCD82612079E3600873255 /* tinyxml */ = {
+			isa = PBXGroup;
+			children = (
+				FABCD82712079E3600873255 /* tinystr.cpp */,
+				FABCD82812079E3600873255 /* tinystr.h */,
+				FABCD82912079E3600873255 /* tinyxml.cpp */,
+				FABCD82A12079E3600873255 /* tinyxml.h */,
+				FABCD82B12079E3600873255 /* tinyxmlerror.cpp */,
+				FABCD82C12079E3600873255 /* tinyxmlparser.cpp */,
+			);
+			name = tinyxml;
+			path = src/tinyxml;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC043055464E500DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FABCD82E12079E3600873255 /* tinystr.h in Headers */,
+				FABCD83012079E3600873255 /* tinyxml.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC045055464E500DB518D /* MonkSVG */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkSVG" */;
+			buildPhases = (
+				D2AAC043055464E500DB518D /* Headers */,
+				D2AAC044055464E500DB518D /* Sources */,
+				D289987405E68DCB004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MonkSVG;
+			productName = MonkSVG;
+			productReference = D2AAC046055464E500DB518D /* libMonkSVG.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkSVG" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* MonkSVG */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = FABCD80612079CEE00873255 /* Products */;
+					ProjectRef = FABCD80512079CEE00873255 /* MonkVG-Quartz.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				D2AAC045055464E500DB518D /* MonkSVG */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		FABCD80A12079CEE00873255 /* libMonkVG-Quartz.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libMonkVG-Quartz.a";
+			remoteRef = FABCD80912079CEE00873255 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC044055464E500DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FABCD82D12079E3600873255 /* tinystr.cpp in Sources */,
+				FABCD82F12079E3600873255 /* tinyxml.cpp in Sources */,
+				FABCD83112079E3600873255 /* tinyxmlerror.cpp in Sources */,
+				FABCD83212079E3600873255 /* tinyxmlparser.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91EC08733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = MonkSVG;
+			};
+			name = Debug;
+		};
+		1DEB91ED08733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = MonkSVG;
+			};
+			name = Release;
+		};
+		1DEB91F008733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB91F108733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkSVG" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91EC08733DB70010E9CD /* Debug */,
+				1DEB91ED08733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkSVG" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
