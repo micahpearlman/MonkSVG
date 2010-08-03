@@ -13,6 +13,9 @@
 		FABCD83012079E3600873255 /* tinyxml.h in Headers */ = {isa = PBXBuildFile; fileRef = FABCD82A12079E3600873255 /* tinyxml.h */; };
 		FABCD83112079E3600873255 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FABCD82B12079E3600873255 /* tinyxmlerror.cpp */; };
 		FABCD83212079E3600873255 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FABCD82C12079E3600873255 /* tinyxmlparser.cpp */; };
+		FABCD8631207A1C000873255 /* libMonkVG-Quartz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FABCD80A12079CEE00873255 /* libMonkVG-Quartz.a */; };
+		FABCD8B91207A4F100873255 /* mkSVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FABCD8B71207A4F100873255 /* mkSVG.h */; };
+		FABCD8BA1207A4F100873255 /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FABCD8B81207A4F100873255 /* mkSVG.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -21,6 +24,13 @@
 			containerPortal = FABCD80512079CEE00873255 /* MonkVG-Quartz.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D2AAC046055464E500DB518D /* libMonkVG-Quartz.a */;
+			remoteInfo = "MonkVG-Quartz";
+		};
+		FABCD8611207A1B200873255 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FABCD80512079CEE00873255 /* MonkVG-Quartz.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D /* MonkVG-Quartz */;
 			remoteInfo = "MonkVG-Quartz";
 		};
 /* End PBXContainerItemProxy section */
@@ -34,6 +44,8 @@
 		FABCD82A12079E3600873255 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
 		FABCD82B12079E3600873255 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
 		FABCD82C12079E3600873255 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
+		FABCD8B71207A4F100873255 /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkSVG.h; path = src/mkSVG.h; sourceTree = "<group>"; };
+		FABCD8B81207A4F100873255 /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkSVG.cpp; path = src/mkSVG.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FABCD8631207A1C000873255 /* libMonkVG-Quartz.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +75,8 @@
 			isa = PBXGroup;
 			children = (
 				FABCD82612079E3600873255 /* tinyxml */,
+				FABCD8B71207A4F100873255 /* mkSVG.h */,
+				FABCD8B81207A4F100873255 /* mkSVG.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -112,6 +127,7 @@
 			files = (
 				FABCD82E12079E3600873255 /* tinystr.h in Headers */,
 				FABCD83012079E3600873255 /* tinyxml.h in Headers */,
+				FABCD8B91207A4F100873255 /* mkSVG.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +145,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FABCD8621207A1B200873255 /* PBXTargetDependency */,
 			);
 			name = MonkSVG;
 			productName = MonkSVG;
@@ -177,10 +194,19 @@
 				FABCD82F12079E3600873255 /* tinyxml.cpp in Sources */,
 				FABCD83112079E3600873255 /* tinyxmlerror.cpp in Sources */,
 				FABCD83212079E3600873255 /* tinyxmlparser.cpp in Sources */,
+				FABCD8BA1207A4F100873255 /* mkSVG.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FABCD8621207A1B200873255 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "MonkVG-Quartz";
+			targetProxy = FABCD8611207A1B200873255 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB91EC08733DB70010E9CD /* Debug */ = {
@@ -192,8 +218,11 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "TIXML_USE_STL=1";
+				HEADER_SEARCH_PATHS = ../MonkVG/include;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkSVG;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Debug;
 		};
