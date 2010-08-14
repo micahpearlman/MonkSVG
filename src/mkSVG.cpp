@@ -9,78 +9,92 @@
 
 #include "mkSVG.h"
 #include "tinyxml.h"
-#include "VG/openvg.h"
-#include "VG/vgu.h"
 
 namespace MonkSVG {
 	
 	
-	enum CommandType {
-		kCmdTransform,
-		kCmdStyle,
-		kCmdPath
-	};
-	
-	class IDisplayCommand {
-	public:
-		virtual void execute() = 0;
-		virtual CommandType type() = 0;
-	protected:
+	bool SVG::initialize( ISVGHandler* handler ) {
+		_handler = handler;
 		
-		
-		IDisplayCommand()
-		{}
-		virtual ~IDisplayCommand()
-		{}
-	};
-	class CommandTransform : public IDisplayCommand {
-	public:
-		CommandTransform( ) : IDisplayCommand() 
-		{
-			_translate[0] = _translate[1] = 0;
-		}
-		virtual void execute() {
-			vgTranslate( _translate[0], _translate[1] );
-		}
-		virtual CommandType type() { return kCmdTransform; }
-		
-		void setTranslate( float x, float y ) {
-			_translate[0] = x;
-			_translate[1] = y;
-		}
-		float* translate() {
-			return _translate;
-		}
-		
-		void parse( string transform ) {
-			
-		}
-		
-	private:
-		float _translate[2];
-		
-	};
-	
-	
-	bool SVG::initialize() {
-		
+		return true;
 	}
 	
-	bool SVG::read( string file_path ) {
+	bool SVG::read( string& data ) {
 		TiXmlDocument doc;
 		
 		
-		// load the main swfmill file
-		
-		if( doc.LoadFile( file_path ) ) {
-			const TiXmlElement* root = doc.FirstChild( "svg" )->ToElement();
-			const TiXmlElement* g = root->FirstChildElement( "g" );
-			
-		} else {
-			return false;
-		}
+		doc.Parse( data.c_str() );
+		TiXmlElement* root = doc.FirstChild( "svg" )->ToElement();
+		recursive_parse( &doc, root );
 		
 		return true;
-	}	
+	}
+	
+	void SVG::recursive_parse( TiXmlDocument* doc, TiXmlElement* element ) {
+		if ( element ) {
+			TiXmlElement* child = element->FirstChildElement();
+			recursive_parse( doc, child );
+		}
+		
+		if ( element ) {
+			for ( TiXmlElement* sibbling = element; sibbling != 0; sibbling = sibbling->NextSiblingElement() ) {
+				string type = sibbling->Value();
+				
+				if ( type == "path" ) {
+					_handler->onPathBegin();
+					string d = sibbling->Attribute( "d" );
+					parse_path( d );
+					_handler->onPathEnd();
+				}
+			}
+		}
+	}
+	
+	void SVG::parse_path( string& d ) {
+		char* c = const_cast<char*>( d.c_str() );
+		while ( *c ) {
+			switch ( *c ) {
+				case 'm':
+				case 'M':
+				{
+					c++;
+					float x = strtof( c, &c );
+					float y = strtof( c, &c );
+					_handler->onPathMoveTo( x, y );
+				}
+				break;
+					
+				case 'l':
+				case 'L':
+				{
+					c++;
+					float x = strtof( c, &c );
+					float y = strtof( c, &c );
+					_handler->onPathLineTo( x, y );
+					
+				}
+				break;
+	
+				case 'c':
+				case 'C':
+				{
+					c++;
+					float x1 = strtof( c, &c );
+					float y1 = strtof( c, &c );
+					float x2 = strtof( c, &c );
+					float y2 = strtof( c, &c );
+					float x3 = strtof( c, &c );
+					float y3 = strtof( c, &c );
+					_handler->onPathCubic(x1, y1, x2, y2, x3, y3);
+					
+				}
+				break;
+				
+				default:
+					c++;
+					break;
+			}
+		}
+	}
 
 };

@@ -10,22 +10,47 @@
 #ifndef __mkSVG_h__
 #define __mkSVG_h__
 
+
 #include <string>
 #include <vector>
 
+class TiXmlDocument;
+class TiXmlElement;
+
 namespace MonkSVG {
 	using namespace std;
-	class IDisplayCommand;
+	
+	class ISVGHandler {
+	public:
+		
+		// transforms 
+		virtual void onTransformTranslate( float x, float y ) {}
+		virtual void onTransformScale( float s ) {}
+		virtual void onTransformRotate( float r ) {}
+		virtual void onTransformMatrix( float a, float b, float c, float d, float e, float f ) {}
+		
+		// paths 
+		virtual void onPathBegin() {}
+		virtual void onPathEnd() {}
+		virtual void onPathMoveTo( float x, float y ) {}
+		virtual void onPathLineTo( float x, float y ) {}
+		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) {}
+		
+	};
 	
 	class SVG  {
 	public:
 		
-		bool initialize();
-		bool read( string file_path );
+		bool initialize( ISVGHandler* handler );
+		bool read( string& data );
 
 	private:
 		
-		vector<IDisplayCommand*> _displayCommands;
+		ISVGHandler*	_handler;
+		
+	private:
+		void recursive_parse( TiXmlDocument* doc, TiXmlElement* element );
+		void parse_path( string& ps );
 
 	};
 }
