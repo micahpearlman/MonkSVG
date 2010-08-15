@@ -1,14 +1,15 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <ostream>
 
 #include "../../src/mkSVG.h"
 using namespace std;
 
 class SVGHandler : public MonkSVG::ISVGHandler {
-	stringstream printPair( float x, float y ) { stringstream i; return i << x << ", " << y; }
 	virtual void onPathBegin() { cout << "path begin" << endl; }
 	virtual void onPathEnd() { cout << "path end" << endl; }
-	virtual void onPathMoveTo( float x, float y ) { cout << "\t move to: " << printPair(x, y) << endl; }
+	virtual void onPathMoveTo( float x, float y ) { cout << "\t move to: " << x << ", " << y << endl; }
 	virtual void onPathLineTo( float x, float y ) { cout << "\t line to: " << x << ", " << y << endl; }
 	virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) { cout << "\t cubic: " << x1 << ", " << y1 << " | " << x2 << ", " << y2 << " | " << x3 << ", " << y3 << endl; }
 };
