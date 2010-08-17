@@ -45,6 +45,14 @@ namespace MonkSVG {
 					string d = sibbling->Attribute( "d" );
 					parse_path( d );
 					_handler->onPathEnd();
+					
+					string fill = sibbling->Attribute( "fill" );
+					unsigned int color = strtol( fill.c_str() + 1, 0, 16 );
+					if ( fill.length() == 7 ) {
+						color = color << 8;
+						color |= 0x000000ff;
+					}
+					_handler->onPathFillColor( color );
 				}
 			}
 		}
