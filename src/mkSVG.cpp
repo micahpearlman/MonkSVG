@@ -48,7 +48,7 @@ namespace MonkSVG {
 					
 					string fill = sibbling->Attribute( "fill" );
 					unsigned int color = strtol( fill.c_str() + 1, 0, 16 );
-					if ( fill.length() == 7 ) {
+					if ( fill.length() == 7 ) {	// fix up to rgba if the color is only rgb
 						color = color << 8;
 						color |= 0x000000ff;
 					}
