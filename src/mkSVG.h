@@ -35,8 +35,12 @@ namespace MonkSVG {
 		virtual void onPathMoveTo( float x, float y ) {}
 		virtual void onPathLineTo( float x, float y ) {}
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) {}
+		// fill
 		virtual void onPathFillColor( unsigned int color ) {}
 		virtual void onPathFillRule( string rule ) {}
+		// stroke
+		virtual void onPathStrokeColor( unsigned int color ) {}
+		virtual void onPathStrokeWidth( float width ) {}
 		
 	};
 	

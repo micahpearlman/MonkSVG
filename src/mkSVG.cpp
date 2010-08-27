@@ -53,6 +53,18 @@ namespace MonkSVG {
 						color |= 0x000000ff;
 					}
 					_handler->onPathFillColor( color );
+					
+					string stroke = sibbling->Attribute( "stroke" );
+					color = strtol( stroke.c_str()+1, 0, 16);
+					if ( stroke.length() == 7 ) { // fix up to rgba if the color is only rgb
+						color = color << 8;
+						color |= 0x000000ff;
+					}
+					_handler->onPathStrokeColor( color );
+					
+					string stroke_width = sibbling->Attribute( "stroke-width" );
+					float width = atof( stroke_width.c_str() );
+					_handler->onPathStrokeWidth( width );
 				}
 			}
 		}
@@ -97,6 +109,15 @@ namespace MonkSVG {
 					
 				}
 				break;
+//				case 'z':
+//				case 'Z':
+//				{
+//					c++;
+//					_handler->onPathEnd();
+//					
+//				}
+//				break;
+					
 				
 				default:
 					c++;
