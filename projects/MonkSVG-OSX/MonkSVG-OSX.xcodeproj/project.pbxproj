@@ -15,6 +15,16 @@
 		FA78D89112C97AB1007AD99F /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA78D88912C97AB1007AD99F /* tinyxmlparser.cpp */; };
 		FA78D89212C97AB1007AD99F /* mkSVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FA78D88A12C97AB1007AD99F /* mkSVG.h */; };
 		FA78D89312C97AB1007AD99F /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA78D88B12C97AB1007AD99F /* mkSVG.cpp */; };
+		FA78D8A712C97EB7007AD99F /* mkSVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FA78D88A12C97AB1007AD99F /* mkSVG.h */; };
+		FA78D8A812C97EB7007AD99F /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA78D88B12C97AB1007AD99F /* mkSVG.cpp */; };
+		FA78D8A912C97EC7007AD99F /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA78D88412C97AB1007AD99F /* tinystr.cpp */; };
+		FA78D8AA12C97EC7007AD99F /* tinystr.h in Headers */ = {isa = PBXBuildFile; fileRef = FA78D88512C97AB1007AD99F /* tinystr.h */; };
+		FA78D8AB12C97EC7007AD99F /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA78D88612C97AB1007AD99F /* tinyxml.cpp */; };
+		FA78D8AC12C97EC7007AD99F /* tinyxml.h in Headers */ = {isa = PBXBuildFile; fileRef = FA78D88712C97AB1007AD99F /* tinyxml.h */; };
+		FA78D8AD12C97EC7007AD99F /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA78D88812C97AB1007AD99F /* tinyxmlerror.cpp */; };
+		FA78D8AE12C97EC7007AD99F /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA78D88912C97AB1007AD99F /* tinyxmlparser.cpp */; };
+		FA78D8AF12C97ED3007AD99F /* mkOpenVG_SVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA78D8A312C97E61007AD99F /* mkOpenVG_SVG.cpp */; };
+		FA78D8B012C97ED3007AD99F /* mkOpenVG_SVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FA78D8A412C97E61007AD99F /* mkOpenVG_SVG.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,10 +37,20 @@
 		FA78D88912C97AB1007AD99F /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		FA78D88A12C97AB1007AD99F /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkSVG.h; path = ../../src/mkSVG.h; sourceTree = SOURCE_ROOT; };
 		FA78D88B12C97AB1007AD99F /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkSVG.cpp; path = ../../src/mkSVG.cpp; sourceTree = SOURCE_ROOT; };
+		FA78D89E12C97E3F007AD99F /* libMonkSVG-OpenVG-OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMonkSVG-OpenVG-OSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA78D8A312C97E61007AD99F /* mkOpenVG_SVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkOpenVG_SVG.cpp; path = ../../src/openvg/mkOpenVG_SVG.cpp; sourceTree = SOURCE_ROOT; };
+		FA78D8A412C97E61007AD99F /* mkOpenVG_SVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkOpenVG_SVG.h; path = ../../src/openvg/mkOpenVG_SVG.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		D289987405E68DCB004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA78D89C12C97E3F007AD99F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -53,6 +73,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FA78D8A112C97E49007AD99F /* OpenVG */,
 				FA78D88312C97AB1007AD99F /* tinyxml */,
 				FA78D88A12C97AB1007AD99F /* mkSVG.h */,
 				FA78D88B12C97AB1007AD99F /* mkSVG.cpp */,
@@ -64,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				D2AAC046055464E500DB518D /* libMonkSVG-OSX.a */,
+				FA78D89E12C97E3F007AD99F /* libMonkSVG-OpenVG-OSX.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -89,6 +111,15 @@
 			path = ../../src/tinyxml;
 			sourceTree = SOURCE_ROOT;
 		};
+		FA78D8A112C97E49007AD99F /* OpenVG */ = {
+			isa = PBXGroup;
+			children = (
+				FA78D8A312C97E61007AD99F /* mkOpenVG_SVG.cpp */,
+				FA78D8A412C97E61007AD99F /* mkOpenVG_SVG.h */,
+			);
+			name = OpenVG;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -99,6 +130,17 @@
 				FA78D88D12C97AB1007AD99F /* tinystr.h in Headers */,
 				FA78D88F12C97AB1007AD99F /* tinyxml.h in Headers */,
 				FA78D89212C97AB1007AD99F /* mkSVG.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA78D89A12C97E3F007AD99F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA78D8AA12C97EC7007AD99F /* tinystr.h in Headers */,
+				FA78D8B012C97ED3007AD99F /* mkOpenVG_SVG.h in Headers */,
+				FA78D8AC12C97EC7007AD99F /* tinyxml.h in Headers */,
+				FA78D8A712C97EB7007AD99F /* mkSVG.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +164,23 @@
 			productReference = D2AAC046055464E500DB518D /* libMonkSVG-OSX.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		FA78D89D12C97E3F007AD99F /* MonkSVG-OpenVG-OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA78D8A212C97E49007AD99F /* Build configuration list for PBXNativeTarget "MonkSVG-OpenVG-OSX" */;
+			buildPhases = (
+				FA78D89A12C97E3F007AD99F /* Headers */,
+				FA78D89B12C97E3F007AD99F /* Sources */,
+				FA78D89C12C97E3F007AD99F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MonkSVG-OpenVG-OSX";
+			productName = "MonkSVG-OpenVG-OSX";
+			productReference = FA78D89E12C97E3F007AD99F /* libMonkSVG-OpenVG-OSX.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -142,6 +201,7 @@
 			projectRoot = "";
 			targets = (
 				D2AAC045055464E500DB518D /* MonkSVG-OSX */,
+				FA78D89D12C97E3F007AD99F /* MonkSVG-OpenVG-OSX */,
 			);
 		};
 /* End PBXProject section */
@@ -156,6 +216,19 @@
 				FA78D89012C97AB1007AD99F /* tinyxmlerror.cpp in Sources */,
 				FA78D89112C97AB1007AD99F /* tinyxmlparser.cpp in Sources */,
 				FA78D89312C97AB1007AD99F /* mkSVG.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA78D89B12C97E3F007AD99F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA78D8A912C97EC7007AD99F /* tinystr.cpp in Sources */,
+				FA78D8AF12C97ED3007AD99F /* mkOpenVG_SVG.cpp in Sources */,
+				FA78D8AB12C97EC7007AD99F /* tinyxml.cpp in Sources */,
+				FA78D8AD12C97EC7007AD99F /* tinyxmlerror.cpp in Sources */,
+				FA78D8AE12C97EC7007AD99F /* tinyxmlparser.cpp in Sources */,
+				FA78D8A812C97EB7007AD99F /* mkSVG.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +286,38 @@
 			};
 			name = Release;
 		};
+		FA78D89F12C97E3F007AD99F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = "MonkSVG-OpenVG-OSX";
+			};
+			name = Debug;
+		};
+		FA78D8A012C97E3F007AD99F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = "MonkSVG-OpenVG-OSX";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -230,6 +335,15 @@
 			buildConfigurations = (
 				1DEB91F008733DB70010E9CD /* Debug */,
 				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA78D8A212C97E49007AD99F /* Build configuration list for PBXNativeTarget "MonkSVG-OpenVG-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA78D89F12C97E3F007AD99F /* Debug */,
+				FA78D8A012C97E3F007AD99F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
