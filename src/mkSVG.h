@@ -56,7 +56,11 @@ namespace MonkSVG {
 		
 	private:
 		void recursive_parse( TiXmlDocument* doc, TiXmlElement* element );
-		void parse_path( string& ps );
+		void handle_path( TiXmlElement* pathElement );
+		void parse_path_d( string& ps );
+		void parse_path_style( string& ps );
+		uint32_t string_hex_color_to_uint( string& hexstring );
+		float d_string_to_float( char *c, char **str );
 
 	};
 }

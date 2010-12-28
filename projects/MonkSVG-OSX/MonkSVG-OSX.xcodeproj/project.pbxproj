@@ -295,7 +295,11 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
+				GCC_PREPROCESSOR_DEFINITIONS = TIXML_USE_STL;
+				HEADER_SEARCH_PATHS = (
+					/opt/local/include/,
+					../../../MonkVG/include,
+				);
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = "MonkSVG-OpenVG-OSX";
@@ -310,7 +314,11 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
-				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
+				GCC_PREPROCESSOR_DEFINITIONS = TIXML_USE_STL;
+				HEADER_SEARCH_PATHS = (
+					/opt/local/include/,
+					../../../MonkVG/include,
+				);
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = "MonkSVG-OpenVG-OSX";
