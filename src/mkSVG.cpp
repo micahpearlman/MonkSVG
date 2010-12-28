@@ -111,7 +111,7 @@ namespace MonkSVG {
 		
 	}
 	
-	void nextState( char** c, char* state ) {
+	void SVG::nextState( char** c, char* state ) {
 		
 		while ( isspace(**c) ) {
 			(*c)++;
@@ -119,6 +119,12 @@ namespace MonkSVG {
 		if ( isalpha( **c ) ) {
 			*state = **c;
 			(*c)++;
+			if ( islower(*state) ) {	// if lower case then relative coords (see SVG spec)
+				_handler->setRelative( true );
+			} else {
+				_handler->setRelative( false );
+			}
+
 		}
 	}
 	

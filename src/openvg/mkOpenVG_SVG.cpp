@@ -43,7 +43,7 @@ namespace MonkSVG {
 	}
 	
 	void OpenVG_SVGHandler::onPathMoveTo( float x, float y ) { 
-		VGubyte seg = VG_MOVE_TO | VG_ABSOLUTE;
+		VGubyte seg = VG_MOVE_TO | openVGRelative();
 		VGfloat data[2];
 		
 		data[0] = x; data[1] = y;
@@ -51,7 +51,7 @@ namespace MonkSVG {
 		
 	}
 	void OpenVG_SVGHandler::onPathLineTo( float x, float y ) { 
-		VGubyte seg = VG_LINE_TO | VG_ABSOLUTE;
+		VGubyte seg = VG_LINE_TO | openVGRelative();
 		VGfloat data[2];
 		
 		data[0] = x; data[1] = y;
@@ -59,7 +59,7 @@ namespace MonkSVG {
 		
 	}
 	void OpenVG_SVGHandler::onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) { 
-		VGubyte seg = VG_CUBIC_TO | VG_ABSOLUTE;
+		VGubyte seg = VG_CUBIC_TO | openVGRelative();
 		VGfloat data[6];
 		
 		data[0] = x1; data[1] = y1;

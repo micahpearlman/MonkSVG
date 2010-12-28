@@ -33,6 +33,13 @@ namespace MonkSVG {
 		virtual void onPathFillColor( unsigned int color );
 		virtual void onPathStrokeColor( unsigned int color );
 		virtual void onPathStrokeWidth( float width );
+		
+		uint32_t openVGRelative() {
+			if ( relative() ) {
+				return VG_RELATIVE;
+			}
+			return VG_ABSOLUTE;
+		}
 	private:	
 		
 		VGPath _path;

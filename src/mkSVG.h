@@ -42,6 +42,15 @@ namespace MonkSVG {
 		virtual void onPathStrokeColor( unsigned int color ) {}
 		virtual void onPathStrokeWidth( float width ) {}
 		
+		void setRelative( bool r ) {
+			_relative = r;
+		}
+		bool relative() const {
+			return _relative;
+		}
+		
+	private:
+		bool _relative;
 	};
 	
 	class SVG  {
@@ -61,6 +70,7 @@ namespace MonkSVG {
 		void parse_path_style( string& ps );
 		uint32_t string_hex_color_to_uint( string& hexstring );
 		float d_string_to_float( char *c, char **str );
+		void nextState( char** c, char* state );
 
 	};
 }
