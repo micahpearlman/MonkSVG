@@ -24,15 +24,20 @@ namespace MonkSVG {
 		return true;
 	}
 	
-	bool SVG::read( string& data ) {
+	bool SVG::read( const char* data ) {
 		TiXmlDocument doc;
 		
 		
-		doc.Parse( data.c_str() );
+		doc.Parse( data );
 		TiXmlElement* root = doc.FirstChild( "svg" )->ToElement();
 		recursive_parse( &doc, root );
 		
 		return true;
+		
+	}
+	
+	bool SVG::read( string& data ) {
+		return read( data.c_str() );
 	}
 	
 	void SVG::recursive_parse( TiXmlDocument* doc, TiXmlElement* element ) {

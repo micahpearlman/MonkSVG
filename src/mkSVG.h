@@ -58,6 +58,7 @@ namespace MonkSVG {
 		
 		bool initialize( ISVGHandler* handler );
 		bool read( string& data );
+		bool read( const char* data );
 
 	private:
 		
