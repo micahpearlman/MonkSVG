@@ -14,11 +14,13 @@ namespace MonkSVG {
 		vector<VGPaint>::iterator fillpaintiter = _fill_list.begin();
 		vector<VGPaint>::iterator strokepaintiter = _stroke_list.begin();
 		vector<float>::iterator widthiter = _stroke_width.begin();
+		vector<transform_abc_t>::iterator transformiter = _transforms.begin();
 		int i = 0;
-		for ( vector<VGPath>::iterator iter = _path_list.begin(); iter != _path_list.end(); iter++, fillpaintiter++, strokepaintiter++, widthiter++, i++ ) {
+		for ( vector<VGPath>::iterator iter = _path_list.begin(); iter != _path_list.end(); iter++, fillpaintiter++, strokepaintiter++, widthiter++, i++, transformiter++ ) {
 			vgSetPaint( *fillpaintiter, VG_FILL_PATH );
 			vgSetPaint( *strokepaintiter, VG_STROKE_PATH );
 			vgSetf( VG_STROKE_LINE_WIDTH, *widthiter );
+			vgLoadMatrix( (*transformiter).ptr() );
 			//			if ( i == 2) {
 			vgDrawPath( *iter, VG_FILL_PATH | VG_STROKE_PATH );
 			//			}
@@ -90,4 +92,26 @@ namespace MonkSVG {
 	void OpenVG_SVGHandler::onPathStrokeWidth( float width ) {
 		_stroke_width.push_back( width );
 	}
+	
+	void OpenVG_SVGHandler::onTransformTranslate( float x, float y ) {
+		transform_abc_t t;
+		t.setTranslate( x, y );
+		_transforms.push_back( t );
+	}
+	void OpenVG_SVGHandler::onTransformScale( float s ) {
+		transform_abc_t t;
+		t.setScale( s, s );
+		_transforms.push_back( t );
+	}
+	void OpenVG_SVGHandler::onTransformRotate( float r ) {
+		transform_abc_t t;
+		t.setRotation( r );	// ?? radians or degrees ??
+		_transforms.push_back( t );
+	}
+	void OpenVG_SVGHandler::onTransformMatrix( float a, float b, float c, float d, float e, float f ) {
+		transform_abc_t t;
+		t.a = a; t.b = b; t.c = c; t.d = d; t.e = e; t.f = f;
+		_transforms.push_back( t );
+	}
+	
 }

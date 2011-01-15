@@ -119,6 +119,12 @@ namespace MonkSVG {
 			parse_path_style( style );
 		}
 		
+		string transform;
+		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
+			parse_path_transform( transform );
+		}
+		
+		
 	}
 	
 	void SVG::nextState( char** c, char* state ) {
@@ -135,6 +141,38 @@ namespace MonkSVG {
 				_handler->setRelative( false );
 			}
 
+		}
+	}
+	
+	void SVG::parse_path_transform( string& tr )	{
+		size_t p = tr.find( "translate" );
+		if ( p != string::npos ) {
+			size_t left = tr.find( "(" );
+			size_t right = tr.find( ")" );
+			string values = tr.substr( left+1, right-1 );
+			char* c = const_cast<char*>( values.c_str() );
+			float x = d_string_to_float( c, &c );
+			float y = d_string_to_float( c, &c );
+			_handler->onTransformTranslate( x, y );
+		} else if ( tr.find( "rotate" ) != string::npos ) {
+			size_t left = tr.find( "(" );
+			size_t right = tr.find( ")" );
+			string values = tr.substr( left+1, right-1 );
+			char* c = const_cast<char*>( values.c_str() );
+			float a = d_string_to_float( c, &c );
+			_handler->onTransformRotate( a );	// ??? radians or degrees ??
+		} else if ( tr.find( "matrix" ) != string::npos ) {
+			size_t left = tr.find( "(" );
+			size_t right = tr.find( ")" );
+			string values = tr.substr( left+1, right-1 );
+			char* cc = const_cast<char*>( values.c_str() );
+			float a = d_string_to_float( cc, &cc );
+			float b = d_string_to_float( cc, &cc );
+			float c = d_string_to_float( cc, &cc );
+			float d = d_string_to_float( cc, &cc );
+			float e = d_string_to_float( cc, &cc );
+			float f = d_string_to_float( cc, &cc );
+			_handler->onTransformMatrix( a, b, c, d, e, f );
 		}
 	}
 	
@@ -231,8 +269,6 @@ namespace MonkSVG {
 			float width = atof( kv->second.c_str() );
 			_handler->onPathStrokeWidth( width );
 		}
-		
-		
 	}
 
 };
