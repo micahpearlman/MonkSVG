@@ -11,27 +11,29 @@
 
 namespace MonkSVG {
 	void OpenVG_SVGHandler::draw() {
-		vector<VGPaint>::iterator fillpaintiter = _fill_list.begin();
-		vector<VGPaint>::iterator strokepaintiter = _stroke_list.begin();
-		vector<float>::iterator widthiter = _stroke_width.begin();
-		vector<transform_abc_t>::iterator transformiter = _transforms.begin();
-		int i = 0;
-		for ( vector<VGPath>::iterator iter = _path_list.begin(); iter != _path_list.end(); iter++, fillpaintiter++, strokepaintiter++, widthiter++, i++, transformiter++ ) {
-			vgSetPaint( *fillpaintiter, VG_FILL_PATH );
-			vgSetPaint( *strokepaintiter, VG_STROKE_PATH );
-			vgSetf( VG_STROKE_LINE_WIDTH, *widthiter );
-			vgLoadMatrix( (*transformiter).ptr() );
-			//			if ( i == 2) {
-			vgDrawPath( *iter, VG_FILL_PATH | VG_STROKE_PATH );
-			//			}
-			
-			
+		
+		for ( vector<path_object_t>::iterator it = _path_objects.begin(); it != _path_objects.end(); it++ ) {
+			path_object_t& po = *it;
+			uint32_t draw_params = 0;
+			if ( po.fill ) {
+				vgSetPaint( po.fill, VG_FILL_PATH );
+				draw_params |= VG_FILL_PATH;
+			}
+				
+			if ( po.stroke ) {
+				vgSetPaint( po.stroke, VG_STROKE_PATH );
+				vgSetf( VG_STROKE_LINE_WIDTH, po.stroke_width );
+				draw_params |= VG_STROKE_PATH;
+			}
+			vgLoadMatrix( po.transform.ptr() );
+			vgDrawPath( po.path, draw_params );
 		}
 		
 	}
 	
 	void OpenVG_SVGHandler::onPathBegin() { 
-		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,
+		_current_path = path_object_t();
+		_current_path.path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,
 							 1,0,0,0, VG_PATH_CAPABILITY_ALL);
 		
 	}
@@ -39,8 +41,8 @@ namespace MonkSVG {
 	void OpenVG_SVGHandler::onPathEnd() {  
 		VGubyte seg = VG_CLOSE_PATH;
 		VGfloat data = 0.0f;
-		vgAppendPathData( _path, 1, &seg, &data );
-		_path_list.push_back( _path );
+		vgAppendPathData( _current_path.path, 1, &seg, &data );
+		_path_objects.push_back( _current_path );
 		
 	}
 	
@@ -49,7 +51,7 @@ namespace MonkSVG {
 		VGfloat data[2];
 		
 		data[0] = x; data[1] = y;
-		vgAppendPathData( _path, 1, &seg, data );
+		vgAppendPathData( _current_path.path, 1, &seg, data );
 		
 	}
 	void OpenVG_SVGHandler::onPathLineTo( float x, float y ) { 
@@ -57,7 +59,7 @@ namespace MonkSVG {
 		VGfloat data[2];
 		
 		data[0] = x; data[1] = y;
-		vgAppendPathData( _path, 1, &seg, data );
+		vgAppendPathData( _current_path.path, 1, &seg, data );
 		
 	}
 	void OpenVG_SVGHandler::onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) { 
@@ -67,51 +69,42 @@ namespace MonkSVG {
 		data[0] = x1; data[1] = y1;
 		data[2] = x2; data[3] = y2;
 		data[4] = x3; data[5] = y3;
-		vgAppendPathData( _path, 1, &seg, data);
+		vgAppendPathData( _current_path.path, 1, &seg, data);
 		
 	}
 	void OpenVG_SVGHandler::onPathFillColor( unsigned int color ) {
-		_fill_paint = vgCreatePaint();
+		_current_path.fill = vgCreatePaint();
 		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 			VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 			VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
 			1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
-		vgSetParameterfv(_fill_paint, VG_PAINT_COLOR, 4, &fcolor[0]);
-		_fill_list.push_back( _fill_paint );
+		vgSetParameterfv( _current_path.fill, VG_PAINT_COLOR, 4, &fcolor[0]);
 	}
 	void OpenVG_SVGHandler::onPathStrokeColor( unsigned int color ) {
-		VGPaint stroke_paint = vgCreatePaint();
+		_current_path.stroke = vgCreatePaint();
 		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 			VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 			VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
 			1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
-		vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &fcolor[0]);
-		_stroke_list.push_back( stroke_paint );
-		
+		vgSetParameterfv( _current_path.stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
 	}
 	void OpenVG_SVGHandler::onPathStrokeWidth( float width ) {
-		_stroke_width.push_back( width );
+		_current_path.stroke_width = width;
 	}
 	
 	void OpenVG_SVGHandler::onTransformTranslate( float x, float y ) {
-		transform_abc_t t;
-		t.setTranslate( x, y );
-		_transforms.push_back( t );
+		_current_path.transform.setTranslate( x, y );
 	}
 	void OpenVG_SVGHandler::onTransformScale( float s ) {
-		transform_abc_t t;
-		t.setScale( s, s );
-		_transforms.push_back( t );
+		_current_path.transform.setScale( s, s );
 	}
 	void OpenVG_SVGHandler::onTransformRotate( float r ) {
-		transform_abc_t t;
-		t.setRotation( r );	// ?? radians or degrees ??
-		_transforms.push_back( t );
+		_current_path.transform.setRotation( r );	// ?? radians or degrees ??
 	}
 	void OpenVG_SVGHandler::onTransformMatrix( float a, float b, float c, float d, float e, float f ) {
 		transform_abc_t t;
 		t.a = a; t.b = b; t.c = c; t.d = d; t.e = e; t.f = f;
-		_transforms.push_back( t );
+		_current_path.transform = t;
 	}
 	
 }

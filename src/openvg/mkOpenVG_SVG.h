@@ -48,22 +48,14 @@ namespace MonkSVG {
 			}
 			return VG_ABSOLUTE;
 		}
-	private:	
-		
-		VGPath _path;
-		VGPaint _fill_paint;
-		
-		vector<VGPath>	_path_list;
-		vector<VGPaint>	_fill_list;
-		vector<VGPaint> _stroke_list;
-		vector<float>	_stroke_width;
+	private:
 		
 		// see: http://www.w3.org/TR/SVG/coords.html#TransformMatrixDefined
 		struct transform_abc_t {
 			float a, c, e, b, d, f, ff0, ff1, ff2;
 			transform_abc_t() {
 				a = d = ff2 = 1.0f;
-				c, e, b, f, ff0, ff1 = 0;
+				c = e = b = f = ff0 = ff1 = 0;
 			}
 			
 			void setTranslate( float x, float y ) {
@@ -85,7 +77,29 @@ namespace MonkSVG {
 			}
 		};
 		
-		vector<transform_abc_t>	_transforms;
+		
+		struct path_object_t {
+			VGPath path;
+			VGPaint fill;
+			VGPaint stroke;
+			VGfloat stroke_width;
+			transform_abc_t transform;
+			
+			path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( 0 ) {
+				
+			}
+		};
+		
+		path_object_t _current_path;
+		vector<path_object_t> _path_objects;
+		
+//		VGPath _path;
+//		VGPaint _fill_paint;
+//		vector<VGPath>	_path_list;
+//		vector<VGPaint>	_fill_list;
+//		vector<VGPaint> _stroke_list;
+//		vector<float>	_stroke_width;
+//		vector<transform_abc_t>	_transforms;
 	};
 	
 }

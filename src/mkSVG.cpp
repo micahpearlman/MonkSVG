@@ -89,12 +89,10 @@ namespace MonkSVG {
 	}	
 	
 	void SVG::handle_path( TiXmlElement* pathElement ) {
-		
+		_handler->onPathBegin();
 		string d;
 		if ( pathElement->QueryStringAttribute( "d", &d ) == TIXML_SUCCESS ) {
-			_handler->onPathBegin();
 			parse_path_d( d );
-			_handler->onPathEnd();
 		}
 		
 		string fill; 
@@ -124,7 +122,7 @@ namespace MonkSVG {
 			parse_path_transform( transform );
 		}
 		
-		
+		_handler->onPathEnd();		
 	}
 	
 	void SVG::nextState( char** c, char* state ) {
