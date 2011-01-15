@@ -51,7 +51,10 @@ namespace MonkSVG {
 				string type = sibbling->Value();
 				
 				if ( type == "g" ) {
-					handle_path( sibbling->FirstChildElement() );
+					// go through each child path
+					for ( TiXmlElement* child = sibbling->FirstChildElement(); child != 0; child = child->NextSiblingElement() ) {
+						handle_path( child );
+					}
 				}
 				
 				if ( type == "path" ) {
