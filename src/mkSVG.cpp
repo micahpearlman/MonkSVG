@@ -90,10 +90,12 @@ namespace MonkSVG {
 	
 	void SVG::handle_path( TiXmlElement* pathElement ) {
 		
-		_handler->onPathBegin();
-		string d = pathElement->Attribute( "d" );
-		parse_path_d( d );
-		_handler->onPathEnd();
+		string d;
+		if ( pathElement->QueryStringAttribute( "d", &d ) == TIXML_SUCCESS ) {
+			_handler->onPathBegin();
+			parse_path_d( d );
+			_handler->onPathEnd();
+		}
 		
 		string fill; 
 		if ( pathElement->QueryStringAttribute( "fill", &fill ) == TIXML_SUCCESS ) {
