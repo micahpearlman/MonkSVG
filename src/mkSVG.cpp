@@ -128,18 +128,28 @@ namespace MonkSVG {
 	void SVG::nextState( char** c, char* state ) {
 		
 		while ( isspace(**c) ) {
+			if ( **c == '\0') {
+				*state = 'e';
+				return;
+			}
 			(*c)++;
 		}
 		if ( isalpha( **c ) ) {
 			*state = **c;
 			(*c)++;
+			if ( **c == '\0') {
+				*state = 'e';
+				return;
+			}
+			
 			if ( islower(*state) ) {	// if lower case then relative coords (see SVG spec)
 				_handler->setRelative( true );
 			} else {
 				_handler->setRelative( false );
 			}
-
 		}
+		
+		cout << "state: " << *state << endl;
 	}
 	
 	void SVG::parse_path_transform( string& tr )	{
@@ -178,7 +188,7 @@ namespace MonkSVG {
 		char* c = const_cast<char*>( d.c_str() );
 		char state = *c;
 		nextState( &c, &state );
-		while ( *c && state != 'z' ) {
+		while ( *c && state != 'e' ) {
 			
 			switch ( state ) {
 				case 'm':
