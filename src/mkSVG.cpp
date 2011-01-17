@@ -29,7 +29,8 @@ namespace MonkSVG {
 		
 		
 		doc.Parse( data );
-		TiXmlElement* root = doc.FirstChild( "svg" )->ToElement();
+		
+		TiXmlElement* root = doc.RootElement();//doc.FirstChild( "svg" )->ToElement();
 		recursive_parse( &doc, root );
 		
 		return true;

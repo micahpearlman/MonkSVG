@@ -25,7 +25,7 @@ namespace MonkSVG {
 				vgSetf( VG_STROKE_LINE_WIDTH, po.stroke_width );
 				draw_params |= VG_STROKE_PATH;
 			}
-			vgLoadMatrix( po.transform.ptr() );
+			vgMultMatrix( po.transform.ptr() );
 			vgDrawPath( po.path, draw_params );
 		}
 		
