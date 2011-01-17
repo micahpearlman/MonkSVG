@@ -149,7 +149,7 @@ namespace MonkSVG {
 			}
 		}
 		
-		cout << "state: " << *state << endl;
+		//cout << "state: " << *state << endl;
 	}
 	
 	void SVG::parse_path_transform( string& tr )	{
