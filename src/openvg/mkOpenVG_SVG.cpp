@@ -11,10 +11,17 @@
 
 namespace MonkSVG {
 	void OpenVG_SVGHandler::draw() {
+		float m[9];
+		vgGetMatrix( m );
+		_transform_stack.push_back( transform_abc_t( m ) );	// set the current matrix to top of the matrix stack
 		draw_recursive( _root_group );
+		vgLoadMatrix( m );	// restore matrix
 	}
 	
 	void OpenVG_SVGHandler::draw_recursive( group_t& group ) {
+		
+		// push the group matrix onto the stack
+		pushTransform( group.transform );
 		for ( vector<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
 			path_object_t& po = *it;
 			uint32_t draw_params = 0;
@@ -28,13 +35,17 @@ namespace MonkSVG {
 				vgSetf( VG_STROKE_LINE_WIDTH, po.stroke_width );
 				draw_params |= VG_STROKE_PATH;
 			}
-			vgMultMatrix( po.transform.ptr() );
+			//vgMultMatrix( po.transform.ptr() );
+			pushTransform( po.transform );
 			vgDrawPath( po.path, draw_params );
+			popTransform();
 		}
 		
 		for ( vector<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
 			draw_recursive( *it );
 		}
+		
+		popTransform();
 	}
 	
 	void OpenVG_SVGHandler::onGroupBegin() {
