@@ -29,6 +29,10 @@ namespace MonkSVG {
 		virtual void onTransformRotate( float r ) {}
 		virtual void onTransformMatrix( float a, float b, float c, float d, float e, float f ) {}
 		
+		// groups
+		virtual void onGroupBegin() {}
+		virtual void onGroupEnd() {}
+		
 		// paths 
 		virtual void onPathBegin() {}
 		virtual void onPathEnd() {}

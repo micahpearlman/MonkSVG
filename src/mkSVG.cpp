@@ -53,9 +53,10 @@ namespace MonkSVG {
 				
 				if ( type == "g" ) {
 					// go through each child path
-					for ( TiXmlElement* child = sibbling->FirstChildElement(); child != 0; child = child->NextSiblingElement() ) {
-						handle_path( child );
-					}
+					recursive_parse( doc, sibbling->FirstChildElement() );
+//					for ( TiXmlElement* child = sibbling->FirstChildElement(); child != 0; child = child->NextSiblingElement() ) {
+//						handle_path( child );
+//					}
 				}
 				
 				if ( type == "path" ) {

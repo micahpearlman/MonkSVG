@@ -22,12 +22,24 @@ namespace MonkSVG {
 	class OpenVG_SVGHandler : public ISVGHandler {
 		
 	public:
-		void draw();	
+		
+		OpenVG_SVGHandler()
+		:	ISVGHandler()
+		,	_mode( kGroupParseMode )
+		,	_current_group( &_root_group ) 
+		{}
+		
+		void draw();
+		
 	private:
+		
+		// groups
+		virtual void onGroupBegin();
+		virtual void onGroupEnd();
+		
+		// paths
 		virtual void onPathBegin();
-		
 		virtual void onPathEnd();
-		
 		virtual void onPathMoveTo( float x, float y );
 		virtual void onPathLineTo( float x, float y );
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 );
@@ -54,6 +66,7 @@ namespace MonkSVG {
 		struct transform_abc_t {
 			float a, c, e, b, d, f, ff0, ff1, ff2;
 			transform_abc_t() {
+				// set to identity
 				a = d = ff2 = 1.0f;
 				c = e = b = f = ff0 = ff1 = 0;
 			}
@@ -90,16 +103,33 @@ namespace MonkSVG {
 			}
 		};
 		
-		path_object_t _current_path;
-		vector<path_object_t> _path_objects;
+		struct group_t {
+			group_t() : parent( 0 ){
+				
+			}
+			transform_abc_t transform;
+			group_t* parent;
+			vector<group_t> children;
+			vector<path_object_t> path_objects;
+			path_object_t current_path;
+		};
 		
-//		VGPath _path;
-//		VGPaint _fill_paint;
-//		vector<VGPath>	_path_list;
-//		vector<VGPaint>	_fill_list;
-//		vector<VGPaint> _stroke_list;
-//		vector<float>	_stroke_width;
-//		vector<transform_abc_t>	_transforms;
+		group_t		_root_group;
+		group_t*	_current_group;
+		
+		//path_object_t _current_path;
+		//vector<path_object_t> _path_objects;
+		
+		enum mode {
+			kGroupParseMode = 1,
+			kPathParseMode = 2
+		};
+		
+		mode _mode;
+		
+	private:
+		
+		void draw_recursive( OpenVG_SVGHandler::group_t& group );
 	};
 	
 }
