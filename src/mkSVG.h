@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -53,8 +54,39 @@ namespace MonkSVG {
 			return _relative;
 		}
 		
+		// bounds
+		float minX() {
+			return _minX;
+		}
+		float minY() {
+			return _minY;
+		}
+		float width() {
+			return _width;
+		}
+		float height() {
+			return _height;
+		}
+		
+	protected:
+		
+		ISVGHandler() 
+		:	_minX( MAXFLOAT )
+		,	_minY( MAXFLOAT )
+		,	_width( -MAXFLOAT )
+		,	_height( -MAXFLOAT ) 
+		{
+			
+		}
+		// bounds info
+		float _minX;
+		float _minY;
+		float _width;
+		float _height;
+		
 	private:
 		bool _relative;
+		
 	};
 	
 	class SVG  {

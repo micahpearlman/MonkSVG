@@ -12,6 +12,7 @@
 #include <vg/openvg.h>
 #include <vg/vgu.h>
 #include <vector>
+#include <list>
 #include <cmath>
 #include "mkSVG.h"
 
@@ -145,8 +146,8 @@ namespace MonkSVG {
 			}
 			transform_abc_t transform;
 			group_t* parent;
-			vector<group_t> children;
-			vector<path_object_t> path_objects;
+			list<group_t> children;
+			list<path_object_t> path_objects;
 			path_object_t current_path;
 		};
 		

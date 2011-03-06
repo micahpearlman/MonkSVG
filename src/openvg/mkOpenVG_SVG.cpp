@@ -22,7 +22,7 @@ namespace MonkSVG {
 		
 		// push the group matrix onto the stack
 		pushTransform( group.transform );
-		for ( vector<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
+		for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
 			path_object_t& po = *it;
 			uint32_t draw_params = 0;
 			if ( po.fill ) {
@@ -41,7 +41,7 @@ namespace MonkSVG {
 			popTransform();
 		}
 		
-		for ( vector<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
+		for ( list<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
 			draw_recursive( *it );
 		}
 		
@@ -73,6 +73,22 @@ namespace MonkSVG {
 		VGfloat data = 0.0f;
 		vgAppendPathData( _current_group->current_path.path, 1, &seg, &data );
 		_current_group->path_objects.push_back( _current_group->current_path );
+		
+		// build up the bounds
+		VGfloat minX, minY, width, height;
+		vgPathBounds( _current_group->current_path.path, &minX, &minY, &width, &height );
+		if ( minX < _minX ) {
+			_minX = minX;
+		}
+		if ( minY < _minY ) {
+			_minY = minY;
+		}
+		if ( width > _width ) {
+			_width = width;
+		}
+		if ( height > _height ) {
+			_height = height;
+		}
 		
 	}
 	
