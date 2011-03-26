@@ -238,12 +238,14 @@
 		1DEB91EC08733DB70010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "TIXML_USE_STL=1";
+				HEADER_SEARCH_PATHS = /opt/local/include;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = "MonkSVG-OSX";
 			};
@@ -252,9 +254,11 @@
 		1DEB91ED08733DB70010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = "TIXML_USE_STL=1";
+				HEADER_SEARCH_PATHS = /opt/local/include;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = "MonkSVG-OSX";
 			};
