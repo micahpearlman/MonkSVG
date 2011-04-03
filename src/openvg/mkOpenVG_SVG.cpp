@@ -13,7 +13,7 @@ namespace MonkSVG {
 	void OpenVG_SVGHandler::draw() {
 		float m[9];
 		vgGetMatrix( m );
-		_transform_stack.push_back( transform_abc_t( m ) );	// set the current matrix to top of the matrix stack
+		_transform_stack.push_back( Transform2d( m ) );	// set the current matrix to top of the matrix stack
 		draw_recursive( _root_group );
 		vgLoadMatrix( m );	// restore matrix
 	}
@@ -148,7 +148,7 @@ namespace MonkSVG {
 		_current_group->current_path.transform.setRotation( r );	// ?? radians or degrees ??
 	}
 	void OpenVG_SVGHandler::onTransformMatrix( float a, float b, float c, float d, float e, float f ) {
-		transform_abc_t t;
+		Transform2d t;
 		t.a = a; t.b = b; t.c = c; t.d = d; t.e = e; t.f = f;
 		_current_group->current_path.transform = t;
 	}
