@@ -5,6 +5,10 @@
 //  Created by Micah Pearlman on 4/3/11.
 //  Copyright 2011 Zero Vision. All rights reserved.
 //
+#ifndef __mkTransform2d_h__
+#define __mkTransform2d_h__
+
+#include <cmath>
 
 namespace MonkSVG {
     // see: http://www.w3.org/TR/SVG/coords.html#TransformMatrixDefined
@@ -59,3 +63,5 @@ namespace MonkSVG {
     };
 
 }
+
+#endif // __mkTransform2d_h__
