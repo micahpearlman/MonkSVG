@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		AA747D9F0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		FAC06DF6139445BD0075231C /* mkOpenVG_SVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */; };
+		FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */; };
 		FAE28419121B06F000823BCB /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28411121B06F000823BCB /* tinystr.cpp */; };
 		FAE2841A121B06F000823BCB /* tinystr.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE28412121B06F000823BCB /* tinystr.h */; };
 		FAE2841B121B06F000823BCB /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28413121B06F000823BCB /* tinyxml.cpp */; };
@@ -23,6 +25,8 @@
 		AA747D9E0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkSVG_iOS_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libMonkSVG_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkSVG_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkOpenVG_SVG.cpp; sourceTree = "<group>"; };
+		FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkOpenVG_SVG.h; sourceTree = "<group>"; };
 		FAE28411121B06F000823BCB /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
 		FAE28412121B06F000823BCB /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
 		FAE28413121B06F000823BCB /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
@@ -80,9 +84,20 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
+		FAC06DF3139445BD0075231C /* openvg */ = {
+			isa = PBXGroup;
+			children = (
+				FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */,
+				FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */,
+			);
+			name = openvg;
+			path = ../../src/openvg;
+			sourceTree = "<group>";
+		};
 		FAE2840F121B06F000823BCB /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FAC06DF3139445BD0075231C /* openvg */,
 				FAE28410121B06F000823BCB /* tinyxml */,
 				FAE28417121B06F000823BCB /* mkSVG.h */,
 				FAE28418121B06F000823BCB /* mkSVG.cpp */,
@@ -115,6 +130,7 @@
 				FAE2841A121B06F000823BCB /* tinystr.h in Headers */,
 				FAE2841C121B06F000823BCB /* tinyxml.h in Headers */,
 				FAE2841F121B06F000823BCB /* mkSVG.h in Headers */,
+				FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,6 +189,7 @@
 				FAE2841D121B06F000823BCB /* tinyxmlerror.cpp in Sources */,
 				FAE2841E121B06F000823BCB /* tinyxmlparser.cpp in Sources */,
 				FAE28420121B06F000823BCB /* mkSVG.cpp in Sources */,
+				FAC06DF6139445BD0075231C /* mkOpenVG_SVG.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,7 +210,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = TIXML_USE_STL;
-				HEADER_SEARCH_PATHS = /opt/local/include;
+				HEADER_SEARCH_PATHS = (
+					/opt/local/include,
+					../../../MonkVG/include,
+					../../src,
+				);
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkSVG_iOS;
 				SDKROOT = iphoneos;
@@ -210,7 +231,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = TIXML_USE_STL;
-				HEADER_SEARCH_PATHS = /opt/local/include;
+				HEADER_SEARCH_PATHS = (
+					/opt/local/include,
+					../../../MonkVG/include,
+					../../src,
+				);
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkSVG_iOS;
 				SDKROOT = iphoneos;
