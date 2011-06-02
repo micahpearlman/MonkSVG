@@ -118,6 +118,39 @@ namespace MonkSVG {
 		vgAppendPathData( _current_group->current_path.path, 1, &seg, data);
 		
 	}
+	
+	void OpenVG_SVGHandler::onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {
+		
+		VGubyte seg = openVGRelative();
+		if ( large_arc_flag ) {
+			if (sweep_flag) {
+				seg |= VG_LCCWARC_TO;
+			} else {
+				seg |= VG_LCWARC_TO;
+			}
+		} else {
+			if (sweep_flag) {
+				seg |= VG_SCCWARC_TO;
+			} else {
+				seg |= VG_SCWARC_TO;
+			}
+			
+		}
+		VGfloat data[5];
+		
+	
+		
+		data[0] = rx;
+		data[1] = ry;
+		data[2] = x_axis_rotation;
+		data[3] = x;
+		data[4] = y;
+		
+		vgAppendPathData( _current_group->current_path.path, 1, &seg, data);
+		
+	}
+
+	
 	void OpenVG_SVGHandler::onPathFillColor( unsigned int color ) {
 		_current_group->current_path.fill = vgCreatePaint();
 		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 

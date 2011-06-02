@@ -40,6 +40,8 @@ namespace MonkSVG {
 		virtual void onPathMoveTo( float x, float y ) {}
 		virtual void onPathLineTo( float x, float y ) {}
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) {}
+		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {}
+
 		// fill
 		virtual void onPathFillColor( unsigned int color ) {}
 		virtual void onPathFillRule( string rule ) {}
@@ -108,6 +110,7 @@ namespace MonkSVG {
 		void parse_path_transform( string& tr );
 		uint32_t string_hex_color_to_uint( string& hexstring );
 		float d_string_to_float( char *c, char **str );
+		int d_string_to_int( char *c, char **str );
 		void nextState( char** c, char* state );
 
 	};

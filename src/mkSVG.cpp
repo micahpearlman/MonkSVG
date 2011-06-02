@@ -80,6 +80,20 @@ namespace MonkSVG {
 		return strtof( c, str );
 	}
 	
+	int SVG::d_string_to_int( char *c, char **str ) {
+		while ( isspace(*c) ) {
+			c++;
+			(*str)++;
+		}
+		while ( *c == ',' ) {
+			c++;
+			(*str)++;
+		}
+		
+		return strtol( c, str, 10);
+		
+	}
+	
 	uint32_t SVG::string_hex_color_to_uint( string& hexstring ) {
 		uint32_t color = strtol( hexstring.c_str() + 1, 0, 16 );
 		if ( hexstring.length() == 7 ) {	// fix up to rgba if the color is only rgb
@@ -231,6 +245,22 @@ namespace MonkSVG {
 					
 				}
 				break;
+					
+				case 'a':
+				case 'A':
+				{
+					float rx = d_string_to_float( c, &c );
+					float ry = d_string_to_float( c, &c );
+					float x_axis_rotation = d_string_to_float( c, &c );
+					int large_arc_flag = d_string_to_int( c, &c );
+					int sweep_flag = d_string_to_int( c, &c );
+					float x = d_string_to_float( c, &c );;
+					float y = d_string_to_float( c, &c );
+					_handler->onPathArc( rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y );
+					
+				}
+				break;
+					
 				case 'z':
 				case 'Z':
 				{
