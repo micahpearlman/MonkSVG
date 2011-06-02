@@ -257,6 +257,7 @@ namespace MonkSVG {
 					float x = d_string_to_float( c, &c );;
 					float y = d_string_to_float( c, &c );
 					_handler->onPathArc( rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y );
+					nextState(&c, &state);
 					
 				}
 				break;
@@ -296,12 +297,14 @@ namespace MonkSVG {
 		
 		map<string, string>::iterator kv = style_key_values.find( string("fill") );
 		if ( kv != style_key_values.end() ) {
-			_handler->onPathFillColor( string_hex_color_to_uint( kv->second ) );
+			if( kv->second != "none" )
+				_handler->onPathFillColor( string_hex_color_to_uint( kv->second ) );
 		}
 		
 		kv = style_key_values.find( "stroke" );
 		if ( kv != style_key_values.end() ) {
-			_handler->onPathStrokeColor( string_hex_color_to_uint( kv->second ) );
+			if( kv->second != "none" )
+				_handler->onPathStrokeColor( string_hex_color_to_uint( kv->second ) );
 		}
 		
 		kv = style_key_values.find( "stroke-width" );
