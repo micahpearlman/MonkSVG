@@ -10,6 +10,18 @@
 #include "mkOpenVG_SVG.h"
 
 namespace MonkSVG {
+	
+	OpenVG_SVGHandler::OpenVG_SVGHandler()
+	:	ISVGHandler()
+	,	_mode( kGroupParseMode )
+	,	_current_group( &_root_group ) 
+	{
+		_blackBackFill = vgCreatePaint();
+		VGfloat fcolor[4] = { 0,0,0,1 };
+		vgSetParameterfv( _blackBackFill, VG_PAINT_COLOR, 4, &fcolor[0]);
+
+		
+	}
 	void OpenVG_SVGHandler::draw() {
 		float m[9];
 		vgGetMatrix( m );
@@ -34,6 +46,11 @@ namespace MonkSVG {
 				vgSetPaint( po.stroke, VG_STROKE_PATH );
 				vgSetf( VG_STROKE_LINE_WIDTH, po.stroke_width );
 				draw_params |= VG_STROKE_PATH;
+			}
+			
+			if( draw_params == 0 ) {	// if no stroke or fill use the default black fill
+				vgSetPaint( _blackBackFill, VG_FILL_PATH );
+				draw_params |= VG_FILL_PATH;
 			}
 			//vgMultMatrix( po.transform.ptr() );
 			pushTransform( po.transform );
@@ -72,6 +89,9 @@ namespace MonkSVG {
 		VGubyte seg = VG_CLOSE_PATH;
 		VGfloat data = 0.0f;
 		vgAppendPathData( _current_group->current_path.path, 1, &seg, &data );
+		
+		
+		
 		_current_group->path_objects.push_back( _current_group->current_path );
 		
 		// build up the bounds

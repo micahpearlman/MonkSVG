@@ -25,11 +25,7 @@ namespace MonkSVG {
 		
 	public:
 		
-		OpenVG_SVGHandler()
-		:	ISVGHandler()
-		,	_mode( kGroupParseMode )
-		,	_current_group( &_root_group ) 
-		{}
+		OpenVG_SVGHandler();
 		
 		void draw();
 		
@@ -115,6 +111,8 @@ namespace MonkSVG {
 		};
 		
 		mode _mode;
+		
+		VGPaint	_blackBackFill;		// if a path doesn't have a stroke or a fill then use this fill
 		
 	private:
 		
