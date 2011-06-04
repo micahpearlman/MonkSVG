@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		AA747D9F0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		FA5FD9511399F18B00863CBC /* mkTransform2d.h in Headers */ = {isa = PBXBuildFile; fileRef = FA5FD9501399F18B00863CBC /* mkTransform2d.h */; };
 		FAC06DF6139445BD0075231C /* mkOpenVG_SVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */; };
 		FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */; };
 		FAE28419121B06F000823BCB /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28411121B06F000823BCB /* tinystr.cpp */; };
@@ -25,6 +26,7 @@
 		AA747D9E0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkSVG_iOS_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libMonkSVG_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkSVG_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA5FD9501399F18B00863CBC /* mkTransform2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkTransform2d.h; path = ../../src/mkTransform2d.h; sourceTree = "<group>"; };
 		FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkOpenVG_SVG.cpp; sourceTree = "<group>"; };
 		FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkOpenVG_SVG.h; sourceTree = "<group>"; };
 		FAE28411121B06F000823BCB /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 		FAE2840F121B06F000823BCB /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FA5FD9501399F18B00863CBC /* mkTransform2d.h */,
 				FAC06DF3139445BD0075231C /* openvg */,
 				FAE28410121B06F000823BCB /* tinyxml */,
 				FAE28417121B06F000823BCB /* mkSVG.h */,
@@ -131,6 +134,7 @@
 				FAE2841C121B06F000823BCB /* tinyxml.h in Headers */,
 				FAE2841F121B06F000823BCB /* mkSVG.h in Headers */,
 				FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */,
+				FA5FD9511399F18B00863CBC /* mkTransform2d.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
