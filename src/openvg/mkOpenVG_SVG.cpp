@@ -29,7 +29,6 @@ namespace MonkSVG {
 		Transform2d top;
 		Transform2d::multiply( top, rootTransform(), Transform2d(m) );	// multiply by the root transform
 		pushTransform( top );
-//pushTransform( Transform2d(m) );
 		draw_recursive( _root_group );
 		vgLoadMatrix( m );	// restore matrix
 		_transform_stack.clear();

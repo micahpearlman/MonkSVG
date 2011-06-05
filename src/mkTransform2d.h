@@ -9,6 +9,8 @@
 #define __mkTransform2d_h__
 
 #include <cmath>
+#include <iostream>
+#include <iomanip>
 
 namespace MonkSVG {
     // see: http://www.w3.org/TR/SVG/coords.html#TransformMatrixDefined
@@ -41,9 +43,11 @@ namespace MonkSVG {
             a = sx; d = sy;
         }
         
-        void setRotation( float a ) {	// assume radians
-            a = cosf( a ); c = -sinf( a );
-            b = sinf( a ); d = cosf( a );
+        void setRotation( float ang ) {	// assume radians
+			float cs = cosf( ang );
+			float ss = sinf( ang );
+            a = cs; c = -ss;
+            b = ss; d = cs;
         }
 		
         
@@ -51,6 +55,7 @@ namespace MonkSVG {
             return &a;
         }
         
+		
         Transform2d( float* t ) {
             a = t[0]; c = t[1]; e = t[2];
             b = t[3]; d = t[4]; f = t[5];
@@ -67,6 +72,16 @@ namespace MonkSVG {
                         r.mm[i][j] += a.mm[i][k] * b.mm[k][j];
                     }
         }
+		
+		void print() {
+			std::cout << ":: Transform2d ::" << std::endl;
+			for( int i = 0; i < 3; i++ ) {
+				for( int p = 0; p < 3; p++ ) {
+					std::cout << std::setw(6) << std::setiosflags(std::ios::fixed) << std::setprecision(3) << mm[i][p];
+				}
+				std::cout << std::endl;
+			}
+		}
     };
 
 }

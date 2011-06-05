@@ -29,6 +29,10 @@ namespace MonkSVG {
 		
 		void draw();
 		
+		const Transform2d& rootTransform() { return _root_transform; }
+		void setRootTransform( const Transform2d& t ) { _root_transform = t; }
+
+		
 	private:
 		
 		// groups
@@ -85,8 +89,6 @@ namespace MonkSVG {
 		}
 		
 		
-		const Transform2d& rootTransform() { return _root_transform; }
-		void setRootTransform( const Transform2d& t ) { _root_transform = t; }
 	private:
 
 		
