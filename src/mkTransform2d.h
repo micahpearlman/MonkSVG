@@ -15,30 +15,37 @@ namespace MonkSVG {
     struct Transform2d {
         union {
             struct {
-                float a, c, e, b, d, f, ff0, ff1, ff2;
+                float	a, c, e,		// cos(a) -sin(a) tx
+						b, d, f,		// sin(a) cos(a)  ty
+						ff0, ff1, ff2;	// 0      0       1
             };
             float m[9];
             float mm[3][3];
         };
         Transform2d() {
+			setIdentity();
+        }
+		
+		void setIdentity() {
             // set to identity
             a = d = ff2 = 1.0f;
             c = e = b = f = ff0 = ff1 = 0;
-        }
+		}
+
         
         void setTranslate( float x, float y ) {
             e = x; f = y;
         }
         
         void setScale( float sx, float sy ) {
-            a = sx;
-            d = sy;
+            a = sx; d = sy;
         }
         
         void setRotation( float a ) {	// assume radians
             a = cosf( a ); c = -sinf( a );
             b = sinf( a ); d = cosf( a );
         }
+		
         
         float* ptr() {
             return &a;
@@ -50,7 +57,7 @@ namespace MonkSVG {
             ff0 = t[6]; ff1 = t[7];  ff2 = t[8];
         }
         
-        static void multiply( Transform2d& r, Transform2d& a, Transform2d& b ) {
+        static void multiply( Transform2d& r, const Transform2d& a, const Transform2d& b ) {
             for ( int z = 0; z < 9; z++ )
                 r.m[z] = 0;
             

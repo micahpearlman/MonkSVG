@@ -60,22 +60,35 @@ namespace MonkSVG {
 			}
 			return VG_ABSOLUTE;
 		}
-	private:
 		
 		
-		void pushTransform( Transform2d& t ) {
-			Transform2d& current_tranform = _transform_stack.back();
+		void pushTransform( const Transform2d& t ) {
 			Transform2d top_transform;
-			Transform2d::multiply( top_transform, t, current_tranform );
-			_transform_stack.push_back( top_transform );
-			vgLoadMatrix( top_transform.m );
+			if ( _transform_stack.size() == 0 ) {	// nothing on the stack so push the identity onto the stack
+				_transform_stack.push_back( t );
+			} else {
+				const Transform2d& current_tranform = topTransform();
+				Transform2d::multiply( top_transform, t, current_tranform );
+				_transform_stack.push_back( top_transform );
+				//vgLoadMatrix( top_transform.m );
+			}
 		}
 		
 		void popTransform() {
 			_transform_stack.pop_back();
-			Transform2d& top = _transform_stack.back();
-			vgLoadMatrix( top.m );
+			//Transform2d& top = _transform_stack.back();
+			//vgLoadMatrix( top.m );
 		}
+		
+		const Transform2d& topTransform() {
+			return _transform_stack.back();
+		}
+		
+		
+		const Transform2d& rootTransform() { return _root_transform; }
+		void setRootTransform( const Transform2d& t ) { _root_transform = t; }
+	private:
+
 		
 		struct path_object_t {
 			VGPath path;
@@ -103,7 +116,9 @@ namespace MonkSVG {
 		group_t		_root_group;
 		group_t*	_current_group;
 		
-		vector<Transform2d> _transform_stack;		
+		
+		vector<Transform2d>		_transform_stack;
+		Transform2d				_root_transform;
 		
 		enum mode {
 			kGroupParseMode = 1,

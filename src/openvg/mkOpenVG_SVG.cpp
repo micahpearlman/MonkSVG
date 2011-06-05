@@ -25,15 +25,20 @@ namespace MonkSVG {
 	void OpenVG_SVGHandler::draw() {
 		float m[9];
 		vgGetMatrix( m );
-		_transform_stack.push_back( Transform2d( m ) );	// set the current matrix to top of the matrix stack
+		// assume the current openvg matrix is like the camera matrix and should always be applied first
+		Transform2d top;
+		Transform2d::multiply( top, rootTransform(), Transform2d(m) );	// multiply by the root transform
+		pushTransform( top );
+//pushTransform( Transform2d(m) );
 		draw_recursive( _root_group );
 		vgLoadMatrix( m );	// restore matrix
+		_transform_stack.clear();
 	}
 	
 	void OpenVG_SVGHandler::draw_recursive( group_t& group ) {
 		
 		// push the group matrix onto the stack
-		pushTransform( group.transform );
+		pushTransform( group.transform ); vgLoadMatrix( topTransform().m );
 		for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
 			path_object_t& po = *it;
 			uint32_t draw_params = 0;
@@ -53,16 +58,17 @@ namespace MonkSVG {
 				draw_params |= VG_FILL_PATH;
 			}
 			//vgMultMatrix( po.transform.ptr() );
-			pushTransform( po.transform );
+			pushTransform( po.transform );	vgLoadMatrix( topTransform().m );
+			
 			vgDrawPath( po.path, draw_params );
-			popTransform();
+			popTransform();	vgLoadMatrix( topTransform().m );
 		}
 		
 		for ( list<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
 			draw_recursive( *it );
 		}
 		
-		popTransform();
+		popTransform();	vgLoadMatrix( topTransform().m );
 	}
 	
 	void OpenVG_SVGHandler::onGroupBegin() {
