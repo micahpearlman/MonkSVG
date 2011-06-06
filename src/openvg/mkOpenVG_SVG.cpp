@@ -197,18 +197,34 @@ namespace MonkSVG {
 	}
 	
 	void OpenVG_SVGHandler::onTransformTranslate( float x, float y ) {
-		_current_group->current_path.transform.setTranslate( x, y );
+		if( _mode == kGroupParseMode ) {
+			_current_group->transform.setTranslate( x, y );
+		} else {	// kPathParseMode
+			_current_group->current_path.transform.setTranslate( x, y );
+		}
 	}
 	void OpenVG_SVGHandler::onTransformScale( float s ) {
-		_current_group->current_path.transform.setScale( s, s );
+		if( _mode == kGroupParseMode ) {
+			_current_group->transform.setScale( s, s );
+		} else { // kPathParseMode
+			_current_group->current_path.transform.setScale( s, s );
+		}
 	}
 	void OpenVG_SVGHandler::onTransformRotate( float r ) {
-		_current_group->current_path.transform.setRotation( r );	// ?? radians or degrees ??
+		if( _mode == kGroupParseMode ) {
+			_current_group->transform.setRotation( r );	// ?? radians or degrees ??
+		} else { // kPathParseMode
+			_current_group->current_path.transform.setRotation( r );	// ?? radians or degrees ??
+		}
 	}
 	void OpenVG_SVGHandler::onTransformMatrix( float a, float b, float c, float d, float e, float f ) {
 		Transform2d t;
 		t.a = a; t.b = b; t.c = c; t.d = d; t.e = e; t.f = f;
-		_current_group->current_path.transform = t;
+		if( _mode == kGroupParseMode ) {
+			_current_group->transform = t;
+		} else { // kPathParseMode
+			_current_group->current_path.transform = t;
+		}
 	}
 	
 }

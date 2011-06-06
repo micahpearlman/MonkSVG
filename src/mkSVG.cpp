@@ -52,8 +52,9 @@ namespace MonkSVG {
 				string type = sibbling->Value();
 				
 				if ( type == "g" ) {
+					handle_group( sibbling );
 					// go through each child path
-					recursive_parse( doc, sibbling->FirstChildElement() );
+					//					recursive_parse( doc, sibbling->FirstChildElement() );
 //					for ( TiXmlElement* child = sibbling->FirstChildElement(); child != 0; child = child->NextSiblingElement() ) {
 //						handle_path( child );
 //					}
@@ -65,6 +66,71 @@ namespace MonkSVG {
 			}
 		}
 	}
+	
+	void SVG::handle_group( TiXmlElement* pathElement ) {
+		_handler->onGroupBegin();
+		
+		// handle transform
+		string transform;
+		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
+			parse_path_transform( transform );
+		}
+		
+		// go through all the children
+		TiXmlElement* children = pathElement->FirstChildElement();
+		for ( TiXmlElement* child = children; child != 0; child = child->NextSiblingElement() ) {
+			string type = child->Value();
+			if ( type == "g" ) {
+				handle_group( child );
+			} else if( type == "path" ) {
+				handle_path( child );
+			}
+		}
+		
+		
+		
+		
+		_handler->onGroupEnd();
+
+	}
+	
+	void SVG::handle_path( TiXmlElement* pathElement ) {
+		_handler->onPathBegin();
+		string d;
+		if ( pathElement->QueryStringAttribute( "d", &d ) == TIXML_SUCCESS ) {
+			parse_path_d( d );
+		}
+		
+		string fill; 
+		if ( pathElement->QueryStringAttribute( "fill", &fill ) == TIXML_SUCCESS ) {
+			_handler->onPathFillColor( string_hex_color_to_uint( fill ) );
+		}
+		
+		
+		string stroke;
+		if ( pathElement->QueryStringAttribute( "stroke", &stroke) == TIXML_SUCCESS ) {
+			_handler->onPathStrokeColor( string_hex_color_to_uint( stroke ) );
+		}
+		
+		string stroke_width;
+		if ( pathElement->QueryStringAttribute( "stroke-width", &stroke_width) == TIXML_SUCCESS ) {
+			float width = atof( stroke_width.c_str() );
+			_handler->onPathStrokeWidth( width );
+		}
+		
+		string style;
+		if ( pathElement->QueryStringAttribute( "style", &style) == TIXML_SUCCESS ) {
+			parse_path_style( style );
+		}
+		
+		string transform;
+		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
+			parse_path_transform( transform );
+		}
+		
+		_handler->onPathEnd();		
+	}
+
 	
 	
 	float SVG::d_string_to_float( char *c, char** str ) {
@@ -104,42 +170,6 @@ namespace MonkSVG {
 		return color;
 	}	
 	
-	void SVG::handle_path( TiXmlElement* pathElement ) {
-		_handler->onPathBegin();
-		string d;
-		if ( pathElement->QueryStringAttribute( "d", &d ) == TIXML_SUCCESS ) {
-			parse_path_d( d );
-		}
-		
-		string fill; 
-		if ( pathElement->QueryStringAttribute( "fill", &fill ) == TIXML_SUCCESS ) {
-			_handler->onPathFillColor( string_hex_color_to_uint( fill ) );
-		}
-		
-		
-		string stroke;
-		if ( pathElement->QueryStringAttribute( "stroke", &stroke) == TIXML_SUCCESS ) {
-			_handler->onPathStrokeColor( string_hex_color_to_uint( stroke ) );
-		}
-		
-		string stroke_width;
-		if ( pathElement->QueryStringAttribute( "stroke-width", &stroke_width) == TIXML_SUCCESS ) {
-			float width = atof( stroke_width.c_str() );
-			_handler->onPathStrokeWidth( width );
-		}
-		
-		string style;
-		if ( pathElement->QueryStringAttribute( "style", &style) == TIXML_SUCCESS ) {
-			parse_path_style( style );
-		}
-		
-		string transform;
-		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
-			parse_path_transform( transform );
-		}
-		
-		_handler->onPathEnd();		
-	}
 	
 	void SVG::nextState( char** c, char* state ) {
 		
