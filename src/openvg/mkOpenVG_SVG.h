@@ -72,7 +72,8 @@ namespace MonkSVG {
 				_transform_stack.push_back( t );
 			} else {
 				const Transform2d& current_tranform = topTransform();
-				Transform2d::multiply( top_transform, t, current_tranform );
+				//Transform2d::multiply( top_transform, t, current_tranform );
+				Transform2d::multiply( top_transform, current_tranform, t );
 				_transform_stack.push_back( top_transform );
 				//vgLoadMatrix( top_transform.m );
 			}

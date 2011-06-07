@@ -27,7 +27,8 @@ namespace MonkSVG {
 		vgGetMatrix( m );
 		// assume the current openvg matrix is like the camera matrix and should always be applied first
 		Transform2d top;
-		Transform2d::multiply( top, rootTransform(), Transform2d(m) );	// multiply by the root transform
+		//Transform2d::multiply( top, rootTransform(), Transform2d(m) );	// multiply by the root transform
+		Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
 		pushTransform( top );
 		draw_recursive( _root_group );
 		vgLoadMatrix( m );	// restore matrix
