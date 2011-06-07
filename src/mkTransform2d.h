@@ -50,6 +50,8 @@ namespace MonkSVG {
             b = ss; d = cs;
         }
 		
+		void translation( float t[2] ) { t[0] = e; t[1] = f; }
+		
         
         float* ptr() {
             return &a;
