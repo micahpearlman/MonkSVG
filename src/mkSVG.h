@@ -34,10 +34,13 @@ namespace MonkSVG {
 		virtual void onGroupBegin() {}
 		virtual void onGroupEnd() {}
 		
+		virtual void onId( const std::string& id_ ) {}
+		
 		// paths 
 		virtual void onPathBegin() {}
 		virtual void onPathEnd() {}
 		virtual void onPathMoveTo( float x, float y ) {}
+		virtual void onPathClose(){}
 		virtual void onPathLineTo( float x, float y ) {}
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) {}
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {}
@@ -108,6 +111,7 @@ namespace MonkSVG {
 		void handle_group( TiXmlElement* pathElement ); 
 		void handle_path( TiXmlElement* pathElement );
 		void handle_rect( TiXmlElement* pathElement );
+		void handle_general_parameter( TiXmlElement* pathElement );
 		void parse_path_d( string& ps );
 		void parse_path_style( string& ps );
 		void parse_path_transform( string& tr );

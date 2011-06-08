@@ -107,34 +107,7 @@ namespace MonkSVG {
 			parse_path_d( d );
 		}
 		
-		string fill; 
-		if ( pathElement->QueryStringAttribute( "fill", &fill ) == TIXML_SUCCESS ) {
-			_handler->onPathFillColor( string_hex_color_to_uint( fill ) );
-		}
-		
-		
-		string stroke;
-		if ( pathElement->QueryStringAttribute( "stroke", &stroke) == TIXML_SUCCESS ) {
-			_handler->onPathStrokeColor( string_hex_color_to_uint( stroke ) );
-		}
-		
-		string stroke_width;
-		if ( pathElement->QueryStringAttribute( "stroke-width", &stroke_width) == TIXML_SUCCESS ) {
-			float width = atof( stroke_width.c_str() );
-			_handler->onPathStrokeWidth( width );
-		}
-		
-		string style;
-		if ( pathElement->QueryStringAttribute( "style", &style) == TIXML_SUCCESS ) {
-			parse_path_style( style );
-		}
-		
-		string transform;
-		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
-			parse_path_transform( transform );
-		}
-		
-		
+		handle_general_parameter( pathElement );
 		
 		_handler->onPathEnd();		
 	}
@@ -159,6 +132,15 @@ namespace MonkSVG {
 		}
 		_handler->onPathRect( pos[0], pos[1], sz[0], sz[1] );
 		
+
+		handle_general_parameter( pathElement );
+		
+		
+		_handler->onPathEnd();		
+		
+	}
+	
+	void SVG::handle_general_parameter( TiXmlElement* pathElement ) {
 		string fill; 
 		if ( pathElement->QueryStringAttribute( "fill", &fill ) == TIXML_SUCCESS ) {
 			_handler->onPathFillColor( string_hex_color_to_uint( fill ) );
@@ -185,11 +167,13 @@ namespace MonkSVG {
 		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
 			parse_path_transform( transform );
 		}
+		string id_;
+		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+			_handler->onId( id_ );
+			cout << id_ << endl;
+		}
 		
-		
-		
-		_handler->onPathEnd();		
-		
+
 	}
 
 	
@@ -357,7 +341,7 @@ namespace MonkSVG {
 				case 'Z':
 				{
 					//c++;
-					_handler->onPathEnd();
+					_handler->onPathClose();
 					nextState(&c, &state);
 					
 				}

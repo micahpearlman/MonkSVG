@@ -42,6 +42,7 @@ namespace MonkSVG {
 		// paths
 		virtual void onPathBegin();
 		virtual void onPathEnd();
+		virtual void onPathClose();
 		virtual void onPathMoveTo( float x, float y );
 		virtual void onPathLineTo( float x, float y );
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 );
@@ -58,6 +59,8 @@ namespace MonkSVG {
 		virtual void onTransformRotate( float r );
 		virtual void onTransformMatrix( float a, float b, float c, float d, float e, float f );
 		
+		// misc
+		virtual void onId( const std::string& id_ );
 		
 		uint32_t openVGRelative() {
 			if ( relative() ) {
@@ -100,6 +103,7 @@ namespace MonkSVG {
 			VGPaint stroke;
 			VGfloat stroke_width;
 			Transform2d transform;
+			std::string id;
 			
 			path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( 0 ) {
 				
@@ -115,6 +119,7 @@ namespace MonkSVG {
 			list<group_t> children;
 			list<path_object_t> path_objects;
 			path_object_t current_path;
+			std::string id;
 		};
 		
 		group_t		_root_group;

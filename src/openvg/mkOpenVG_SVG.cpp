@@ -92,29 +92,26 @@ namespace MonkSVG {
 	}
 	
 	void OpenVG_SVGHandler::onPathEnd() {  
-		VGubyte seg = VG_CLOSE_PATH;
-		VGfloat data = 0.0f;
-		vgAppendPathData( _current_group->current_path.path, 1, &seg, &data );
 		
-		
+		// onPathClose()
 		
 		_current_group->path_objects.push_back( _current_group->current_path );
 		
-		// build up the bounds
-		VGfloat minX, minY, width, height;
-		vgPathBounds( _current_group->current_path.path, &minX, &minY, &width, &height );
-		if ( minX < _minX ) {
-			_minX = minX;
-		}
-		if ( minY < _minY ) {
-			_minY = minY;
-		}
-		if ( width > _width ) {
-			_width = width;
-		}
-		if ( height > _height ) {
-			_height = height;
-		}
+//		// build up the bounds
+//		VGfloat minX, minY, width, height;
+//		vgPathBounds( _current_group->current_path.path, &minX, &minY, &width, &height );
+//		if ( minX < _minX ) {
+//			_minX = minX;
+//		}
+//		if ( minY < _minY ) {
+//			_minY = minY;
+//		}
+//		if ( width > _width ) {
+//			_width = width;
+//		}
+//		if ( height > _height ) {
+//			_height = height;
+//		}
 		
 	}
 	
@@ -125,6 +122,13 @@ namespace MonkSVG {
 		data[0] = x; data[1] = y;
 		vgAppendPathData( _current_group->current_path.path, 1, &seg, data );
 		
+	}
+	
+	void OpenVG_SVGHandler::onPathClose(){
+		VGubyte seg = VG_CLOSE_PATH;
+		VGfloat data = 0.0f;
+		vgAppendPathData( _current_group->current_path.path, 1, &seg, &data );
+
 	}
 	void OpenVG_SVGHandler::onPathLineTo( float x, float y ) { 
 		VGubyte seg = VG_LINE_TO | openVGRelative();
@@ -230,6 +234,15 @@ namespace MonkSVG {
 		} else { // kPathParseMode
 			_current_group->current_path.transform = t;
 		}
+	}
+	
+	void OpenVG_SVGHandler::onId( const std::string& id_ ) {
+		if( _mode == kGroupParseMode ) {
+			_current_group->id  = id_;
+		} else { // kPathParseMode
+			_current_group->current_path.id = id_;
+		}
+		
 	}
 	
 }
