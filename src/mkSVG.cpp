@@ -151,10 +151,10 @@ namespace MonkSVG {
 			//parse_path_d( d );
 		}
 		float sz[2];
-		if ( pathElement->QueryFloatAttribute( "x", &sz[0] ) == TIXML_SUCCESS ) {
+		if ( pathElement->QueryFloatAttribute( "w", &sz[0] ) == TIXML_SUCCESS ) {
 			//parse_path_d( d );
 		}
-		if ( pathElement->QueryFloatAttribute( "y", &sz[1] ) == TIXML_SUCCESS ) {
+		if ( pathElement->QueryFloatAttribute( "h", &sz[1] ) == TIXML_SUCCESS ) {
 			//parse_path_d( d );
 		}
 		_handler->onPathRect( pos[0], pos[1], sz[0], sz[1] );
