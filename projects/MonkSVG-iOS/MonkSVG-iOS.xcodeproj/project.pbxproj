@@ -219,7 +219,7 @@
 					../../../MonkVG/include,
 					../../src,
 				);
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkSVG_iOS;
 				SDKROOT = iphoneos;
 			};
@@ -240,7 +240,7 @@
 					../../../MonkVG/include,
 					../../src,
 				);
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkSVG_iOS;
 				SDKROOT = iphoneos;
 			};
