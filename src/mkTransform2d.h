@@ -50,7 +50,8 @@ namespace MonkSVG {
             b = ss; d = cs;
         }
 		
-		void translation( float t[2] ) { t[0] = e; t[1] = f; }
+		void translation( float t[2] ) const { t[0] = e; t[1] = f; }
+		float angle() const { return acosf( a ); }
 		
         
         float* ptr() {
