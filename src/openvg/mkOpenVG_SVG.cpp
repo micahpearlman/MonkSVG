@@ -175,6 +175,10 @@ namespace MonkSVG {
 		vgAppendPathData( _current_group->current_path.path, 1, &seg, data);
 		
 	}
+	
+	void OpenVG_SVGHandler::onPathRect( float x, float y, float w, float h ) {
+		vguRect( _current_group->current_path.path, x, y, w, h );
+	}
 
 	
 	void OpenVG_SVGHandler::onPathFillColor( unsigned int color ) {

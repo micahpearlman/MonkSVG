@@ -49,6 +49,7 @@ namespace MonkSVG {
 		virtual void onPathStrokeColor( unsigned int color );
 		virtual void onPathStrokeWidth( float width );
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y );
+		virtual void onPathRect( float x, float y, float w, float h );
 
 		
 		// transforms 

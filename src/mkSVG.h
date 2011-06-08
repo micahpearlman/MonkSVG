@@ -41,6 +41,7 @@ namespace MonkSVG {
 		virtual void onPathLineTo( float x, float y ) {}
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) {}
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {}
+		virtual void onPathRect( float x, float y, float w, float h ) {}
 
 		// fill
 		virtual void onPathFillColor( unsigned int color ) {}
@@ -106,6 +107,7 @@ namespace MonkSVG {
 		void recursive_parse( TiXmlDocument* doc, TiXmlElement* element );
 		void handle_group( TiXmlElement* pathElement ); 
 		void handle_path( TiXmlElement* pathElement );
+		void handle_rect( TiXmlElement* pathElement );
 		void parse_path_d( string& ps );
 		void parse_path_style( string& ps );
 		void parse_path_transform( string& tr );
