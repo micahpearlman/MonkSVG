@@ -20,6 +20,7 @@ namespace MonkSVG {
 		VGfloat fcolor[4] = { 0,0,0,1 };
 		vgSetParameterfv( _blackBackFill, VG_PAINT_COLOR, 4, &fcolor[0]);
 
+		//_root_transform.setScale( 1, -1 );
 		
 	}
 	void OpenVG_SVGHandler::draw() {
@@ -30,6 +31,13 @@ namespace MonkSVG {
 		//Transform2d::multiply( top, rootTransform(), Transform2d(m) );	// multiply by the root transform
 		Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
 		pushTransform( top );
+		
+		// SVG is origin at the top, left (openvg is origin at the bottom, left)
+		// so need to flip
+//		Transform2d flip;
+//		flip.setScale( 1, -1 );
+//		pushTransform( flip );
+		
 		draw_recursive( _root_group );
 		vgLoadMatrix( m );	// restore matrix
 		_transform_stack.clear();

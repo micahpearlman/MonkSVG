@@ -53,6 +53,8 @@ namespace MonkSVG {
 		void translation( float t[2] ) const { t[0] = e; t[1] = f; }
 		float angle() const { return acosf( a ); }
 		
+		void lookAt( float la[2] ) const { la[0] = a; la[1] = b; }
+		
         
         float* ptr() {
             return &a;
@@ -75,6 +77,8 @@ namespace MonkSVG {
                         r.mm[i][j] += a.mm[i][k] * b.mm[k][j];
                     }
         }
+		
+		
 		
 		void print() {
 			std::cout << ":: Transform2d ::" << std::endl;
