@@ -170,7 +170,7 @@ namespace MonkSVG {
 		string id_;
 		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
 			_handler->onId( id_ );
-			cout << id_ << endl;
+			//cout << id_ << endl;
 		}
 		
 
