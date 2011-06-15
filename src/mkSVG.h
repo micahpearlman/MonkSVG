@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <boost/shared_ptr.hpp>
+
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -23,6 +25,8 @@ namespace MonkSVG {
 	
 	class ISVGHandler {
 	public:
+		
+		typedef boost::shared_ptr<ISVGHandler> SmartPtr;
 		
 		// transforms 
 		virtual void onTransformTranslate( float x, float y ) {}
@@ -98,13 +102,13 @@ namespace MonkSVG {
 	class SVG  {
 	public:
 		
-		bool initialize( ISVGHandler* handler );
+		bool initialize( ISVGHandler::SmartPtr handler );
 		bool read( string& data );
 		bool read( const char* data );
 
 	private:
 		
-		ISVGHandler*	_handler;
+		ISVGHandler::SmartPtr	_handler;
 		
 	private:
 		void recursive_parse( TiXmlDocument* doc, TiXmlElement* element );

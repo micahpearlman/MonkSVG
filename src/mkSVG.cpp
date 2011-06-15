@@ -18,7 +18,7 @@ using namespace boost;
 namespace MonkSVG {
 	
 	
-	bool SVG::initialize( ISVGHandler* handler ) {
+	bool SVG::initialize( ISVGHandler::SmartPtr handler ) {
 		_handler = handler;
 		
 		return true;

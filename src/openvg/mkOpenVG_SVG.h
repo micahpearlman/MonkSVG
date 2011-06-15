@@ -14,6 +14,7 @@
 #include <vector>
 #include <list>
 #include <cmath>
+#include <boost/make_shared.hpp>
 #include "mkSVG.h"
 #include "mkTransform2d.h"
 
@@ -25,12 +26,24 @@ namespace MonkSVG {
 		
 	public:
 		
-		OpenVG_SVGHandler();
+		typedef boost::shared_ptr<OpenVG_SVGHandler> SmartPtr;
+		
+		static ISVGHandler::SmartPtr create( ) {
+			return boost::make_shared<OpenVG_SVGHandler>( );
+		}
+
+		
+		
+		virtual ~OpenVG_SVGHandler();
 		
 		void draw();
 		
 		const Transform2d& rootTransform() { return _root_transform; }
 		void setRootTransform( const Transform2d& t ) { _root_transform = t; }
+		
+	private:	
+		OpenVG_SVGHandler();
+		friend boost::shared_ptr<OpenVG_SVGHandler> boost::make_shared<>();
 
 		
 	private:
@@ -108,6 +121,11 @@ namespace MonkSVG {
 			path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( 0 ) {
 				
 			}
+			virtual ~path_object_t() {
+				vgDestroyPaint( fill );
+				vgDestroyPaint( stroke );
+				vgDestroyPath( path );
+			}
 		};
 		
 		struct group_t {
@@ -118,7 +136,7 @@ namespace MonkSVG {
 			group_t* parent;
 			list<group_t> children;
 			list<path_object_t> path_objects;
-			path_object_t current_path;
+			path_object_t* current_path;
 			std::string id;
 		};
 		

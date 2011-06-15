@@ -89,8 +89,8 @@
 		FAC06DF3139445BD0075231C /* openvg */ = {
 			isa = PBXGroup;
 			children = (
-				FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */,
 				FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */,
+				FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */,
 			);
 			name = openvg;
 			path = ../../src/openvg;

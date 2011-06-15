@@ -15,6 +15,7 @@ namespace MonkSVG {
 	:	ISVGHandler()
 	,	_mode( kGroupParseMode )
 	,	_current_group( &_root_group ) 
+	,	_blackBackFill( 0 )
 	{
 		_blackBackFill = vgCreatePaint();
 		VGfloat fcolor[4] = { 0,0,0,1 };
@@ -22,6 +23,11 @@ namespace MonkSVG {
 
 		//_root_transform.setScale( 1, -1 );
 		
+	}
+	
+	OpenVG_SVGHandler::~OpenVG_SVGHandler() {
+		vgDestroyPaint( _blackBackFill );
+		_blackBackFill = 0;
 	}
 	void OpenVG_SVGHandler::draw() {
 		float m[9];
@@ -92,8 +98,8 @@ namespace MonkSVG {
 	
 	void OpenVG_SVGHandler::onPathBegin() { 
 		_mode = kPathParseMode;
-		_current_group->current_path = path_object_t();
-		_current_group->current_path.path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,
+		_current_group->current_path = new path_object_t();
+		_current_group->current_path->path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,
 							 1,0,0,0, VG_PATH_CAPABILITY_ALL);
 		
 	}
@@ -102,11 +108,11 @@ namespace MonkSVG {
 		
 		// onPathClose()
 		
-		_current_group->path_objects.push_back( _current_group->current_path );
+		_current_group->path_objects.push_back( *_current_group->current_path );
 		
 //		// build up the bounds
 //		VGfloat minX, minY, width, height;
-//		vgPathBounds( _current_group->current_path.path, &minX, &minY, &width, &height );
+//		vgPathBounds( _current_group->current_path->path, &minX, &minY, &width, &height );
 //		if ( minX < _minX ) {
 //			_minX = minX;
 //		}
@@ -127,14 +133,14 @@ namespace MonkSVG {
 		VGfloat data[2];
 		
 		data[0] = x; data[1] = y;
-		vgAppendPathData( _current_group->current_path.path, 1, &seg, data );
+		vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
 		
 	}
 	
 	void OpenVG_SVGHandler::onPathClose(){
 		VGubyte seg = VG_CLOSE_PATH;
 		VGfloat data = 0.0f;
-		vgAppendPathData( _current_group->current_path.path, 1, &seg, &data );
+		vgAppendPathData( _current_group->current_path->path, 1, &seg, &data );
 
 	}
 	void OpenVG_SVGHandler::onPathLineTo( float x, float y ) { 
@@ -142,7 +148,7 @@ namespace MonkSVG {
 		VGfloat data[2];
 		
 		data[0] = x; data[1] = y;
-		vgAppendPathData( _current_group->current_path.path, 1, &seg, data );
+		vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
 		
 	}
 	void OpenVG_SVGHandler::onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) { 
@@ -152,7 +158,7 @@ namespace MonkSVG {
 		data[0] = x1; data[1] = y1;
 		data[2] = x2; data[3] = y2;
 		data[4] = x3; data[5] = y3;
-		vgAppendPathData( _current_group->current_path.path, 1, &seg, data);
+		vgAppendPathData( _current_group->current_path->path, 1, &seg, data);
 		
 	}
 	
@@ -183,54 +189,54 @@ namespace MonkSVG {
 		data[3] = x;
 		data[4] = y;
 		
-		vgAppendPathData( _current_group->current_path.path, 1, &seg, data);
+		vgAppendPathData( _current_group->current_path->path, 1, &seg, data);
 		
 	}
 	
 	void OpenVG_SVGHandler::onPathRect( float x, float y, float w, float h ) {
-		vguRect( _current_group->current_path.path, x, y, w, h );
+		vguRect( _current_group->current_path->path, x, y, w, h );
 	}
 
 	
 	void OpenVG_SVGHandler::onPathFillColor( unsigned int color ) {
-		_current_group->current_path.fill = vgCreatePaint();
+		_current_group->current_path->fill = vgCreatePaint();
 		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 			VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 			VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
 			1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
-		vgSetParameterfv( _current_group->current_path.fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+		vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
 	}
 	void OpenVG_SVGHandler::onPathStrokeColor( unsigned int color ) {
-		_current_group->current_path.stroke = vgCreatePaint();
+		_current_group->current_path->stroke = vgCreatePaint();
 		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 			VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 			VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
 			1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
-		vgSetParameterfv( _current_group->current_path.stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+		vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
 	}
 	void OpenVG_SVGHandler::onPathStrokeWidth( float width ) {
-		_current_group->current_path.stroke_width = width;
+		_current_group->current_path->stroke_width = width;
 	}
 	
 	void OpenVG_SVGHandler::onTransformTranslate( float x, float y ) {
 		if( _mode == kGroupParseMode ) {
 			_current_group->transform.setTranslate( x, y );
 		} else {	// kPathParseMode
-			_current_group->current_path.transform.setTranslate( x, y );
+			_current_group->current_path->transform.setTranslate( x, y );
 		}
 	}
 	void OpenVG_SVGHandler::onTransformScale( float s ) {
 		if( _mode == kGroupParseMode ) {
 			_current_group->transform.setScale( s, s );
 		} else { // kPathParseMode
-			_current_group->current_path.transform.setScale( s, s );
+			_current_group->current_path->transform.setScale( s, s );
 		}
 	}
 	void OpenVG_SVGHandler::onTransformRotate( float r ) {
 		if( _mode == kGroupParseMode ) {
 			_current_group->transform.setRotation( r );	// ?? radians or degrees ??
 		} else { // kPathParseMode
-			_current_group->current_path.transform.setRotation( r );	// ?? radians or degrees ??
+			_current_group->current_path->transform.setRotation( r );	// ?? radians or degrees ??
 		}
 	}
 	void OpenVG_SVGHandler::onTransformMatrix( float a, float b, float c, float d, float e, float f ) {
@@ -239,7 +245,7 @@ namespace MonkSVG {
 		if( _mode == kGroupParseMode ) {
 			_current_group->transform = t;
 		} else { // kPathParseMode
-			_current_group->current_path.transform = t;
+			_current_group->current_path->transform = t;
 		}
 	}
 	
@@ -247,7 +253,7 @@ namespace MonkSVG {
 		if( _mode == kGroupParseMode ) {
 			_current_group->id  = id_;
 		} else { // kPathParseMode
-			_current_group->current_path.id = id_;
+			_current_group->current_path->id = id_;
 		}
 		
 	}
