@@ -52,7 +52,7 @@ namespace MonkSVG {
 
 		// fill
 		virtual void onPathFillColor( unsigned int color ) {}
-		virtual void onPathFillRule( string rule ) {}
+		virtual void onPathFillRule( const string& rule ) {}
 		// stroke
 		virtual void onPathStrokeColor( unsigned int color ) {}
 		virtual void onPathStrokeWidth( float width ) {}

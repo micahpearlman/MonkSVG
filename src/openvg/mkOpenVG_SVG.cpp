@@ -70,9 +70,11 @@ namespace MonkSVG {
 				vgSetPaint( _blackBackFill, VG_FILL_PATH );
 				draw_params |= VG_FILL_PATH;
 			}
-			//vgMultMatrix( po.transform.ptr() );
-			pushTransform( po.transform );	vgLoadMatrix( topTransform().m );
 			
+			// set the fill rule
+			vgSeti( VG_FILL_RULE, _current_group->current_path->fill_rule );
+			// trasnform
+			pushTransform( po.transform );	vgLoadMatrix( topTransform().m );
 			vgDrawPath( po.path, draw_params );
 			popTransform();	vgLoadMatrix( topTransform().m );
 		}
@@ -216,6 +218,14 @@ namespace MonkSVG {
 	}
 	void OpenVG_SVGHandler::onPathStrokeWidth( float width ) {
 		_current_group->current_path->stroke_width = width;
+	}
+	
+	void OpenVG_SVGHandler::onPathFillRule( const string& rule ) {
+		if( rule == "nonzero" ) {
+			_current_group->current_path->fill_rule = VG_NON_ZERO;
+		} else if( rule == "evenodd" ) {
+			_current_group->current_path->fill_rule = VG_EVEN_ODD;
+		}
 	}
 	
 	void OpenVG_SVGHandler::onTransformTranslate( float x, float y ) {

@@ -387,6 +387,12 @@ namespace MonkSVG {
 			float width = atof( kv->second.c_str() );
 			_handler->onPathStrokeWidth( width );
 		}
+		
+		kv = style_key_values.find( "fill-rule" );
+		if ( kv != style_key_values.end() ) {
+			_handler->onPathFillRule( kv->second );
+		}
+		
 	}
 
 };
