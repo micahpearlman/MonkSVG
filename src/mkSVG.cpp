@@ -74,10 +74,11 @@ namespace MonkSVG {
 		_handler->onGroupBegin();
 		
 		// handle transform
-		string transform;
-		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
-			parse_path_transform( transform );
-		}
+		handle_general_parameter( pathElement );
+//		string transform;
+//		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
+//			parse_path_transform( transform );
+//		}
 		
 		// go through all the children
 		TiXmlElement* children = pathElement->FirstChildElement();
@@ -217,6 +218,10 @@ namespace MonkSVG {
 	
 	
 	void SVG::nextState( char** c, char* state ) {
+		if ( **c == '\0') {
+			*state = 'e';
+			return;
+		}
 		
 		while ( isspace(**c) ) {
 			if ( **c == '\0') {
@@ -228,10 +233,10 @@ namespace MonkSVG {
 		if ( isalpha( **c ) ) {
 			*state = **c;
 			(*c)++;
-			if ( **c == '\0') {
-				*state = 'e';
-				return;
-			}
+//			if ( **c == '\0') {
+//				*state = 'e';
+//				return;
+//			}
 			
 			if ( islower(*state) ) {	// if lower case then relative coords (see SVG spec)
 				_handler->setRelative( true );
@@ -279,7 +284,7 @@ namespace MonkSVG {
 		char* c = const_cast<char*>( d.c_str() );
 		char state = *c;
 		nextState( &c, &state );
-		while ( *c && state != 'e' ) {
+		while ( /**c &&*/ state != 'e' ) {
 			
 			switch ( state ) {
 				case 'm':
@@ -387,6 +392,12 @@ namespace MonkSVG {
 			float width = atof( kv->second.c_str() );
 			_handler->onPathStrokeWidth( width );
 		}
+		
+		kv = style_key_values.find( "fill-rule" );
+		if ( kv != style_key_values.end() ) {
+			_handler->onPathFillRule( kv->second );
+		}
+		
 	}
 
 };

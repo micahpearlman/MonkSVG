@@ -64,7 +64,7 @@ namespace MonkSVG {
 		virtual void onPathStrokeWidth( float width );
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y );
 		virtual void onPathRect( float x, float y, float w, float h );
-
+		virtual void onPathFillRule( const string& rule );
 		
 		// transforms 
 		virtual void onTransformTranslate( float x, float y );
@@ -111,14 +111,15 @@ namespace MonkSVG {
 
 		
 		struct path_object_t {
-			VGPath path;
-			VGPaint fill;
-			VGPaint stroke;
-			VGfloat stroke_width;
+			VGPath		path;
+			VGPaint		fill;
+			VGFillRule	fill_rule;
+			VGPaint		stroke;
+			VGfloat		stroke_width;
 			Transform2d transform;
 			std::string id;
 			
-			path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( 0 ) {
+			path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
 				
 			}
 			virtual ~path_object_t() {
@@ -129,15 +130,25 @@ namespace MonkSVG {
 		};
 		
 		struct group_t {
-			group_t() : parent( 0 ){
+			group_t() 
+			:	parent( 0 )
+			,	current_path( 0 )
+			,	fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO )
+			{
 				
 			}
-			Transform2d transform;
-			group_t* parent;
-			list<group_t> children;
+			Transform2d			transform;
+			group_t*			parent;
+			list<group_t>		children;
 			list<path_object_t> path_objects;
-			path_object_t* current_path;
-			std::string id;
+			path_object_t*		current_path;
+			std::string			id;
+			
+			VGPaint		fill;
+			VGFillRule	fill_rule;
+			VGPaint		stroke;
+			VGfloat		stroke_width;
+
 		};
 		
 		group_t		_root_group;

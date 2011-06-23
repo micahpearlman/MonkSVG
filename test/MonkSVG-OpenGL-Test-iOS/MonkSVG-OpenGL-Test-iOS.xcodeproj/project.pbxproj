@@ -1,0 +1,359 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA22100613B2706700305221 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100513B2706700305221 /* UIKit.framework */; };
+		FA22100813B2706700305221 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100713B2706700305221 /* Foundation.framework */; };
+		FA22100A13B2706700305221 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100913B2706700305221 /* CoreGraphics.framework */; };
+		FA22100C13B2706700305221 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100B13B2706700305221 /* QuartzCore.framework */; };
+		FA22100E13B2706700305221 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100D13B2706700305221 /* OpenGLES.framework */; };
+		FA22101413B2706700305221 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA22101213B2706700305221 /* InfoPlist.strings */; };
+		FA22101713B2706700305221 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA22101613B2706700305221 /* main.m */; };
+		FA22101A13B2706700305221 /* MonkSVG_OpenGL_Test_iOSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA22101913B2706700305221 /* MonkSVG_OpenGL_Test_iOSAppDelegate.m */; };
+		FA22101D13B2706700305221 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA22101B13B2706700305221 /* MainWindow.xib */; };
+		FA22101F13B2706700305221 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = FA22101E13B2706700305221 /* Shader.fsh */; };
+		FA22102113B2706700305221 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = FA22102013B2706700305221 /* Shader.vsh */; };
+		FA22102413B2706700305221 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA22102313B2706700305221 /* EAGLView.m */; };
+		FA22102713B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA22102613B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.mm */; };
+		FA22102A13B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA22102813B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.xib */; };
+		FA739B8813B2737500B186A7 /* libMonkSVG_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA739B8613B2737500B186A7 /* libMonkSVG_iOS.a */; };
+		FA739B8913B2737500B186A7 /* libMonkVG_iOS_OpenGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA739B8713B2737500B186A7 /* libMonkVG_iOS_OpenGL.a */; };
+		FA739BAD13B277CE00B186A7 /* tiger.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA739BAC13B277CE00B186A7 /* tiger.svg */; };
+		FA739BAF13B27D8700B186A7 /* fish_top.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA739BAE13B27D8700B186A7 /* fish_top.svg */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FA22100113B2706700305221 /* MonkSVG-OpenGL-Test-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MonkSVG-OpenGL-Test-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA22100513B2706700305221 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FA22100713B2706700305221 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FA22100913B2706700305221 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		FA22100B13B2706700305221 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		FA22100D13B2706700305221 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		FA22101113B2706700305221 /* MonkSVG-OpenGL-Test-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MonkSVG-OpenGL-Test-iOS-Info.plist"; sourceTree = "<group>"; };
+		FA22101313B2706700305221 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA22101513B2706700305221 /* MonkSVG-OpenGL-Test-iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MonkSVG-OpenGL-Test-iOS-Prefix.pch"; sourceTree = "<group>"; };
+		FA22101613B2706700305221 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FA22101813B2706700305221 /* MonkSVG_OpenGL_Test_iOSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonkSVG_OpenGL_Test_iOSAppDelegate.h; sourceTree = "<group>"; };
+		FA22101913B2706700305221 /* MonkSVG_OpenGL_Test_iOSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MonkSVG_OpenGL_Test_iOSAppDelegate.m; sourceTree = "<group>"; };
+		FA22101C13B2706700305221 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		FA22101E13B2706700305221 /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
+		FA22102013B2706700305221 /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
+		FA22102213B2706700305221 /* EAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
+		FA22102313B2706700305221 /* EAGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EAGLView.m; sourceTree = "<group>"; };
+		FA22102513B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonkSVG_OpenGL_Test_iOSViewController.h; sourceTree = "<group>"; };
+		FA22102613B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MonkSVG_OpenGL_Test_iOSViewController.mm; sourceTree = "<group>"; };
+		FA22102913B2706700305221 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MonkSVG_OpenGL_Test_iOSViewController.xib; sourceTree = "<group>"; };
+		FA739B8613B2737500B186A7 /* libMonkSVG_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMonkSVG_iOS.a; sourceTree = SOURCE_ROOT; };
+		FA739B8713B2737500B186A7 /* libMonkVG_iOS_OpenGL.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMonkVG_iOS_OpenGL.a; sourceTree = SOURCE_ROOT; };
+		FA739BAC13B277CE00B186A7 /* tiger.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = tiger.svg; sourceTree = "<group>"; };
+		FA739BAE13B27D8700B186A7 /* fish_top.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish_top.svg; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FA220FFE13B2706700305221 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA739B8813B2737500B186A7 /* libMonkSVG_iOS.a in Frameworks */,
+				FA739B8913B2737500B186A7 /* libMonkVG_iOS_OpenGL.a in Frameworks */,
+				FA22100613B2706700305221 /* UIKit.framework in Frameworks */,
+				FA22100813B2706700305221 /* Foundation.framework in Frameworks */,
+				FA22100A13B2706700305221 /* CoreGraphics.framework in Frameworks */,
+				FA22100C13B2706700305221 /* QuartzCore.framework in Frameworks */,
+				FA22100E13B2706700305221 /* OpenGLES.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FA220FF613B2706700305221 = {
+			isa = PBXGroup;
+			children = (
+				FA739B8613B2737500B186A7 /* libMonkSVG_iOS.a */,
+				FA739B8713B2737500B186A7 /* libMonkVG_iOS_OpenGL.a */,
+				FA22100F13B2706700305221 /* MonkSVG-OpenGL-Test-iOS */,
+				FA22100413B2706700305221 /* Frameworks */,
+				FA739BAB13B2776E00B186A7 /* Assets */,
+				FA22100213B2706700305221 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FA22100213B2706700305221 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA22100113B2706700305221 /* MonkSVG-OpenGL-Test-iOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FA22100413B2706700305221 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FA22100513B2706700305221 /* UIKit.framework */,
+				FA22100713B2706700305221 /* Foundation.framework */,
+				FA22100913B2706700305221 /* CoreGraphics.framework */,
+				FA22100B13B2706700305221 /* QuartzCore.framework */,
+				FA22100D13B2706700305221 /* OpenGLES.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FA22100F13B2706700305221 /* MonkSVG-OpenGL-Test-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				FA22101813B2706700305221 /* MonkSVG_OpenGL_Test_iOSAppDelegate.h */,
+				FA22101913B2706700305221 /* MonkSVG_OpenGL_Test_iOSAppDelegate.m */,
+				FA22101B13B2706700305221 /* MainWindow.xib */,
+				FA22101E13B2706700305221 /* Shader.fsh */,
+				FA22102013B2706700305221 /* Shader.vsh */,
+				FA22102213B2706700305221 /* EAGLView.h */,
+				FA22102313B2706700305221 /* EAGLView.m */,
+				FA22102513B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.h */,
+				FA22102613B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.mm */,
+				FA22102813B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.xib */,
+				FA22101013B2706700305221 /* Supporting Files */,
+			);
+			path = "MonkSVG-OpenGL-Test-iOS";
+			sourceTree = "<group>";
+		};
+		FA22101013B2706700305221 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA22101113B2706700305221 /* MonkSVG-OpenGL-Test-iOS-Info.plist */,
+				FA22101213B2706700305221 /* InfoPlist.strings */,
+				FA22101513B2706700305221 /* MonkSVG-OpenGL-Test-iOS-Prefix.pch */,
+				FA22101613B2706700305221 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FA739BAB13B2776E00B186A7 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				FA739BAE13B27D8700B186A7 /* fish_top.svg */,
+				FA739BAC13B277CE00B186A7 /* tiger.svg */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FA22100013B2706700305221 /* MonkSVG-OpenGL-Test-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA22102D13B2706700305221 /* Build configuration list for PBXNativeTarget "MonkSVG-OpenGL-Test-iOS" */;
+			buildPhases = (
+				FA220FFD13B2706700305221 /* Sources */,
+				FA220FFE13B2706700305221 /* Frameworks */,
+				FA220FFF13B2706700305221 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MonkSVG-OpenGL-Test-iOS";
+			productName = "MonkSVG-OpenGL-Test-iOS";
+			productReference = FA22100113B2706700305221 /* MonkSVG-OpenGL-Test-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FA220FF813B2706700305221 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Zero Vision";
+			};
+			buildConfigurationList = FA220FFB13B2706700305221 /* Build configuration list for PBXProject "MonkSVG-OpenGL-Test-iOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FA220FF613B2706700305221;
+			productRefGroup = FA22100213B2706700305221 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FA22100013B2706700305221 /* MonkSVG-OpenGL-Test-iOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FA220FFF13B2706700305221 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA22101413B2706700305221 /* InfoPlist.strings in Resources */,
+				FA22101D13B2706700305221 /* MainWindow.xib in Resources */,
+				FA22101F13B2706700305221 /* Shader.fsh in Resources */,
+				FA22102113B2706700305221 /* Shader.vsh in Resources */,
+				FA22102A13B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.xib in Resources */,
+				FA739BAD13B277CE00B186A7 /* tiger.svg in Resources */,
+				FA739BAF13B27D8700B186A7 /* fish_top.svg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FA220FFD13B2706700305221 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA22101713B2706700305221 /* main.m in Sources */,
+				FA22101A13B2706700305221 /* MonkSVG_OpenGL_Test_iOSAppDelegate.m in Sources */,
+				FA22102413B2706700305221 /* EAGLView.m in Sources */,
+				FA22102713B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		FA22101213B2706700305221 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA22101313B2706700305221 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FA22101B13B2706700305221 /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA22101C13B2706700305221 /* en */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+		FA22102813B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA22102913B2706700305221 /* en */,
+			);
+			name = MonkSVG_OpenGL_Test_iOSViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FA22102B13B2706700305221 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		FA22102C13B2706700305221 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+		FA22102E13B2706700305221 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				HEADER_SEARCH_PATHS = (
+					../../src,
+					../../../MonkVG/include,
+					/opt/local/include,
+				);
+				INFOPLIST_FILE = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FA22102F13B2706700305221 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				HEADER_SEARCH_PATHS = (
+					../../src,
+					../../../MonkVG/include,
+					/opt/local/include,
+				);
+				INFOPLIST_FILE = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FA220FFB13B2706700305221 /* Build configuration list for PBXProject "MonkSVG-OpenGL-Test-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA22102B13B2706700305221 /* Debug */,
+				FA22102C13B2706700305221 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA22102D13B2706700305221 /* Build configuration list for PBXNativeTarget "MonkSVG-OpenGL-Test-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA22102E13B2706700305221 /* Debug */,
+				FA22102F13B2706700305221 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FA220FF813B2706700305221 /* Project object */;
+}

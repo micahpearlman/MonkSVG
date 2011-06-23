@@ -52,6 +52,22 @@ namespace MonkSVG {
 		
 		// push the group matrix onto the stack
 		pushTransform( group.transform ); vgLoadMatrix( topTransform().m );
+		
+		// set any group parameters
+		
+//		if( group.fill ) {
+//			vgSetPaint( group.fill, VG_FILL_PATH );
+//			draw_params |= VG_FILL_PATH;
+//		}
+//		if ( group.stroke ) {
+//			vgSetPaint( group.stroke, VG_STROKE_PATH );
+//			if ( group.stroke_width > 0 ) {
+//				vgSetf( VG_STROKE_LINE_WIDTH, group.stroke_width );
+//			}
+//			
+//			draw_params |= VG_STROKE_PATH;
+//		}
+
 		for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
 			path_object_t& po = *it;
 			uint32_t draw_params = 0;
@@ -70,9 +86,11 @@ namespace MonkSVG {
 				vgSetPaint( _blackBackFill, VG_FILL_PATH );
 				draw_params |= VG_FILL_PATH;
 			}
-			//vgMultMatrix( po.transform.ptr() );
-			pushTransform( po.transform );	vgLoadMatrix( topTransform().m );
 			
+			// set the fill rule
+			vgSeti( VG_FILL_RULE, po.fill_rule );
+			// trasnform
+			pushTransform( po.transform );	vgLoadMatrix( topTransform().m );
 			vgDrawPath( po.path, draw_params );
 			popTransform();	vgLoadMatrix( topTransform().m );
 		}
@@ -101,6 +119,11 @@ namespace MonkSVG {
 		_current_group->current_path = new path_object_t();
 		_current_group->current_path->path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,
 							 1,0,0,0, VG_PATH_CAPABILITY_ALL);
+		// inherit group settings
+		_current_group->current_path->fill			= _current_group->fill;
+		_current_group->current_path->stroke		= _current_group->stroke;
+		_current_group->current_path->stroke_width	= _current_group->stroke_width;
+		_current_group->current_path->fill_rule		= _current_group->fill_rule;
 		
 	}
 	
@@ -199,23 +222,63 @@ namespace MonkSVG {
 
 	
 	void OpenVG_SVGHandler::onPathFillColor( unsigned int color ) {
-		_current_group->current_path->fill = vgCreatePaint();
-		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
-			VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
-			VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-			1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
-		vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+		if( _mode == kGroupParseMode ) {
+			_current_group->fill = vgCreatePaint();
+			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
+				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
+				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
+				1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+			vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+
+		} else {
+			_current_group->current_path->fill = vgCreatePaint();
+			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
+				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
+				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
+				1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+			vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+		}
 	}
 	void OpenVG_SVGHandler::onPathStrokeColor( unsigned int color ) {
-		_current_group->current_path->stroke = vgCreatePaint();
-		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
-			VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
-			VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-			1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
-		vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+		if( _mode == kGroupParseMode ) {
+			_current_group->stroke = vgCreatePaint();
+			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
+				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
+				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
+				1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+			vgSetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+		} else {
+			_current_group->current_path->stroke = vgCreatePaint();
+			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
+				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
+				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
+				1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+			vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+		}
 	}
 	void OpenVG_SVGHandler::onPathStrokeWidth( float width ) {
-		_current_group->current_path->stroke_width = width;
+		if( _mode == kGroupParseMode ) {
+			_current_group->stroke_width = width;
+		} else {
+			_current_group->current_path->stroke_width = width;
+		}
+	}
+	
+	void OpenVG_SVGHandler::onPathFillRule( const string& rule ) {
+		if( _mode == kGroupParseMode ) {
+			if( rule == "nonzero" ) {
+				_current_group->fill_rule = VG_NON_ZERO;
+			} else if( rule == "evenodd" ) {
+				_current_group->fill_rule = VG_EVEN_ODD;
+			}
+
+		} else {
+			if( rule == "nonzero" ) {
+				_current_group->current_path->fill_rule = VG_NON_ZERO;
+			} else if( rule == "evenodd" ) {
+				_current_group->current_path->fill_rule = VG_EVEN_ODD;
+			}
+		}
 	}
 	
 	void OpenVG_SVGHandler::onTransformTranslate( float x, float y ) {
