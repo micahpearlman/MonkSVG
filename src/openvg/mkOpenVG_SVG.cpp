@@ -53,21 +53,6 @@ namespace MonkSVG {
 		// push the group matrix onto the stack
 		pushTransform( group.transform ); vgLoadMatrix( topTransform().m );
 		
-		// set any group parameters
-		
-//		if( group.fill ) {
-//			vgSetPaint( group.fill, VG_FILL_PATH );
-//			draw_params |= VG_FILL_PATH;
-//		}
-//		if ( group.stroke ) {
-//			vgSetPaint( group.stroke, VG_STROKE_PATH );
-//			if ( group.stroke_width > 0 ) {
-//				vgSetf( VG_STROKE_LINE_WIDTH, group.stroke_width );
-//			}
-//			
-//			draw_params |= VG_STROKE_PATH;
-//		}
-
 		for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
 			path_object_t& po = *it;
 			uint32_t draw_params = 0;
@@ -174,6 +159,22 @@ namespace MonkSVG {
 		vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
 		
 	}
+	
+	void OpenVG_SVGHandler::onHorizontalLine( float x ) {
+		VGubyte seg = VG_HLINE_TO | openVGRelative();
+		VGfloat data[1];
+		data[0] = x; 
+		vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
+		
+	}
+	void OpenVG_SVGHandler::onVerticalLine( float y ) {
+		VGubyte seg = VG_VLINE_TO | openVGRelative();
+		VGfloat data[1];
+		data[0] = y; 
+		vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
+		
+	}
+
 	void OpenVG_SVGHandler::onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) { 
 		VGubyte seg = VG_CUBIC_TO | openVGRelative();
 		VGfloat data[6];

@@ -65,6 +65,9 @@ namespace MonkSVG {
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y );
 		virtual void onPathRect( float x, float y, float w, float h );
 		virtual void onPathFillRule( const string& rule );
+		virtual void onHorizontalLine( float x );
+		virtual void onVerticalLine( float y ); 
+
 		
 		// transforms 
 		virtual void onTransformTranslate( float x, float y );

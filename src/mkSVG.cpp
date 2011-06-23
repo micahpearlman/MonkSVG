@@ -309,7 +309,27 @@ namespace MonkSVG {
 					
 				}
 				break;
-	
+				
+				case 'h':
+				case 'H':
+				{
+					float x = d_string_to_float( c, &c );
+					_handler->onHorizontalLine( x );
+					nextState(&c, &state);
+
+				}
+				break;
+
+				case 'v':
+				case 'V':
+				{
+					float y = d_string_to_float( c, &c );
+					_handler->onVerticalLine( y );
+					nextState(&c, &state);
+					
+				}
+				break;
+					
 				case 'c':
 				case 'C':
 				{
@@ -354,6 +374,8 @@ namespace MonkSVG {
 					
 				
 				default:
+					// BUGBUG: can get stuck here!
+					// TODO: figure out the next state if we don't handle a particular state or just dummy handle a state!
 					c++;
 					break;
 			}
