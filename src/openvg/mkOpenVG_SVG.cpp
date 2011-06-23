@@ -160,14 +160,14 @@ namespace MonkSVG {
 		
 	}
 	
-	void OpenVG_SVGHandler::onHorizontalLine( float x ) {
+	void OpenVG_SVGHandler::onPathHorizontalLine( float x ) {
 		VGubyte seg = VG_HLINE_TO | openVGRelative();
 		VGfloat data[1];
 		data[0] = x; 
 		vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
 		
 	}
-	void OpenVG_SVGHandler::onVerticalLine( float y ) {
+	void OpenVG_SVGHandler::onPathVerticalLine( float y ) {
 		VGubyte seg = VG_VLINE_TO | openVGRelative();
 		VGfloat data[1];
 		data[0] = y; 
@@ -228,7 +228,7 @@ namespace MonkSVG {
 			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-				1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+				1.0f };
 			vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
 
 		} else {
@@ -236,7 +236,34 @@ namespace MonkSVG {
 			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-				1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+				1.0f  };
+			vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+		}
+	}
+	
+	void OpenVG_SVGHandler::onPathFillOpacity( float o ) {
+		VGfloat fcolor[4];
+		if( _mode == kGroupParseMode ) {
+			if( _current_group->fill == 0 ) {	// if no fill create a black fill
+				_current_group->fill = vgCreatePaint();
+				VGfloat fcolor[4] = { 0,0,0,1 };
+				vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+			}
+			vgGetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
+			// set the opacity
+			fcolor[3] = o;
+			vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+			
+		} else {
+			if( _current_group->current_path->fill == 0 ) {	// if no fill create a black fill
+				_current_group->current_path->fill = vgCreatePaint();
+				VGfloat fcolor[4] = { 0,0,0,1 };
+				vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+			}
+
+			vgGetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
+			// set the opacity
+			fcolor[3] = o;
 			vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
 		}
 	}
@@ -246,17 +273,34 @@ namespace MonkSVG {
 			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-				1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+				1.0f };
 			vgSetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
 		} else {
 			_current_group->current_path->stroke = vgCreatePaint();
 			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-				1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+				1.0f };
 			vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
 		}
 	}
+	void OpenVG_SVGHandler::onPathStrokeOpacity( float o ) {
+		VGfloat fcolor[4];
+		if( _mode == kGroupParseMode ) {
+			vgGetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0] );
+			// set the opacity
+			fcolor[3] = o;
+			vgSetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+			
+		} else {
+			vgGetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0] );
+			// set the opacity
+			fcolor[3] = o;
+			vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+		}
+		
+	}
+
 	void OpenVG_SVGHandler::onPathStrokeWidth( float width ) {
 		if( _mode == kGroupParseMode ) {
 			_current_group->stroke_width = width;

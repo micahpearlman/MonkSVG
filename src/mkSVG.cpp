@@ -314,7 +314,7 @@ namespace MonkSVG {
 				case 'H':
 				{
 					float x = d_string_to_float( c, &c );
-					_handler->onHorizontalLine( x );
+					_handler->onPathHorizontalLine( x );
 					nextState(&c, &state);
 
 				}
@@ -324,7 +324,7 @@ namespace MonkSVG {
 				case 'V':
 				{
 					float y = d_string_to_float( c, &c );
-					_handler->onVerticalLine( y );
+					_handler->onPathVerticalLine( y );
 					nextState(&c, &state);
 					
 				}
@@ -419,6 +419,19 @@ namespace MonkSVG {
 		if ( kv != style_key_values.end() ) {
 			_handler->onPathFillRule( kv->second );
 		}
+		
+		kv = style_key_values.find( "fill-opacity" );
+		if ( kv != style_key_values.end() ) {
+			float o = atof( kv->second.c_str() );
+			_handler->onPathFillOpacity( o );
+		}
+
+		kv = style_key_values.find( "stroke-opacity" );
+		if ( kv != style_key_values.end() ) {
+			float o = atof( kv->second.c_str() );
+			_handler->onPathStrokeOpacity( o );
+		}
+
 		
 	}
 

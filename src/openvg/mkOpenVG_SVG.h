@@ -59,14 +59,22 @@ namespace MonkSVG {
 		virtual void onPathMoveTo( float x, float y );
 		virtual void onPathLineTo( float x, float y );
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 );
-		virtual void onPathFillColor( unsigned int color );
-		virtual void onPathStrokeColor( unsigned int color );
-		virtual void onPathStrokeWidth( float width );
+		virtual void onPathHorizontalLine( float x );
+		virtual void onPathVerticalLine( float y ); 
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y );
 		virtual void onPathRect( float x, float y, float w, float h );
+		
+
+		// paint
+		virtual void onPathFillColor( unsigned int color );
+		virtual void onPathFillOpacity( float o );
 		virtual void onPathFillRule( const string& rule );
-		virtual void onHorizontalLine( float x );
-		virtual void onVerticalLine( float y ); 
+
+		
+		// stroke
+		virtual void onPathStrokeColor( unsigned int color );
+		virtual void onPathStrokeWidth( float width );
+		virtual void onPathStrokeOpacity( float o );
 
 		
 		// transforms 
