@@ -25,6 +25,8 @@
 		FA739B8913B2737500B186A7 /* libMonkVG_iOS_OpenGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA739B8713B2737500B186A7 /* libMonkVG_iOS_OpenGL.a */; };
 		FA739BAD13B277CE00B186A7 /* tiger.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA739BAC13B277CE00B186A7 /* tiger.svg */; };
 		FA739BAF13B27D8700B186A7 /* fish_top.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA739BAE13B27D8700B186A7 /* fish_top.svg */; };
+		FA73CEE613B3EB1600BAA88D /* fish03.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CEE513B3EB1600BAA88D /* fish03.svg */; };
+		FA73CF0413B41B4300BAA88D /* fish02.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CF0313B41B4300BAA88D /* fish02.svg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +54,8 @@
 		FA739B8713B2737500B186A7 /* libMonkVG_iOS_OpenGL.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMonkVG_iOS_OpenGL.a; sourceTree = SOURCE_ROOT; };
 		FA739BAC13B277CE00B186A7 /* tiger.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = tiger.svg; sourceTree = "<group>"; };
 		FA739BAE13B27D8700B186A7 /* fish_top.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish_top.svg; sourceTree = "<group>"; };
+		FA73CEE513B3EB1600BAA88D /* fish03.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish03.svg; sourceTree = "<group>"; };
+		FA73CF0313B41B4300BAA88D /* fish02.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish02.svg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +140,8 @@
 		FA739BAB13B2776E00B186A7 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				FA73CF0313B41B4300BAA88D /* fish02.svg */,
+				FA73CEE513B3EB1600BAA88D /* fish03.svg */,
 				FA739BAE13B27D8700B186A7 /* fish_top.svg */,
 				FA739BAC13B277CE00B186A7 /* tiger.svg */,
 			);
@@ -199,6 +205,8 @@
 				FA22102A13B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.xib in Resources */,
 				FA739BAD13B277CE00B186A7 /* tiger.svg in Resources */,
 				FA739BAF13B27D8700B186A7 /* fish_top.svg in Resources */,
+				FA73CEE613B3EB1600BAA88D /* fish03.svg in Resources */,
+				FA73CF0413B41B4300BAA88D /* fish02.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

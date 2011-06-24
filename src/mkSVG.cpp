@@ -31,7 +31,7 @@ namespace MonkSVG {
 		doc.Parse( data );
 		
 		TiXmlElement* root = doc.RootElement();//doc.FirstChild( "svg" )->ToElement();
-		recursive_parse( &doc, root );
+		recursive_parse( root );
 		
 		return true;
 		
@@ -41,67 +41,101 @@ namespace MonkSVG {
 		return read( data.c_str() );
 	}
 	
-	void SVG::recursive_parse( TiXmlDocument* doc, TiXmlElement* element ) {
-		if ( element ) {
-			TiXmlElement* child = element->FirstChildElement();
-			recursive_parse( doc, child );
-		}
+	
+	
+	void SVG::recursive_parse( TiXmlElement* element ) {
 		
 		if ( element ) {
 			for ( TiXmlElement* sibbling = element; sibbling != 0; sibbling = sibbling->NextSiblingElement() ) {
-				string type = sibbling->Value();
-				
-				if ( type == "g" ) {
-					handle_group( sibbling );
-					// go through each child path
-					//					recursive_parse( doc, sibbling->FirstChildElement() );
-//					for ( TiXmlElement* child = sibbling->FirstChildElement(); child != 0; child = child->NextSiblingElement() ) {
-//						handle_path( child );
-//					}
-				}
-				
-				if ( type == "path" ) {
-					handle_path( sibbling );
-				}
-				if ( type == "rect" ) {
-					handle_rect( sibbling );
-				}
+				handle_xml_element( sibbling );
 			}
 		}
+		
+		if ( element ) {
+			TiXmlElement* child = element->FirstChildElement();
+			// if we don't handle the element recursively go into it
+			if( handle_xml_element( child ) == false ) {
+				recursive_parse( child );
+			}
+		}
+
+	}
+	
+	bool SVG::handle_xml_element( TiXmlElement* element ) {
+		if( !element )
+			return false;
+		
+		string type = element->Value();
+		
+		if ( type == "g" ) {
+			handle_group( element );
+			return true;
+		} else if ( type == "path" ) {
+			handle_path( element );
+			return true;
+		} else if ( type == "rect" ) {
+			handle_rect( element );
+			return true;
+		} else if( type == "symbol" ) {
+			string id;
+			if ( element->QueryStringAttribute( "id", &id ) == TIXML_SUCCESS ) {
+				_symbols[id] = (TiXmlElement*)element->Clone();
+			}
+			return true;
+		} else if ( type == "use" ) {
+			string href;
+			if ( element->QueryStringAttribute( "xlink:href", &href ) == TIXML_SUCCESS ) {
+				string id = href.substr( 1 );	// skip the # 
+				_handler->onUseBegin();
+				// handle transform and other parameters
+				handle_general_parameter( element );
+				recursive_parse( _symbols[id] );
+				_handler->onUseEnd();
+			}
+			
+			return true;
+		}
+		return false;
+
 	}
 	
 	void SVG::handle_group( TiXmlElement* pathElement ) {
+		string id_;
+		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+			//_handler->onId( id_ );
+			cout << "group begin: " << id_ << endl;
+		}
+
 		_handler->onGroupBegin();
 		
-		// handle transform
+		// handle transform and other parameters
 		handle_general_parameter( pathElement );
-//		string transform;
-//		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
-//			parse_path_transform( transform );
-//		}
 		
 		// go through all the children
 		TiXmlElement* children = pathElement->FirstChildElement();
 		for ( TiXmlElement* child = children; child != 0; child = child->NextSiblingElement() ) {
 			string type = child->Value();
-			if ( type == "g" ) {
-				handle_group( child );
-			} else if( type == "path" ) {
-				handle_path( child );
-			} else 	if ( type == "rect" ) {
-				handle_rect( child );
-			}
-
+			handle_xml_element( child );
 		}
 		
-		
-		
-		
 		_handler->onGroupEnd();
+		
+		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+			//_handler->onId( id_ );
+			cout << "group end: " << id_ << endl;
+		}
+
 
 	}
 	
 	void SVG::handle_path( TiXmlElement* pathElement ) {
+		
+		string id_;
+		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+			//_handler->onId( id_ );
+			cout << "path: " << id_ << endl;
+		}
+
 		_handler->onPathBegin();
 		string d;
 		if ( pathElement->QueryStringAttribute( "d", &d ) == TIXML_SUCCESS ) {
@@ -333,7 +367,6 @@ namespace MonkSVG {
 				case 'c':
 				case 'C':
 				{
-					//c++;
 					float x1 = d_string_to_float( c, &c );
 					float y1 = d_string_to_float( c, &c );
 					float x2 = d_string_to_float( c, &c );
@@ -341,6 +374,19 @@ namespace MonkSVG {
 					float x3 = d_string_to_float( c, &c );
 					float y3 = d_string_to_float( c, &c );
 					_handler->onPathCubic(x1, y1, x2, y2, x3, y3);
+					nextState(&c, &state);
+					
+				}
+				break;
+
+				case 's':
+				case 'S':
+				{
+					float x2 = d_string_to_float( c, &c );
+					float y2 = d_string_to_float( c, &c );
+					float x3 = d_string_to_float( c, &c );
+					float y3 = d_string_to_float( c, &c );
+					_handler->onPathSCubic(x2, y2, x3, y3);
 					nextState(&c, &state);
 					
 				}

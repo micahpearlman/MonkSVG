@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <cmath>
 #include <boost/shared_ptr.hpp>
 
@@ -37,6 +38,8 @@ namespace MonkSVG {
 		// groups
 		virtual void onGroupBegin() {}
 		virtual void onGroupEnd() {}
+		virtual void onUseBegin() {}
+		virtual void onUseEnd() {}
 		
 		virtual void onId( const std::string& id_ ) {}
 		
@@ -47,6 +50,7 @@ namespace MonkSVG {
 		virtual void onPathClose(){}
 		virtual void onPathLineTo( float x, float y ) {}
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) {}
+		virtual void onPathSCubic( float x2, float y2, float x3, float y3 ) {}
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {}
 		virtual void onPathRect( float x, float y, float w, float h ) {}
 		virtual void onPathHorizontalLine( float x ) {}
@@ -112,10 +116,14 @@ namespace MonkSVG {
 
 	private:
 		
-		ISVGHandler::SmartPtr	_handler;
+		ISVGHandler::SmartPtr		_handler;
+		
+		// holds svg <symbols>
+		map<string, TiXmlElement*>	_symbols;
 		
 	private:
-		void recursive_parse( TiXmlDocument* doc, TiXmlElement* element );
+		void recursive_parse( TiXmlElement* element );
+		bool handle_xml_element( TiXmlElement* element );
 		void handle_group( TiXmlElement* pathElement ); 
 		void handle_path( TiXmlElement* pathElement );
 		void handle_rect( TiXmlElement* pathElement );

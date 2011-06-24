@@ -20,6 +20,7 @@ namespace MonkSVG {
 		_blackBackFill = vgCreatePaint();
 		VGfloat fcolor[4] = { 0,0,0,1 };
 		vgSetParameterfv( _blackBackFill, VG_PAINT_COLOR, 4, &fcolor[0]);
+		_use_transform.setIdentity();
 
 		//_root_transform.setScale( 1, -1 );
 		
@@ -30,6 +31,10 @@ namespace MonkSVG {
 		_blackBackFill = 0;
 	}
 	void OpenVG_SVGHandler::draw() {
+		
+		// clear out the transform stack
+		_transform_stack.clear();
+		
 		float m[9];
 		vgGetMatrix( m );
 		// assume the current openvg matrix is like the camera matrix and should always be applied first
@@ -93,6 +98,8 @@ namespace MonkSVG {
 		group_t* top = &_current_group->children.back();
 		top->parent = _current_group;
 		_current_group = top;
+		// copy any use transform
+		_current_group->transform = _use_transform;
 	}
 	void OpenVG_SVGHandler::onGroupEnd() {
 		_current_group = _current_group->parent;
@@ -182,6 +189,16 @@ namespace MonkSVG {
 		data[0] = x1; data[1] = y1;
 		data[2] = x2; data[3] = y2;
 		data[4] = x3; data[5] = y3;
+		vgAppendPathData( _current_group->current_path->path, 1, &seg, data);
+		
+	}
+	
+	void OpenVG_SVGHandler::onPathSCubic( float x2, float y2, float x3, float y3 ) {
+		VGubyte seg = VG_SCUBIC_TO | openVGRelative();
+		VGfloat data[4];
+		
+		data[0] = x2; data[1] = y2;
+		data[2] = x3; data[3] = y3;
 		vgAppendPathData( _current_group->current_path->path, 1, &seg, data);
 		
 	}
@@ -329,22 +346,28 @@ namespace MonkSVG {
 	void OpenVG_SVGHandler::onTransformTranslate( float x, float y ) {
 		if( _mode == kGroupParseMode ) {
 			_current_group->transform.setTranslate( x, y );
-		} else {	// kPathParseMode
+		} else if( kPathParseMode ) {	// 
 			_current_group->current_path->transform.setTranslate( x, y );
+		} else if( kUseParseMode ) {
+			_use_transform.setTranslate( x, y );
 		}
 	}
 	void OpenVG_SVGHandler::onTransformScale( float s ) {
 		if( _mode == kGroupParseMode ) {
 			_current_group->transform.setScale( s, s );
-		} else { // kPathParseMode
+		} else if( _mode == kPathParseMode ) { // kPathParseMode
 			_current_group->current_path->transform.setScale( s, s );
+		} else if( _mode == kUseParseMode ) {
+			_use_transform.setScale( s, s );
 		}
 	}
 	void OpenVG_SVGHandler::onTransformRotate( float r ) {
 		if( _mode == kGroupParseMode ) {
 			_current_group->transform.setRotation( r );	// ?? radians or degrees ??
-		} else { // kPathParseMode
+		} else if( _mode == kPathParseMode ) { // kPathParseMode
 			_current_group->current_path->transform.setRotation( r );	// ?? radians or degrees ??
+		} else if( _mode == kUseParseMode ) {
+			_use_transform.setRotation( r );
 		}
 	}
 	void OpenVG_SVGHandler::onTransformMatrix( float a, float b, float c, float d, float e, float f ) {
@@ -352,8 +375,10 @@ namespace MonkSVG {
 		t.a = a; t.b = b; t.c = c; t.d = d; t.e = e; t.f = f;
 		if( _mode == kGroupParseMode ) {
 			_current_group->transform = t;
-		} else { // kPathParseMode
+		} else if( _mode == kPathParseMode ) { // kPathParseMode
 			_current_group->current_path->transform = t;
+		} else if( _mode == kUseParseMode ) {
+			_use_transform = t;//topTransform();
 		}
 	}
 	
@@ -363,7 +388,14 @@ namespace MonkSVG {
 		} else { // kPathParseMode
 			_current_group->current_path->id = id_;
 		}
-		
 	}
+	
+	void OpenVG_SVGHandler::onUseBegin() {
+		_mode = kUseParseMode;
+	}
+	void OpenVG_SVGHandler::onUseEnd() {
+		_use_transform.setIdentity();
+	}
+
 	
 }

@@ -52,6 +52,11 @@ namespace MonkSVG {
 		virtual void onGroupBegin();
 		virtual void onGroupEnd();
 		
+		// use
+		virtual void onUseBegin();
+		virtual void onUseEnd();
+
+		
 		// paths
 		virtual void onPathBegin();
 		virtual void onPathEnd();
@@ -59,6 +64,7 @@ namespace MonkSVG {
 		virtual void onPathMoveTo( float x, float y );
 		virtual void onPathLineTo( float x, float y );
 		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 );
+		virtual void onPathSCubic( float x2, float y2, float x3, float y3 );
 		virtual void onPathHorizontalLine( float x );
 		virtual void onPathVerticalLine( float y ); 
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y );
@@ -168,10 +174,12 @@ namespace MonkSVG {
 		
 		vector<Transform2d>		_transform_stack;
 		Transform2d				_root_transform;
+		Transform2d				_use_transform;
 		
 		enum mode {
 			kGroupParseMode = 1,
-			kPathParseMode = 2
+			kPathParseMode = 2,
+			kUseParseMode = 3
 		};
 		
 		mode _mode;
