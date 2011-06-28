@@ -58,6 +58,7 @@ namespace MonkSVG {
 //		pushTransform( flip );
 		
 		if( _batch ) {
+			vgLoadMatrix( topTransform().m );
 			vgDrawBatchMNK( _batch );
 		} else {
 			draw_recursive( _root_group );
