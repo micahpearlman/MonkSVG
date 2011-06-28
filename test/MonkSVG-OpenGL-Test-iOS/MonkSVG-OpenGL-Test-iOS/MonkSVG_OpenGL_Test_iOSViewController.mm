@@ -128,7 +128,7 @@ enum {
 	MonkSVG::ISVGHandler::SmartPtr handler =  MonkSVG::OpenVG_SVGHandler::create();
 	vgSVGRenderer = boost::static_pointer_cast<MonkSVG::OpenVG_SVGHandler>( handler );
 	std::string resourcePath( [[[NSBundle mainBundle] resourcePath] UTF8String] );
-	std::string svgFilePath = resourcePath + "/fish02.svg";
+	std::string svgFilePath = resourcePath + "/tiger.svg";
 	std::fstream is( svgFilePath.c_str(), std::fstream::in );
 	
 	//std::string buffer( (std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>() );
@@ -148,6 +148,11 @@ enum {
 	MonkSVG::SVG svg_parser;
 	svg_parser.initialize( vgSVGRenderer );
 	svg_parser.read( buffer );
+	
+	// optimize for MonkVG
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgSVGRenderer->optimize();
 
 	delete [] buffer;
 	

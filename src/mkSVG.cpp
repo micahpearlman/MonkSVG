@@ -101,10 +101,10 @@ namespace MonkSVG {
 	
 	void SVG::handle_group( TiXmlElement* pathElement ) {
 		string id_;
-		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
-			//_handler->onId( id_ );
-			cout << "group begin: " << id_ << endl;
-		}
+//		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+//			//_handler->onId( id_ );
+//			cout << "group begin: " << id_ << endl;
+//		}
 
 		_handler->onGroupBegin();
 		
@@ -120,10 +120,10 @@ namespace MonkSVG {
 		
 		_handler->onGroupEnd();
 		
-		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
-			//_handler->onId( id_ );
-			cout << "group end: " << id_ << endl;
-		}
+//		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+//			//_handler->onId( id_ );
+//			cout << "group end: " << id_ << endl;
+//		}
 
 
 	}

@@ -11,6 +11,7 @@
 #define __SVG_H__
 #include <vg/openvg.h>
 #include <vg/vgu.h>
+#include <vg/vgext.h>
 #include <vector>
 #include <list>
 #include <cmath>
@@ -37,6 +38,7 @@ namespace MonkSVG {
 		virtual ~OpenVG_SVGHandler();
 		
 		void draw();
+		void optimize();
 		
 		const Transform2d& rootTransform() { return _root_transform; }
 		void setRootTransform( const Transform2d& t ) { _root_transform = t; }
@@ -185,6 +187,10 @@ namespace MonkSVG {
 		mode _mode;
 		
 		VGPaint	_blackBackFill;		// if a path doesn't have a stroke or a fill then use this fill
+		
+		
+		/// optimized batch monkvg batch object
+		VGBatchMNK			_batch;
 		
 	private:
 		

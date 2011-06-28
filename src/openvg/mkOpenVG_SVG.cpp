@@ -16,6 +16,7 @@ namespace MonkSVG {
 	,	_mode( kGroupParseMode )
 	,	_current_group( &_root_group ) 
 	,	_blackBackFill( 0 )
+	,	_batch( 0 )
 	{
 		_blackBackFill = vgCreatePaint();
 		VGfloat fcolor[4] = { 0,0,0,1 };
@@ -29,7 +30,15 @@ namespace MonkSVG {
 	OpenVG_SVGHandler::~OpenVG_SVGHandler() {
 		vgDestroyPaint( _blackBackFill );
 		_blackBackFill = 0;
+		
+		if( _batch ) {
+			vgDestroyBatchMNK( _batch );
+			_batch = 0;
+		}
+
 	}
+	
+	
 	void OpenVG_SVGHandler::draw() {
 		
 		// clear out the transform stack
@@ -48,7 +57,12 @@ namespace MonkSVG {
 //		flip.setScale( 1, -1 );
 //		pushTransform( flip );
 		
-		draw_recursive( _root_group );
+		if( _batch ) {
+			vgDrawBatchMNK( _batch );
+		} else {
+			draw_recursive( _root_group );
+		}
+		
 		vgLoadMatrix( m );	// restore matrix
 		_transform_stack.clear();
 	}
@@ -90,6 +104,43 @@ namespace MonkSVG {
 		}
 		
 		popTransform();	vgLoadMatrix( topTransform().m );
+	}
+	
+	void OpenVG_SVGHandler::optimize() {
+		if( _batch ) {
+			vgDestroyBatchMNK( _batch );
+			_batch = 0;
+		}
+		// use the monkvg batch extension to greatly optimize rendering.  don't need this for
+		// other OpenVG implementations
+		_batch = vgCreateBatchMNK();
+		
+		vgBeginBatchMNK( _batch ); { // draw
+
+			// clear out the transform stack
+			_transform_stack.clear();
+			
+			float m[9];
+			vgGetMatrix( m );
+			// assume the current openvg matrix is like the camera matrix and should always be applied first
+			Transform2d top;
+			Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
+			pushTransform( top );
+			
+			// SVG is origin at the top, left (openvg is origin at the bottom, left)
+			// so need to flip
+			//		Transform2d flip;
+			//		flip.setScale( 1, -1 );
+			//		pushTransform( flip );
+			
+			draw_recursive( _root_group );
+			
+			vgLoadMatrix( m );	// restore matrix
+			_transform_stack.clear();
+
+			
+		} vgEndBatchMNK( _batch );
+		
 	}
 	
 	void OpenVG_SVGHandler::onGroupBegin() {
