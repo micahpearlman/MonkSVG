@@ -41,6 +41,8 @@ namespace MonkSVG {
 	
 	void OpenVG_SVGHandler::draw() {
 		
+		vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+		
 		// clear out the transform stack
 		_transform_stack.clear();
 		
