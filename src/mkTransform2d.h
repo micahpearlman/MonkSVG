@@ -51,7 +51,11 @@ namespace MonkSVG {
         }
 		
 		void translation( float t[2] ) const { t[0] = e; t[1] = f; }
+		void setTranslation( float t[2] ) { e = t[0]; f = t[1]; }
 		float angle() const { return acosf( a ); }
+		void setAngle( float ang ) {
+			setRotation( ang );
+		}
 		
 		void lookAt( float la[2] ) const { la[0] = a; la[1] = b; }
 		
