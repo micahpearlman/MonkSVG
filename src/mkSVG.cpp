@@ -130,11 +130,11 @@ namespace MonkSVG {
 	
 	void SVG::handle_path( TiXmlElement* pathElement ) {
 		
-		string id_;
-		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
-			//_handler->onId( id_ );
-			cout << "path: " << id_ << endl;
-		}
+//		string id_;
+//		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+//			//_handler->onId( id_ );
+//			cout << "path: " << id_ << endl;
+//		}
 
 		_handler->onPathBegin();
 		string d;
