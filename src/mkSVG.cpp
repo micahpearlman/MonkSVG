@@ -30,7 +30,7 @@ namespace MonkSVG {
 		
 		doc.Parse( data );
 		
-		TiXmlElement* root = doc.RootElement();//doc.FirstChild( "svg" )->ToElement();
+		TiXmlElement* root = doc.FirstChild( "svg" )->ToElement();
 		recursive_parse( root );
 		
 		return true;
@@ -208,6 +208,12 @@ namespace MonkSVG {
 			//cout << id_ << endl;
 		}
 		
+		string opacity;
+		if ( pathElement->QueryStringAttribute( "opacity", &opacity) == TIXML_SUCCESS ) {
+			float o = atof( opacity.c_str() );
+			_handler->onPathFillOpacity( o );
+		}
+
 
 	}
 

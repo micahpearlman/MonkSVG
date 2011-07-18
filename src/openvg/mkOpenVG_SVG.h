@@ -177,6 +177,7 @@ namespace MonkSVG {
 		vector<Transform2d>		_transform_stack;
 		Transform2d				_root_transform;
 		Transform2d				_use_transform;
+		VGfloat					_use_opacity;
 		
 		enum mode {
 			kGroupParseMode = 1,

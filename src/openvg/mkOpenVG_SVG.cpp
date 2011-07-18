@@ -17,6 +17,7 @@ namespace MonkSVG {
 	,	_current_group( &_root_group ) 
 	,	_blackBackFill( 0 )
 	,	_batch( 0 )
+	,	_use_opacity( 1 )
 	{
 		_blackBackFill = vgCreatePaint();
 		VGfloat fcolor[4] = { 0,0,0,1 };
@@ -299,7 +300,7 @@ namespace MonkSVG {
 			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-				1.0f };
+				_use_opacity };
 			vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
 
 		} else {
@@ -307,7 +308,7 @@ namespace MonkSVG {
 			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-				1.0f  };
+				_use_opacity  };
 			vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
 		}
 	}
@@ -325,7 +326,7 @@ namespace MonkSVG {
 			fcolor[3] = o;
 			vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
 			
-		} else {
+		} else if( _mode == kPathParseMode ) {
 			if( _current_group->current_path->fill == 0 ) {	// if no fill create a black fill
 				_current_group->current_path->fill = vgCreatePaint();
 				VGfloat fcolor[4] = { 0,0,0,1 };
@@ -336,6 +337,18 @@ namespace MonkSVG {
 			// set the opacity
 			fcolor[3] = o;
 			vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+		} else if( _mode == kUseParseMode ) {
+			_use_opacity = o;
+			if( _current_group->fill == 0 ) {	// if no fill create a black fill
+				_current_group->fill = vgCreatePaint();
+				VGfloat fcolor[4] = { 0,0,0,1 };
+				vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+			}
+			vgGetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
+			// set the opacity
+			fcolor[3] = o;
+			vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+
 		}
 	}
 	void OpenVG_SVGHandler::onPathStrokeColor( unsigned int color ) {
@@ -344,14 +357,14 @@ namespace MonkSVG {
 			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-				1.0f };
+				_use_opacity };
 			vgSetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
 		} else {
 			_current_group->current_path->stroke = vgCreatePaint();
 			VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
 				VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
 				VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
-				1.0f };
+				_use_opacity };
 			vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
 		}
 	}
@@ -439,16 +452,18 @@ namespace MonkSVG {
 	void OpenVG_SVGHandler::onId( const std::string& id_ ) {
 		if( _mode == kGroupParseMode ) {
 			_current_group->id  = id_;
-		} else { // kPathParseMode
+		} else if( _current_group->current_path ) { // kPathParseMode
 			_current_group->current_path->id = id_;
 		}
 	}
 	
 	void OpenVG_SVGHandler::onUseBegin() {
 		_mode = kUseParseMode;
+		_use_opacity = 1.0;
 	}
 	void OpenVG_SVGHandler::onUseEnd() {
 		_use_transform.setIdentity();
+		_use_opacity = 1.0;
 	}
 
 	
