@@ -348,6 +348,7 @@ namespace MonkSVG {
 			// set the opacity
 			fcolor[3] = o;
 			vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+			_use_opacity = o;
 
 		}
 	}

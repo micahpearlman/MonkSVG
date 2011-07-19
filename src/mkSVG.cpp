@@ -212,8 +212,17 @@ namespace MonkSVG {
 		if ( pathElement->QueryStringAttribute( "opacity", &opacity) == TIXML_SUCCESS ) {
 			float o = atof( opacity.c_str() );
 			_handler->onPathFillOpacity( o );
+			// TODO: ??? stroke opacity???
+		}
+		if ( pathElement->QueryStringAttribute( "fill-opacity", &opacity) == TIXML_SUCCESS ) {
+			float o = atof( opacity.c_str() );
+			_handler->onPathFillOpacity( o );
 		}
 
+		string fillrule;
+		if ( pathElement->QueryStringAttribute( "fill-rule", &fillrule) == TIXML_SUCCESS ) {
+			_handler->onPathFillRule( fillrule );		
+		}
 
 	}
 
@@ -477,6 +486,14 @@ namespace MonkSVG {
 			float o = atof( kv->second.c_str() );
 			_handler->onPathFillOpacity( o );
 		}
+		
+		kv = style_key_values.find( "opacity" );
+		if ( kv != style_key_values.end() ) {
+			float o = atof( kv->second.c_str() );
+			_handler->onPathFillOpacity( o );
+			// ?? TODO: stroke Opacity???
+		}
+
 
 		kv = style_key_values.find( "stroke-opacity" );
 		if ( kv != style_key_values.end() ) {
