@@ -93,6 +93,14 @@ namespace MonkSVG {
 				std::cout << std::endl;
 			}
 		}
+		
+		bool verify() {
+			for ( int i = 0; i < 9; i++ ) {
+				if( std::isnan( m[i] ) )
+				   return false;
+			}
+			return true;
+		}
     };
 
 }
