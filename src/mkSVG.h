@@ -55,6 +55,8 @@ namespace MonkSVG {
 		virtual void onPathRect( float x, float y, float w, float h ) {}
 		virtual void onPathHorizontalLine( float x ) {}
 		virtual void onPathVerticalLine( float y ) {}
+        
+        virtual void onPathQuad( float x1, float y1, float x2, float y2 ) {}
 
 		// fill
 		virtual void onPathFillColor( unsigned int color ) {}

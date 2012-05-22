@@ -257,6 +257,14 @@ namespace MonkSVG {
 		vgAppendPathData( _current_group->current_path->path, 1, &seg, data);
 		
 	}
+    
+    void OpenVG_SVGHandler::onPathQuad( float x1, float y1, float x2, float y2) {
+        VGubyte seg = VG_QUAD_TO | openVGRelative();
+        VGfloat data[4];
+        data[0] = x1; data[1] = y1;
+        data[2] = x2; data[3] = y2;
+        vgAppendPathData(_current_group->current_path->path, 1, &seg, data);
+    }
 	
 	void OpenVG_SVGHandler::onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {
 		
