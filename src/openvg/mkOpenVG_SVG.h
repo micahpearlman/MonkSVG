@@ -71,6 +71,8 @@ namespace MonkSVG {
 		virtual void onPathVerticalLine( float y ); 
 		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y );
 		virtual void onPathRect( float x, float y, float w, float h );
+        
+        virtual void onPathQuad( float x1, float y1, float x2, float y2);
 		
 
 		// paint

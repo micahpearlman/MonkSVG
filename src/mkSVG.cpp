@@ -432,8 +432,19 @@ namespace MonkSVG {
 					
 				}
 				break;
+                    
+                case 'q':
+                case 'Q':
+                {
+                    float x1 = d_string_to_float(c, &c);
+                    float y1 = d_string_to_float(c, &c);
+                    float x2 = d_string_to_float(c, &c);
+                    float y2 = d_string_to_float(c, &c);
+                    _handler->onPathQuad(x1, y1, x2, y2);
+                    nextState(&c, &state);
+                }
+                break;
 					
-				
 				default:
 					// BUGBUG: can get stuck here!
 					// TODO: figure out the next state if we don't handle a particular state or just dummy handle a state!
