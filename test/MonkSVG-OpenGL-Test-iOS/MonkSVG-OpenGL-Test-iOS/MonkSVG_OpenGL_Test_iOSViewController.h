@@ -14,11 +14,13 @@
 #import <OpenGLES/ES1/glext.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#include <openvg/mkOpenVG_SVG.h>
 
 @interface MonkSVG_OpenGL_Test_iOSViewController : UIViewController {
 @private
     EAGLContext *context;
     GLuint program;
+    MonkSVG::OpenVG_SVGHandler *vgSVGRenderer;
     
     BOOL animating;
     NSInteger animationFrameInterval;

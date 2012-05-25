@@ -25,16 +25,9 @@ using namespace std;
 namespace MonkSVG {
 	class OpenVG_SVGHandler : public ISVGHandler {
 		
-	public:
-		
-		typedef boost::shared_ptr<OpenVG_SVGHandler> SmartPtr;
-		
-		static ISVGHandler::SmartPtr create( ) {
-			return boost::make_shared<OpenVG_SVGHandler>( );
-		}
-
-		
-		
+	public:		
+        
+		OpenVG_SVGHandler();
 		virtual ~OpenVG_SVGHandler();
 		
 		void draw();
@@ -42,10 +35,6 @@ namespace MonkSVG {
 		
 		const Transform2d& rootTransform() { return _root_transform; }
 		void setRootTransform( const Transform2d& t ) { _root_transform = t; }
-		
-	private:	
-		OpenVG_SVGHandler();
-		friend boost::shared_ptr<OpenVG_SVGHandler> boost::make_shared<>();
 
 		
 	private:
