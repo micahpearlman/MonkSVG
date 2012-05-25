@@ -27,8 +27,6 @@ namespace MonkSVG {
 	class ISVGHandler {
 	public:
 		
-		typedef boost::shared_ptr<ISVGHandler> SmartPtr;
-		
 		// transforms 
 		virtual void onTransformTranslate( float x, float y ) {}
 		virtual void onTransformScale( float s ) {}
@@ -112,13 +110,13 @@ namespace MonkSVG {
 	class SVG  {
 	public:
 		
-		bool initialize( ISVGHandler::SmartPtr handler );
+		bool initialize( ISVGHandler *handler );
 		bool read( string& data );
 		bool read( const char* data );
 
 	private:
 		
-		ISVGHandler::SmartPtr		_handler;
+		ISVGHandler *_handler;
 		
 		// holds svg <symbols>
 		map<string, TiXmlElement*>	_symbols;

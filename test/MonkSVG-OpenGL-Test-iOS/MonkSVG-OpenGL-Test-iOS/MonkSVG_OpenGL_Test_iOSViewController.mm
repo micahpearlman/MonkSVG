@@ -23,7 +23,7 @@
 /// svg
 #include <mkSVG.h>
 #include <openvg/mkOpenVG_SVG.h>
-static MonkSVG::OpenVG_SVGHandler::SmartPtr vgSVGRenderer;
+
 
 // Uniform index.
 enum {
@@ -83,6 +83,11 @@ enum {
 
 - (void)dealloc
 {
+    
+    if (vgSVGRenderer) {
+        delete vgSVGRenderer;
+    }
+    
     if (program) {
         glDeleteProgram(program);
         program = 0;
@@ -125,8 +130,9 @@ enum {
 	
 	// load an example
 	
-	MonkSVG::ISVGHandler::SmartPtr handler =  MonkSVG::OpenVG_SVGHandler::create();
-	vgSVGRenderer = boost::static_pointer_cast<MonkSVG::OpenVG_SVGHandler>( handler );
+	vgSVGRenderer = new MonkSVG::OpenVG_SVGHandler();
+    
+    
 	std::string resourcePath( [[[NSBundle mainBundle] resourcePath] UTF8String] );
 	std::string svgFilePath = resourcePath + "/tiger.svg";
 	std::fstream is( svgFilePath.c_str(), std::fstream::in );
