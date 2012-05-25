@@ -34,7 +34,7 @@ namespace MonkSVG {
 		}
 
 		
-		
+		OpenVG_SVGHandler();	// now public so a Plain Old Pointer can be used instead of the SmartPtr
 		virtual ~OpenVG_SVGHandler();
 		
 		void draw();
@@ -44,7 +44,7 @@ namespace MonkSVG {
 		void setRootTransform( const Transform2d& t ) { _root_transform = t; }
 		
 	private:	
-		OpenVG_SVGHandler();
+		
 		friend boost::shared_ptr<OpenVG_SVGHandler> boost::make_shared<>();
 
 		
