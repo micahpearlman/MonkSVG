@@ -7,22 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E8317291575111D0086129D /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E8317281575111D0086129D /* boost.framework */; };
 		AA747D9F0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
-		FA5FD9511399F18B00863CBC /* mkTransform2d.h in Headers */ = {isa = PBXBuildFile; fileRef = FA5FD9501399F18B00863CBC /* mkTransform2d.h */; };
+		FA5FD9511399F18B00863CBC /* mkTransform2d.h in Headers */ = {isa = PBXBuildFile; fileRef = FA5FD9501399F18B00863CBC /* mkTransform2d.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAC06DF6139445BD0075231C /* mkOpenVG_SVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */; };
-		FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */; };
+		FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAE28419121B06F000823BCB /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28411121B06F000823BCB /* tinystr.cpp */; };
 		FAE2841A121B06F000823BCB /* tinystr.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE28412121B06F000823BCB /* tinystr.h */; };
 		FAE2841B121B06F000823BCB /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28413121B06F000823BCB /* tinyxml.cpp */; };
 		FAE2841C121B06F000823BCB /* tinyxml.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE28414121B06F000823BCB /* tinyxml.h */; };
 		FAE2841D121B06F000823BCB /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28415121B06F000823BCB /* tinyxmlerror.cpp */; };
 		FAE2841E121B06F000823BCB /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28416121B06F000823BCB /* tinyxmlparser.cpp */; };
-		FAE2841F121B06F000823BCB /* mkSVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE28417121B06F000823BCB /* mkSVG.h */; };
+		FAE2841F121B06F000823BCB /* mkSVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE28417121B06F000823BCB /* mkSVG.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAE28420121B06F000823BCB /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28418121B06F000823BCB /* mkSVG.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3E8317281575111D0086129D /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../../MonkVG/Frameworks/boost.framework; sourceTree = "<group>"; };
 		AA747D9E0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkSVG_iOS_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libMonkSVG_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkSVG_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,6 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
+				3E8317291575111D0086129D /* boost.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +76,7 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3E8317281575111D0086129D /* boost.framework */,
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -129,12 +133,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA747D9F0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch in Headers */,
-				FAE2841A121B06F000823BCB /* tinystr.h in Headers */,
-				FAE2841C121B06F000823BCB /* tinyxml.h in Headers */,
 				FAE2841F121B06F000823BCB /* mkSVG.h in Headers */,
 				FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */,
 				FA5FD9511399F18B00863CBC /* mkTransform2d.h in Headers */,
+				AA747D9F0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch in Headers */,
+				FAE2841A121B06F000823BCB /* tinystr.h in Headers */,
+				FAE2841C121B06F000823BCB /* tinyxml.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,6 +214,10 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/MonkSVG_iOS.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../MonkVG/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -218,12 +226,13 @@
 				GCC_PREPROCESSOR_DEFINITIONS = TIXML_USE_STL;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					/opt/local/include,
-					../../../MonkVG/include,
-					../../src,
+					"$(inherited)",
+					"\"$(TARGET_BUILD_DIR)/include\"",
+					"\"$(OBJROOT)/UninstalledProducts/include\"",
 				);
 				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkSVG_iOS;
+				PUBLIC_HEADERS_FOLDER_PATH = include/MonkSVG;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -234,6 +243,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				DSTROOT = /tmp/MonkSVG_iOS.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../MonkVG/Frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
@@ -241,12 +254,13 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					/opt/local/include,
-					../../../MonkVG/include,
-					../../src,
+					"$(inherited)",
+					"\"$(TARGET_BUILD_DIR)/include\"",
+					"\"$(OBJROOT)/UninstalledProducts/include\"",
 				);
 				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkSVG_iOS;
+				PUBLIC_HEADERS_FOLDER_PATH = include/MonkSVG;
 				SDKROOT = iphoneos;
 			};
 			name = Release;
