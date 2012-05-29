@@ -13,6 +13,7 @@
 #include <iterator>
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/regex.hpp>
 using namespace boost;
 
 namespace MonkSVG {
@@ -32,6 +33,44 @@ namespace MonkSVG {
 		
 		TiXmlElement* root = doc.FirstChild( "svg" )->ToElement();
 		recursive_parse( root );
+        
+        
+        // get bounds information from the svg file, ignoring non-pixel values
+        
+        string numberWithUnitString;
+        regex numberWithUnitPattern( "^(\\d+)(px)?$" );
+        
+        _handler->_minX = 0.0f;
+        if ( root->QueryStringAttribute( "x", &numberWithUnitString ) == TIXML_SUCCESS ) {
+            match_results<string::const_iterator> matches;
+            if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
+                _handler->_minX = ::atof( matches[1].str().c_str() );
+            }
+        }
+        
+        _handler->_minY = 0.0f;
+        if ( root->QueryStringAttribute( "y", &numberWithUnitString ) == TIXML_SUCCESS ) {
+            match_results<string::const_iterator> matches;
+            if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
+                _handler->_minY = ::atof( matches[1].str().c_str() );
+            }
+        }
+        
+        _handler->_width = 0.0f;
+        if ( root->QueryStringAttribute( "width", &numberWithUnitString ) == TIXML_SUCCESS ) {
+            match_results<string::const_iterator> matches;
+            if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
+                _handler->_width = ::atof( matches[1].str().c_str() );
+            }
+        }
+        
+        _handler->_height = 0.0f;
+        if ( root->QueryStringAttribute( "height", &numberWithUnitString ) == TIXML_SUCCESS ) {
+            match_results<string::const_iterator> matches;
+            if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
+                _handler->_height = ::atof( matches[1].str().c_str() );
+            }
+        }
 		
 		return true;
 		

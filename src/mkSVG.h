@@ -23,6 +23,8 @@ class TiXmlElement;
 
 namespace MonkSVG {
 	using namespace std;
+    
+    class SVG;
 	
 	class ISVGHandler {
 	public:
@@ -102,7 +104,9 @@ namespace MonkSVG {
 		float _minX;
 		float _minY;
 		float _width;
-		float _height;
+		float _height;	
+		
+		friend class SVG;
 		
 	private:
 		bool _relative;
