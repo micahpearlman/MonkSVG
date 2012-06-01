@@ -17,8 +17,8 @@
 #include <fstream>
 
 /// openvg
-#include <vg/openvg.h>
-#include <vg/vgu.h>
+#include <MonkVG/openvg.h>
+#include <MonkVG/vgu.h>
 
 /// svg
 #include <mkSVG.h>

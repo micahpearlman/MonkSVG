@@ -9,9 +9,9 @@
 
 #ifndef __SVG_H__
 #define __SVG_H__
-#include <vg/openvg.h>
-#include <vg/vgu.h>
-#include <vg/vgext.h>
+#include <MonkVG/openvg.h>
+#include <MonkVG/vgu.h>
+#include <MonkVG/vgext.h>
 #include <vector>
 #include <list>
 #include <cmath>
@@ -42,6 +42,8 @@ namespace MonkSVG {
 		
 		const Transform2d& rootTransform() { return _root_transform; }
 		void setRootTransform( const Transform2d& t ) { _root_transform = t; }
+		
+        const bool hasTransparentColors() { return _has_transparent_colors; }
 		
 	private:	
 		
@@ -194,6 +196,11 @@ namespace MonkSVG {
 		
 		/// optimized batch monkvg batch object
 		VGBatchMNK			_batch;
+		
+        // flag indicating if any of the fills or strokes in the image use transparent colors 
+        // if there are no transparent colors in the image, blending can be disabled in open gl 
+        // to improve rendering performance
+        bool _has_transparent_colors;
 		
 	private:
 		

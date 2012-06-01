@@ -18,6 +18,7 @@ namespace MonkSVG {
 	,	_blackBackFill( 0 )
 	,	_batch( 0 )
 	,	_use_opacity( 1 )
+	,   _has_transparent_colors( false )
 	{
 		_blackBackFill = vgCreatePaint();
 		VGfloat fcolor[4] = { 0,0,0,1 };
@@ -359,6 +360,7 @@ namespace MonkSVG {
 			_use_opacity = o;
 
 		}
+		_has_transparent_colors = _has_transparent_colors || (o < 1.0f);
 	}
 	void OpenVG_SVGHandler::onPathStrokeColor( unsigned int color ) {
 		if( _mode == kGroupParseMode ) {
@@ -391,7 +393,7 @@ namespace MonkSVG {
 			fcolor[3] = o;
 			vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
 		}
-		
+		_has_transparent_colors = _has_transparent_colors || (o < 1.0f);
 	}
 
 	void OpenVG_SVGHandler::onPathStrokeWidth( float width ) {
