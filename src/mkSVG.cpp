@@ -38,7 +38,7 @@ namespace MonkSVG {
         // get bounds information from the svg file, ignoring non-pixel values
         
         string numberWithUnitString;
-        regex numberWithUnitPattern( "^(\\d+)(px)?$" );
+        regex numberWithUnitPattern( "^(-?\\d+)(px)?$" );
         
         _handler->_minX = 0.0f;
         if ( root->QueryStringAttribute( "x", &numberWithUnitString ) == TIXML_SUCCESS ) {
