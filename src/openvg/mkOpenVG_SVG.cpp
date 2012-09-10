@@ -112,6 +112,7 @@ namespace MonkSVG {
 	}
 	
 	void OpenVG_SVGHandler::optimize() {
+        
 		if( _batch ) {
 			vgDestroyBatchMNK( _batch );
 			_batch = 0;
@@ -147,6 +148,44 @@ namespace MonkSVG {
 		} vgEndBatchMNK( _batch );
 		
 	}
+    
+    void OpenVG_SVGHandler::dump(void **vertices, size_t *size) {
+        
+        VGBatchMNK temp;
+        temp = vgCreateBatchMNK();
+		
+		vgBeginBatchMNK( temp ); 
+        
+        {
+            
+			// clear the transform stack
+			_transform_stack.clear();
+            
+            // save matrix
+			VGfloat m[9];
+			vgGetMatrix( m );
+            
+			// assume the current openvg matrix is like the camera matrix and should always be applied first
+			Transform2d top;
+			Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
+			pushTransform( top );
+			
+            // draw
+			draw_recursive( _root_group );
+			
+            // restore matrix
+			vgLoadMatrix( m );
+            
+            // clear the transform stack
+            _transform_stack.clear();
+            
+		} 
+        
+        vgDumpBatchMNK( temp, vertices, size );
+        vgEndBatchMNK( temp );
+        vgDestroyBatchMNK( temp );
+        
+    }
 	
 	void OpenVG_SVGHandler::onGroupBegin() {
 		_mode = kGroupParseMode;

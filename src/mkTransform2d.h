@@ -82,8 +82,6 @@ namespace MonkSVG {
                     }
         }
 		
-		
-		
 		void print() {
 			std::cout << ":: Transform2d ::" << std::endl;
 			for( int i = 0; i < 3; i++ ) {
@@ -94,13 +92,14 @@ namespace MonkSVG {
 			}
 		}
 		
-		bool verify() {
-			for ( int i = 0; i < 9; i++ ) {
-				if( std::isnan( m[i] ) )
-				   return false;
-			}
-			return true;
-		}
+//		bool verify() {
+//			for ( int i = 0; i < 9; i++ ) {
+//				if( std::isnan( m[i] ) )
+//				   return false;
+//			}
+//			return true;
+//		}
+        
     };
 
 }
