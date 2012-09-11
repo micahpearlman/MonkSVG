@@ -26,14 +26,16 @@ namespace MonkSVG {
 	}
 	
 	bool SVG::read( const char* data ) {
+        
 		TiXmlDocument doc;
-		
-		
 		doc.Parse( data );
+        
+        if (doc.Error()) {
+            return false;
+        }
 		
 		TiXmlElement* root = doc.FirstChild( "svg" )->ToElement();
-		recursive_parse( root );
-        
+		recursive_parse( root );        
         
         // get bounds information from the svg file, ignoring non-pixel values
         
