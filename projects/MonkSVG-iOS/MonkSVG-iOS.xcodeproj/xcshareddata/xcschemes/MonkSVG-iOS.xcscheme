@@ -2,9 +2,23 @@
 <Scheme
    version = "1.3">
    <BuildAction
-      parallelizeBuildables = "YES"
+      parallelizeBuildables = "NO"
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FAE282A8121A08BB00823BCB"
+               BuildableName = "libMonkVG_iOS_OpenGL.a"
+               BlueprintName = "MonkVG-iOS-OpenGL"
+               ReferencedContainer = "container:../../../MonkVG/projects/MonkVG-iOS/MonkVG-iOS.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
