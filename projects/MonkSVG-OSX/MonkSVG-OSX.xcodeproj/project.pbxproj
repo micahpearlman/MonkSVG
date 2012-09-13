@@ -299,7 +299,7 @@
 		1DEB91F008733DB70010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../MonkVG/Frameworks\"",
@@ -314,6 +314,7 @@
 					"$(inherited)",
 					"\"$(TARGET_BUILD_DIR)/include\"",
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
+					"\"$(DSTROOT)/usr/local/lib/include\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				PUBLIC_HEADERS_FOLDER_PATH = include/MonkSVG;
@@ -324,7 +325,7 @@
 		1DEB91F108733DB70010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../MonkVG/Frameworks\"",
@@ -338,6 +339,7 @@
 					"$(inherited)",
 					"\"$(TARGET_BUILD_DIR)/include\"",
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
+					"\"$(DSTROOT)/usr/local/lib/include\"",
 				);
 				PUBLIC_HEADERS_FOLDER_PATH = include/MonkSVG;
 				SDKROOT = macosx;
