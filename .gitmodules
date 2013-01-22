@@ -1,0 +1,3 @@
+[submodule "thirdparty/monkvg"]
+	path = thirdparty/monkvg
+	url = https://github.com/micahpearlman/MonkVG.git
