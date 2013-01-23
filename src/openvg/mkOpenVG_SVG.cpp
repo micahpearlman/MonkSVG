@@ -181,7 +181,7 @@ namespace MonkSVG {
             
 		} 
         
-        vgDumpBatchMNK( temp, vertices, size );
+        //TODO: vgDumpBatchMNK( temp, vertices, size );
         vgEndBatchMNK( temp );
         vgDestroyBatchMNK( temp );
         
