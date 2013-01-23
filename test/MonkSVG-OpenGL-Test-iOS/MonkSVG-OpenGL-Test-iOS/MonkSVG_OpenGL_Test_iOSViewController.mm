@@ -25,6 +25,9 @@
 #include <openvg/mkOpenVG_SVG.h>
 static MonkSVG::OpenVG_SVGHandler::SmartPtr vgSVGRenderer;
 
+//#define USE_OPENGLES_11
+#define USE_OPENGLES_20
+
 // Uniform index.
 enum {
     UNIFORM_TRANSLATE,
@@ -54,9 +57,11 @@ enum {
 
 - (void)awakeFromNib
 {
-	// NOTE: we currently only support GLES 1.1
+#if defined(USE_OPENGLES_11)
     EAGLContext *aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
-    
+#elif defined(USE_OPENGLES_20)
+    EAGLContext *aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+#endif
     if (!aContext) {
         aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
     }
@@ -121,8 +126,11 @@ enum {
 
 - (void)viewDidLoad {
 	// initialize MonkVG
+#if defined(USE_OPENGLES_11)
 	vgCreateContextMNK( 1024, 768, VG_RENDERING_BACKEND_TYPE_OPENGLES11 );
-	
+#elif defined(USE_OPENGLES_20)
+    vgCreateContextMNK( 1024, 768, VG_RENDERING_BACKEND_TYPE_OPENGLES20 );
+#endif
 	// load an example
 	
 	MonkSVG::ISVGHandler::SmartPtr handler =  MonkSVG::OpenVG_SVGHandler::create();
@@ -152,21 +160,12 @@ enum {
 	// optimize for MonkVG
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
 	vgLoadIdentity();
-	vgSVGRenderer->optimize();
+	//vgSVGRenderer->optimize();
 
 	delete [] buffer;
 	
 	// setup GL projection 
 	glViewport(0,0, 1024, 768);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrthof(0, 1024,		// left, right
-			 0, 768,	// top, botton
-			 -1, 1);		// near value, far value (depth)
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 }
 
@@ -234,16 +233,6 @@ enum {
 	// setup GL projection 
 	glViewport(0,0, 1024, 768);
 	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrthof(0, 1024,		// left, right
-			 0, 768,	// top, botton
-			 -1, 1);		// near value, far value (depth)
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-    
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 	VGfloat clearColor[] = {1,1,1,1};
