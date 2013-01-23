@@ -27,6 +27,7 @@
 		FA739BAF13B27D8700B186A7 /* fish_top.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA739BAE13B27D8700B186A7 /* fish_top.svg */; };
 		FA73CEE613B3EB1600BAA88D /* fish03.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CEE513B3EB1600BAA88D /* fish03.svg */; };
 		FA73CF0413B41B4300BAA88D /* fish02.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CF0313B41B4300BAA88D /* fish02.svg */; };
+		FAF028D616AF17E800E11A04 /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF028D516AF17E800E11A04 /* boost.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		FA739BAE13B27D8700B186A7 /* fish_top.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish_top.svg; sourceTree = "<group>"; };
 		FA73CEE513B3EB1600BAA88D /* fish03.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish03.svg; sourceTree = "<group>"; };
 		FA73CF0313B41B4300BAA88D /* fish02.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish02.svg; sourceTree = "<group>"; };
+		FAF028D516AF17E800E11A04 /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../thirdparty/MonkVG/Frameworks/boost.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAF028D616AF17E800E11A04 /* boost.framework in Frameworks */,
 				FA739B8813B2737500B186A7 /* libMonkSVG_iOS.a in Frameworks */,
 				FA739B8913B2737500B186A7 /* libMonkVG_iOS_OpenGL.a in Frameworks */,
 				FA22100613B2706700305221 /* UIKit.framework in Frameworks */,
@@ -99,6 +102,7 @@
 		FA22100413B2706700305221 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAF028D516AF17E800E11A04 /* boost.framework */,
 				FA22100513B2706700305221 /* UIKit.framework */,
 				FA22100713B2706700305221 /* Foundation.framework */,
 				FA22100913B2706700305221 /* CoreGraphics.framework */,
@@ -291,16 +295,19 @@
 		FA22102E13B2706700305221 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../thirdparty/MonkVG/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = (
 					../../src,
-					../../../MonkVG/include,
-					/opt/local/include,
+					../../../thirdparty/MonkVG/include,
 				);
 				INFOPLIST_FILE = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -317,15 +324,18 @@
 		FA22102F13B2706700305221 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../thirdparty/MonkVG/Frameworks\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = (
 					../../src,
-					../../../MonkVG/include,
-					/opt/local/include,
+					../../../thirdparty/MonkVG/include,
 				);
 				INFOPLIST_FILE = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (

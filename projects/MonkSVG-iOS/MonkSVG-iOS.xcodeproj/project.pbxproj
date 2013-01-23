@@ -20,6 +20,7 @@
 		FAE2841E121B06F000823BCB /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28416121B06F000823BCB /* tinyxmlparser.cpp */; };
 		FAE2841F121B06F000823BCB /* mkSVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE28417121B06F000823BCB /* mkSVG.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAE28420121B06F000823BCB /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28418121B06F000823BCB /* mkSVG.cpp */; };
+		FAF028D816AF1C1C00E11A04 /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF028D716AF1C1C00E11A04 /* boost.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		FAE28416121B06F000823BCB /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		FAE28417121B06F000823BCB /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkSVG.h; path = ../../src/mkSVG.h; sourceTree = SOURCE_ROOT; };
 		FAE28418121B06F000823BCB /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkSVG.cpp; path = ../../src/mkSVG.cpp; sourceTree = SOURCE_ROOT; };
+		FAF028D716AF1C1C00E11A04 /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../thirdparty/MonkVG/Frameworks/boost.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAF028D816AF1C1C00E11A04 /* boost.framework in Frameworks */,
 				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -73,6 +76,7 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAF028D716AF1C1C00E11A04 /* boost.framework */,
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -206,13 +210,15 @@
 		1DEB921F08733DC00010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/MonkSVG_iOS.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../MonkVG/Frameworks\"",
+					"\"$(SRCROOT)/../../thirdparty/MonkVG/Frameworks\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -220,7 +226,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = TIXML_USE_STL;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(TARGET_BUILD_DIR)/include\"",
@@ -230,24 +236,27 @@
 				PRODUCT_NAME = MonkSVG_iOS;
 				PUBLIC_HEADERS_FOLDER_PATH = include/MonkSVG;
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = ../../thirdparty/MonkVG/include;
 			};
 			name = Debug;
 		};
 		1DEB922008733DC00010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				DSTROOT = /tmp/MonkSVG_iOS.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../MonkVG/Frameworks\"",
+					"\"$(SRCROOT)/../../thirdparty/MonkVG/Frameworks\"",
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = TIXML_USE_STL;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(TARGET_BUILD_DIR)/include\"",
@@ -257,6 +266,7 @@
 				PRODUCT_NAME = MonkSVG_iOS;
 				PUBLIC_HEADERS_FOLDER_PATH = include/MonkSVG;
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = ../../thirdparty/MonkVG/include;
 			};
 			name = Release;
 		};
