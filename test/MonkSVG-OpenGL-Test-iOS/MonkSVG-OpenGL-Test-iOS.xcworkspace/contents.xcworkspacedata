@@ -7,4 +7,7 @@
    <FileRef
       location = "group:../../projects/MonkSVG-iOS/MonkSVG-iOS.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:../../thirdparty/MonkVG/projects/MonkVG-iOS/MonkVG-iOS.xcodeproj">
+   </FileRef>
 </Workspace>

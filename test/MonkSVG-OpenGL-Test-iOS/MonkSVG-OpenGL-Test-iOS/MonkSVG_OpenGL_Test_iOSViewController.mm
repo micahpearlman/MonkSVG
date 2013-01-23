@@ -121,7 +121,7 @@ enum {
 
 - (void)viewDidLoad {
 	// initialize MonkVG
-	vgCreateContextSH( 1024, 768 );
+	vgCreateContextMNK( 1024, 768, VG_RENDERING_BACKEND_TYPE_OPENGLES11 );
 	
 	// load an example
 	
