@@ -47,20 +47,27 @@ namespace MonkSVG {
 		
 		// clear out the transform stack
 		_transform_stack.clear();
-		
+
 		float m[9];
 		vgGetMatrix( m );
 		// assume the current openvg matrix is like the camera matrix and should always be applied first
 		Transform2d top;
 		Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
 		pushTransform( top );
-		
+
 		// SVG is origin at the top, left (openvg is origin at the bottom, left)
 		// so need to flip
-//		Transform2d flip;
-//		flip.setScale( 1, -1 );
-//		pushTransform( flip );
-		
+		{
+			Transform2d center;
+			center.setTranslate(0, height() / 2);
+			pushTransform( center );
+			Transform2d flip;
+			flip.setScale( 1, -1 );
+			pushTransform( flip );
+			center.setTranslate(0, height() / -2);
+			pushTransform( center );
+		}
+
 		if( _batch ) {
 			vgLoadMatrix( topTransform().m );
 			vgDrawBatchMNK( _batch );
@@ -135,10 +142,17 @@ namespace MonkSVG {
 			
 			// SVG is origin at the top, left (openvg is origin at the bottom, left)
 			// so need to flip
-			//		Transform2d flip;
-			//		flip.setScale( 1, -1 );
-			//		pushTransform( flip );
-			
+			{
+				Transform2d center;
+				center.setTranslate(0, height() / 2);
+				pushTransform( center );
+				Transform2d flip;
+				flip.setScale( 1, -1 );
+				pushTransform( flip );
+				center.setTranslate(0, height() / -2);
+				pushTransform( center );
+			}
+
 			draw_recursive( _root_group );
 			
 			vgLoadMatrix( m );	// restore matrix
