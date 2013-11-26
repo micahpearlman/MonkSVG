@@ -27,6 +27,7 @@
 		FA739BAF13B27D8700B186A7 /* fish_top.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA739BAE13B27D8700B186A7 /* fish_top.svg */; };
 		FA73CEE613B3EB1600BAA88D /* fish03.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CEE513B3EB1600BAA88D /* fish03.svg */; };
 		FA73CF0413B41B4300BAA88D /* fish02.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CF0313B41B4300BAA88D /* fish02.svg */; };
+		FAD5174C18445595003E2720 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FAD5174B18445595003E2720 /* Default-568h@2x.png */; };
 		FAF028D616AF17E800E11A04 /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF028D516AF17E800E11A04 /* boost.framework */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 		FA739BAE13B27D8700B186A7 /* fish_top.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish_top.svg; sourceTree = "<group>"; };
 		FA73CEE513B3EB1600BAA88D /* fish03.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish03.svg; sourceTree = "<group>"; };
 		FA73CF0313B41B4300BAA88D /* fish02.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish02.svg; sourceTree = "<group>"; };
+		FAD5174B18445595003E2720 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		FAF028D516AF17E800E11A04 /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../thirdparty/MonkVG/Frameworks/boost.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,6 +84,7 @@
 		FA220FF613B2706700305221 = {
 			isa = PBXGroup;
 			children = (
+				FAD5174B18445595003E2720 /* Default-568h@2x.png */,
 				FA739B8613B2737500B186A7 /* libMonkSVG_iOS.a */,
 				FA739B8713B2737500B186A7 /* libMonkVG_iOS_OpenGL.a */,
 				FA22100F13B2706700305221 /* MonkSVG-OpenGL-Test-iOS */,
@@ -205,6 +208,7 @@
 				FA22101413B2706700305221 /* InfoPlist.strings in Resources */,
 				FA22101D13B2706700305221 /* MainWindow.xib in Resources */,
 				FA22101F13B2706700305221 /* Shader.fsh in Resources */,
+				FAD5174C18445595003E2720 /* Default-568h@2x.png in Resources */,
 				FA22102113B2706700305221 /* Shader.vsh in Resources */,
 				FA22102A13B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.xib in Resources */,
 				FA739BAD13B277CE00B186A7 /* tiger.svg in Resources */,
@@ -296,6 +300,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -305,11 +312,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					../../src,
 					../../../thirdparty/MonkVG/include,
 				);
 				INFOPLIST_FILE = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -325,6 +334,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -333,11 +345,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					../../src,
 					../../../thirdparty/MonkVG/include,
 				);
 				INFOPLIST_FILE = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",

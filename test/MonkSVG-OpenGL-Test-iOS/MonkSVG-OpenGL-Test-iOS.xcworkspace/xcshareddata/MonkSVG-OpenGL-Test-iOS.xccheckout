@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>87AA110F-2C4F-4BC5-84CB-51E762DF6BC0</string>
+	<key>IDESourceControlProjectName</key>
+	<string>MonkSVG-OpenGL-Test-iOS</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>0C625562-39C6-44DC-A3D2-552A55A7C7A7</key>
+		<string>https://github.com/micahpearlman/MonkVG.git</string>
+		<key>EB1AA6FA-EB84-4E91-9EB2-860B2DE1A895</key>
+		<string>ssh://github.com/micahpearlman/MonkSVG.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>test/MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>0C625562-39C6-44DC-A3D2-552A55A7C7A7</key>
+		<string>../../../thirdparty/MonkVG</string>
+		<key>EB1AA6FA-EB84-4E91-9EB2-860B2DE1A895</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/micahpearlman/MonkSVG.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>EB1AA6FA-EB84-4E91-9EB2-860B2DE1A895</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>EB1AA6FA-EB84-4E91-9EB2-860B2DE1A895</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MonkSVG</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>0C625562-39C6-44DC-A3D2-552A55A7C7A7</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MonkVG</string>
+		</dict>
+	</array>
+</dict>
+</plist>

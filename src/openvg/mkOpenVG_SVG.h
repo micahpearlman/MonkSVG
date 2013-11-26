@@ -15,6 +15,7 @@
 #include <vector>
 #include <list>
 #include <cmath>
+#include <memory>
 #include <boost/make_shared.hpp>
 #include "mkSVG.h"
 #include "mkTransform2d.h"
@@ -48,7 +49,7 @@ namespace MonkSVG {
 		
 	private:	
 		
-		friend boost::shared_ptr<OpenVG_SVGHandler> boost::make_shared<>();
+		//friend boost::shared_ptr<OpenVG_SVGHandler> std::make_shared<>();
 
 		
 	private:
