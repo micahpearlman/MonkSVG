@@ -192,14 +192,14 @@ namespace MonkSVG {
 		_handler->onPathBegin();
 		
 		
-		float pos[2];
+		float pos[2] = { 0, 0 };
 		if ( pathElement->QueryFloatAttribute( "x", &pos[0] ) == TIXML_SUCCESS ) {
 			//parse_path_d( d );
 		}
 		if ( pathElement->QueryFloatAttribute( "y", &pos[1] ) == TIXML_SUCCESS ) {
 			//parse_path_d( d );
 		}
-		float sz[2];
+		float sz[2] = { 0, 0 };
 		if ( pathElement->QueryFloatAttribute( "width", &sz[0] ) == TIXML_SUCCESS ) {
 			//parse_path_d( d );
 		}
@@ -292,12 +292,12 @@ namespace MonkSVG {
 			(*str)++;
 		}
 		
-		return strtol( c, str, 10);
+		return (int)strtol( c, str, 10);
 		
 	}
 	
 	uint32_t SVG::string_hex_color_to_uint( string& hexstring ) {
-		uint32_t color = strtol( hexstring.c_str() + 1, 0, 16 );
+		uint32_t color = (uint32_t)strtol( hexstring.c_str() + 1, 0, 16 );
 		if ( hexstring.length() == 7 ) {	// fix up to rgba if the color is only rgb
 			color = color << 8;
 			color |= 0x000000ff;
