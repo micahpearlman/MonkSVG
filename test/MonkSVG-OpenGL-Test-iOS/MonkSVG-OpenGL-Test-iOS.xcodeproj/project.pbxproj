@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA169A12184D615A007EFBF0 /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA169A11184D6159007EFBF0 /* boost.framework */; };
 		FA22100613B2706700305221 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100513B2706700305221 /* UIKit.framework */; };
 		FA22100813B2706700305221 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100713B2706700305221 /* Foundation.framework */; };
 		FA22100A13B2706700305221 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100913B2706700305221 /* CoreGraphics.framework */; };
@@ -28,10 +29,10 @@
 		FA73CEE613B3EB1600BAA88D /* fish03.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CEE513B3EB1600BAA88D /* fish03.svg */; };
 		FA73CF0413B41B4300BAA88D /* fish02.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CF0313B41B4300BAA88D /* fish02.svg */; };
 		FAD5174C18445595003E2720 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FAD5174B18445595003E2720 /* Default-568h@2x.png */; };
-		FAF028D616AF17E800E11A04 /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF028D516AF17E800E11A04 /* boost.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA169A11184D6159007EFBF0 /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = "../../thirdparty/boost-ios/boost.framework"; sourceTree = "<group>"; };
 		FA22100113B2706700305221 /* MonkSVG-OpenGL-Test-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MonkSVG-OpenGL-Test-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA22100513B2706700305221 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FA22100713B2706700305221 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -67,7 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAF028D616AF17E800E11A04 /* boost.framework in Frameworks */,
+				FA169A12184D615A007EFBF0 /* boost.framework in Frameworks */,
 				FA739B8813B2737500B186A7 /* libMonkSVG_iOS.a in Frameworks */,
 				FA739B8913B2737500B186A7 /* libMonkVG_iOS_OpenGL.a in Frameworks */,
 				FA22100613B2706700305221 /* UIKit.framework in Frameworks */,
@@ -105,6 +106,7 @@
 		FA22100413B2706700305221 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA169A11184D6159007EFBF0 /* boost.framework */,
 				FAF028D516AF17E800E11A04 /* boost.framework */,
 				FA22100513B2706700305221 /* UIKit.framework */,
 				FA22100713B2706700305221 /* Foundation.framework */,
@@ -181,6 +183,7 @@
 		FA220FF813B2706700305221 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Zero Vision";
 			};
 			buildConfigurationList = FA220FFB13B2706700305221 /* Build configuration list for PBXProject "MonkSVG-OpenGL-Test-iOS" */;
@@ -265,7 +268,6 @@
 		FA22102B13B2706700305221 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -275,6 +277,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -283,7 +286,6 @@
 		FA22102C13B2706700305221 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
@@ -300,13 +302,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../thirdparty/MonkVG/Frameworks\"",
+					"\\\"$(SRCROOT)/../../thirdparty/MonkVG/Frameworks\\\"",
+					"/Users/micahpearlman/dev/personal/MonkSVG/thirdparty/boost-ios",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -334,13 +336,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../thirdparty/MonkVG/Frameworks\"",
+					"\\\"$(SRCROOT)/../../thirdparty/MonkVG/Frameworks\\\"",
+					"/Users/micahpearlman/dev/personal/MonkSVG/thirdparty/boost-ios",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Prefix.pch";
