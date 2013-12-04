@@ -23,6 +23,8 @@
     BOOL animating;
     NSInteger animationFrameInterval;
     CADisplayLink *displayLink;
+    
+    CGPoint translation;
 }
 
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;

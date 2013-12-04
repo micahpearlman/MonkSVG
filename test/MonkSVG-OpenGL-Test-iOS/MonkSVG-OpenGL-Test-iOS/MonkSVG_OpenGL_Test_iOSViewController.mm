@@ -126,11 +126,16 @@ enum {
 
 - (void)viewDidLoad {
 	// initialize MonkVG
+    float width = self.view.bounds.size.width * self.view.contentScaleFactor;
+    float height = self.view.bounds.size.height * self.view.contentScaleFactor;
 #if defined(USE_OPENGLES_11)
-	vgCreateContextMNK( 1024, 768, VG_RENDERING_BACKEND_TYPE_OPENGLES11 );
+	vgCreateContextMNK( width, height, VG_RENDERING_BACKEND_TYPE_OPENGLES11 );
 #elif defined(USE_OPENGLES_20)
-    vgCreateContextMNK( 1024, 768, VG_RENDERING_BACKEND_TYPE_OPENGLES20 );
+    vgCreateContextMNK( width, height, VG_RENDERING_BACKEND_TYPE_OPENGLES20 );
 #endif
+    
+    [self addGestureRecognizers];
+    
 	// load an example
 	
 	MonkSVG::ISVGHandler::SmartPtr handler =  MonkSVG::OpenVG_SVGHandler::create();
@@ -163,10 +168,6 @@ enum {
 	//vgSVGRenderer->optimize();
 
 	delete [] buffer;
-	
-	// setup GL projection 
-	glViewport(0,0, 1024, 768);
-
 }
 
 - (void)viewDidUnload
@@ -228,20 +229,36 @@ enum {
 
 - (void)drawFrame
 {
-    [(EAGLView *)self.view setFramebuffer];
-	
-	// setup GL projection 
-	glViewport(0,0, 1024, 768);
+    EAGLView *eaglView = (EAGLView *)self.view;
+    BOOL recreated = [eaglView setFramebuffer];
+    
+    if (recreated) {
+        vgResizeSurfaceMNK(eaglView.framebufferWidth, eaglView.framebufferHeight);
+    }
 	
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 	VGfloat clearColor[] = {1,1,1,1};
 	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
 	
-	
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
 	vgLoadIdentity();
-	//	vgTranslate( 500, 500 );
+    vgScale(self.view.contentScaleFactor, -self.view.contentScaleFactor);
+    vgTranslate(0, [(EAGLView *)self.view framebufferHeight]);
+    
+    VGfloat xf[9];
+    vgGetMatrix(xf);
+    vgScale(5.0f, 5.0f);
+	vgTranslate(translation.x * self.view.contentScaleFactor,
+                -translation.y * self.view.contentScaleFactor);
+    vgSVGRenderer->draw();
+    vgLoadMatrix(xf);
+    
+    float scale = 0.1f + 2 * fabs(sinf(CACurrentMediaTime()));
+    vgScale(scale, scale);
+    vgTranslate(300 + 200 * sinf(5 * CACurrentMediaTime()),
+                200 * cosf(5 * CACurrentMediaTime()));
+    
     vgSVGRenderer->draw();
 	
     [(EAGLView *)self.view presentFramebuffer];
@@ -400,6 +417,24 @@ enum {
         glDeleteShader(fragShader);
     
     return TRUE;
+}
+
+#pragma mark - Gesture handlers
+
+- (void) addGestureRecognizers {
+    UIPanGestureRecognizer *oneFingerPan =
+    [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(oneFingerPan:)];
+    [self.view addGestureRecognizer:oneFingerPan];
+    [oneFingerPan release];
+}
+
+- (void) oneFingerPan:(UIPanGestureRecognizer *) recognizer {
+    CGPoint location = [recognizer translationInView:self.view];
+    translation.x += location.x;
+    translation.y += location.y;
+    
+    //Reset recognizer so change doesn't accumulate
+    [recognizer setTranslation:CGPointZero inView:self.view];
 }
 
 @end
