@@ -9,9 +9,15 @@
 
 #ifndef __SVG_H__
 #define __SVG_H__
+#if defined(MONKSVG_USE_MONKVG)
 #include <MonkVG/openvg.h>
 #include <MonkVG/vgu.h>
 #include <MonkVG/vgext.h>
+#else
+#include <VG/openvg.h>
+#include <VG/vgu.h>
+#include <VG/vgext.h>
+#endif
 #include <vector>
 #include <list>
 #include <cmath>

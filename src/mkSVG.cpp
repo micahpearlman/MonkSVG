@@ -13,7 +13,9 @@
 #include <iterator>
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
+#if !defined(AVOID_LINKING_BOOST)
 #include <boost/regex.hpp>
+#endif
 using namespace boost;
 
 namespace MonkSVG {
@@ -23,6 +25,24 @@ namespace MonkSVG {
 		_handler = handler;
 		
 		return true;
+	}
+
+	static float findNumberWithUnit(string _s, int _default = std::numeric_limits<int>::min())
+	{
+#if defined(AVOID_LINKING_BOOST)
+		if (_s[_s.size() - 1] == 'x' && _s[_s.size() - 2] == 'p')
+			_s.resize(_s.size() - 2);
+		for (int i = 0; i < _s.size(); ++i)
+			if ((i || _s[i] != '-') && !isdigit(_s[i]))
+				return _default;
+		return atof(_s.c_str());
+#else
+        static regex s_numberWithUnitPattern( "^(-?\\d+)(px)?$" );
+        match_results<string::const_iterator> matches;
+        if ( regex_search( _s, matches, s_numberWithUnitPattern ) ) {
+            return ::atof( matches[1].str().c_str() );
+        }
+#endif
 	}
 	
 	bool SVG::read( const char* data ) {
@@ -38,47 +58,32 @@ namespace MonkSVG {
 		recursive_parse( root );        
         
         // get bounds information from the svg file, ignoring non-pixel values
-        
         string numberWithUnitString;
-        regex numberWithUnitPattern( "^(-?\\d+)(px)?$" );
-        
+
         _handler->_minX = 0.0f;
         if ( root->QueryStringAttribute( "x", &numberWithUnitString ) == TIXML_SUCCESS ) {
-            match_results<string::const_iterator> matches;
-            if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
-                _handler->_minX = ::atof( matches[1].str().c_str() );
-            }
+			_handler->_minX = findNumberWithUnit( numberWithUnitString, _handler->_minX );
         }
         
         _handler->_minY = 0.0f;
         if ( root->QueryStringAttribute( "y", &numberWithUnitString ) == TIXML_SUCCESS ) {
-            match_results<string::const_iterator> matches;
-            if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
-                _handler->_minY = ::atof( matches[1].str().c_str() );
-            }
+			_handler->_minY = findNumberWithUnit( numberWithUnitString, _handler->_minY );
         }
         
         _handler->_width = 0.0f;
         if ( root->QueryStringAttribute( "width", &numberWithUnitString ) == TIXML_SUCCESS ) {
-            match_results<string::const_iterator> matches;
-            if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
-                _handler->_width = ::atof( matches[1].str().c_str() );
-            }
+			_handler->_width = findNumberWithUnit( numberWithUnitString, _handler->_width );
         }
         
         _handler->_height = 0.0f;
         if ( root->QueryStringAttribute( "height", &numberWithUnitString ) == TIXML_SUCCESS ) {
-            match_results<string::const_iterator> matches;
-            if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
-                _handler->_height = ::atof( matches[1].str().c_str() );
-            }
+			_handler->_height = findNumberWithUnit( numberWithUnitString, _handler->_height );
         }
-		
 		return true;
 		
 	}
 	
-	bool SVG::read( string& data ) {
+	bool SVG::read( string const& data ) {
 		return read( data.c_str() );
 	}
 	

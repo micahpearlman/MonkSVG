@@ -15,8 +15,9 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <stdint.h>
+#include <limits>
 #include <boost/shared_ptr.hpp>
-
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -93,10 +94,10 @@ namespace MonkSVG {
 	protected:
 		
 		ISVGHandler() 
-		:	_minX( MAXFLOAT )
-		,	_minY( MAXFLOAT )
-		,	_width( -MAXFLOAT )
-		,	_height( -MAXFLOAT ) 
+		:	_minX( std::numeric_limits<float>::max() )
+		,	_minY( std::numeric_limits<float>::max() )
+		,	_width( std::numeric_limits<float>::min() )
+		,	_height( std::numeric_limits<float>::min() ) 
 		{
 			
 		}
@@ -117,7 +118,7 @@ namespace MonkSVG {
 	public:
 		
 		bool initialize( ISVGHandler::SmartPtr handler );
-		bool read( string& data );
+		bool read( string const& data );
 		bool read( const char* data );
 
 	private:
