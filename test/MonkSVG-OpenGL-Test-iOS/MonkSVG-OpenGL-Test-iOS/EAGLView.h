@@ -29,8 +29,10 @@
 }
 
 @property (nonatomic, retain) EAGLContext *context;
+@property (nonatomic, readonly) GLint framebufferWidth;
+@property (nonatomic, readonly) GLint framebufferHeight;
 
-- (void)setFramebuffer;
+- (BOOL)setFramebuffer;
 - (BOOL)presentFramebuffer;
 
 @end

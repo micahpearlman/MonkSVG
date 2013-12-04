@@ -7,10 +7,9 @@
 //
 
 #import "MonkSVG_OpenGL_Test_iOSAppDelegate.h"
-
 #import "EAGLView.h"
-
 #import "MonkSVG_OpenGL_Test_iOSViewController.h"
+#import "ARCMacro.h"
 
 @implementation MonkSVG_OpenGL_Test_iOSAppDelegate
 
@@ -70,9 +69,9 @@
 
 - (void)dealloc
 {
-	[_window release];
-	[_viewController release];
-    [super dealloc];
+	[_window RELEASE];
+	[_viewController RELEASE];
+    [super DEALLOC];
 }
 
 @end

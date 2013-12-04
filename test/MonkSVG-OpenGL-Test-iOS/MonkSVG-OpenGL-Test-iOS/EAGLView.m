@@ -7,8 +7,8 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
-
 #import "EAGLView.h"
+#import "ARCMacro.h"
 
 @interface EAGLView (PrivateMethods)
 - (void)createFramebuffer;
@@ -18,6 +18,8 @@
 @implementation EAGLView
 
 @synthesize context;
+@synthesize framebufferWidth;
+@synthesize framebufferHeight;
 
 // You must implement this method
 + (Class)layerClass
@@ -37,6 +39,7 @@
                                         [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking,
                                         kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
                                         nil];
+        eaglLayer.contentsScale = [UIScreen mainScreen].scale;  // support for Retina screen
     }
     
     return self;
@@ -45,9 +48,9 @@
 - (void)dealloc
 {
     [self deleteFramebuffer];    
-    [context release];
+    [context RELEASE];
     
-    [super dealloc];
+    [super DEALLOC];
 }
 
 - (void)setContext:(EAGLContext *)newContext
@@ -55,8 +58,8 @@
     if (context != newContext) {
         [self deleteFramebuffer];
         
-        [context release];
-        context = [newContext retain];
+        [context RELEASE];
+        context = [newContext RETAIN];
         
         [EAGLContext setCurrentContext:nil];
     }
@@ -102,18 +105,24 @@
     }
 }
 
-- (void)setFramebuffer
+- (BOOL)setFramebuffer
 {
+    BOOL recreated = FALSE;
+    
     if (context) {
         [EAGLContext setCurrentContext:context];
         
-        if (!defaultFramebuffer)
+        if (!defaultFramebuffer) {
             [self createFramebuffer];
+            recreated = TRUE;
+        }
         
         glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
         
         glViewport(0, 0, framebufferWidth, framebufferHeight);
     }
+    
+    return recreated;
 }
 
 - (BOOL)presentFramebuffer

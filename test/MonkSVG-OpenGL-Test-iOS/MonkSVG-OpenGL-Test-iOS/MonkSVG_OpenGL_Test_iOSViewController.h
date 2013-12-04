@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ARCMacro.h"
 
 #import <OpenGLES/EAGL.h>
-
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 #import <OpenGLES/ES2/gl.h>
@@ -17,12 +17,14 @@
 
 @interface MonkSVG_OpenGL_Test_iOSViewController : UIViewController {
 @private
-    EAGLContext *context;
+    //EAGLContext *context;
     GLuint program;
     
     BOOL animating;
     NSInteger animationFrameInterval;
-    CADisplayLink *displayLink;
+    //CADisplayLink *displayLink;
+    
+    CGPoint translation;
 }
 
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
