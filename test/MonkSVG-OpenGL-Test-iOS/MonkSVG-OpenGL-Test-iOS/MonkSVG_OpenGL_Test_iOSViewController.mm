@@ -10,6 +10,7 @@
 
 #import "MonkSVG_OpenGL_Test_iOSViewController.h"
 #import "EAGLView.h"
+#import "ARCMacro.h"
 
 /// std
 #include <string>
@@ -72,7 +73,7 @@ enum {
         NSLog(@"Failed to set ES context current");
     
 	self.context = aContext;
-	[aContext release];
+	[aContext RELEASE];
 	
     [(EAGLView *)self.view setContext:context];
     [(EAGLView *)self.view setFramebuffer];
@@ -97,9 +98,9 @@ enum {
     if ([EAGLContext currentContext] == context)
         [EAGLContext setCurrentContext:nil];
     
-    [context release];
+    [context RELEASE];
     
-    [super dealloc];
+    [super DEALLOC];
 }
 
 - (void)didReceiveMemoryWarning
@@ -425,7 +426,7 @@ enum {
     UIPanGestureRecognizer *oneFingerPan =
     [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(oneFingerPan:)];
     [self.view addGestureRecognizer:oneFingerPan];
-    [oneFingerPan release];
+    [oneFingerPan RELEASE];
 }
 
 - (void) oneFingerPan:(UIPanGestureRecognizer *) recognizer {

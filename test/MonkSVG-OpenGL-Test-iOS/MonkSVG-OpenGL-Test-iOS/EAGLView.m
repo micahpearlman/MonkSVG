@@ -7,8 +7,8 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
-
 #import "EAGLView.h"
+#import "ARCMacro.h"
 
 @interface EAGLView (PrivateMethods)
 - (void)createFramebuffer;
@@ -48,9 +48,9 @@
 - (void)dealloc
 {
     [self deleteFramebuffer];    
-    [context release];
+    [context RELEASE];
     
-    [super dealloc];
+    [super DEALLOC];
 }
 
 - (void)setContext:(EAGLContext *)newContext
@@ -58,8 +58,8 @@
     if (context != newContext) {
         [self deleteFramebuffer];
         
-        [context release];
-        context = [newContext retain];
+        [context RELEASE];
+        context = [newContext RETAIN];
         
         [EAGLContext setCurrentContext:nil];
     }
