@@ -117,6 +117,9 @@ namespace MonkSVG {
 		} else if ( type == "rect" ) {
 			handle_rect( element );
 			return true;
+		} else if ( type == "polygon" ) {
+			handle_polygon ( element );
+			return true;
 		} else if( type == "symbol" ) {
 			string id;
 			if ( element->QueryStringAttribute( "id", &id ) == TIXML_SUCCESS ) {
@@ -214,6 +217,18 @@ namespace MonkSVG {
 		
 		_handler->onPathEnd();		
 		
+	}
+
+	void SVG::handle_polygon( TiXmlElement* pathElement ) {
+		_handler->onPathBegin();
+		string points;
+		if ( pathElement->QueryStringAttribute( "points", &points ) == TIXML_SUCCESS ) {
+			parse_points( points );
+		}
+
+		handle_general_parameter( pathElement );
+
+		_handler->onPathEnd();
 	}
 	
 	void SVG::handle_general_parameter( TiXmlElement* pathElement ) {
@@ -556,4 +571,25 @@ namespace MonkSVG {
 		
 	}
 
+	void SVG::parse_points( string& points ) {
+		char_separator<char> sep(", \t");
+		tokenizer<char_separator<char>> tokens(points,sep);
+		float xy[2];
+		int xy_offset = 0;  // 0:x, 1:y
+		bool first = true;
+		_handler->setRelative(false);
+		BOOST_FOREACH( string p, tokens ) {
+			xy[xy_offset++] = (float)atof(p.c_str());
+
+			if (xy_offset == 2) {
+				xy_offset = 0;
+				if (first) {
+					_handler->onPathMoveTo( xy[0], xy[1] );
+					first = false;
+				} else
+					_handler->onPathLineTo( xy[0], xy[1] );
+			}
+		}
+		_handler->onPathClose();
+	}
 };
