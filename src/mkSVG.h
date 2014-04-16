@@ -133,10 +133,12 @@ namespace MonkSVG {
 		void handle_group( TiXmlElement* pathElement ); 
 		void handle_path( TiXmlElement* pathElement );
 		void handle_rect( TiXmlElement* pathElement );
+		void handle_polygon( TiXmlElement* pathElement );
 		void handle_general_parameter( TiXmlElement* pathElement );
 		void parse_path_d( string& ps );
 		void parse_path_style( string& ps );
 		void parse_path_transform( string& tr );
+		void parse_points( string& points );
 		uint32_t string_hex_color_to_uint( string& hexstring );
 		float d_string_to_float( char *c, char **str );
 		int d_string_to_int( char *c, char **str );
