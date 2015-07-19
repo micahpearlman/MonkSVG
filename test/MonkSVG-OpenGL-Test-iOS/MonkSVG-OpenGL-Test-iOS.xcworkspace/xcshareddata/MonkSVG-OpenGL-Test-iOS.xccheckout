@@ -10,33 +10,33 @@
 	<string>MonkSVG-OpenGL-Test-iOS</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>0C625562-39C6-44DC-A3D2-552A55A7C7A7</key>
+		<key>CE7EAAB23EF5E7F703F880A6796116398043A6DD</key>
 		<string>https://github.com/micahpearlman/MonkVG.git</string>
-		<key>EB1AA6FA-EB84-4E91-9EB2-860B2DE1A895</key>
+		<key>D1B2DFC5F8E02FAB8147981B5D7FBB4E3E2A9A18</key>
 		<string>ssh://github.com/micahpearlman/MonkSVG.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>test/MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>0C625562-39C6-44DC-A3D2-552A55A7C7A7</key>
+		<key>CE7EAAB23EF5E7F703F880A6796116398043A6DD</key>
 		<string>../../../thirdparty/MonkVG</string>
-		<key>EB1AA6FA-EB84-4E91-9EB2-860B2DE1A895</key>
+		<key>D1B2DFC5F8E02FAB8147981B5D7FBB4E3E2A9A18</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://github.com/micahpearlman/MonkSVG.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>EB1AA6FA-EB84-4E91-9EB2-860B2DE1A895</string>
+	<string>D1B2DFC5F8E02FAB8147981B5D7FBB4E3E2A9A18</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>EB1AA6FA-EB84-4E91-9EB2-860B2DE1A895</string>
+			<string>D1B2DFC5F8E02FAB8147981B5D7FBB4E3E2A9A18</string>
 			<key>IDESourceControlWCCName</key>
 			<string>MonkSVG</string>
 		</dict>
@@ -44,7 +44,7 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>0C625562-39C6-44DC-A3D2-552A55A7C7A7</string>
+			<string>CE7EAAB23EF5E7F703F880A6796116398043A6DD</string>
 			<key>IDESourceControlWCCName</key>
 			<string>MonkVG</string>
 		</dict>
