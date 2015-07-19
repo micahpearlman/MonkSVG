@@ -143,7 +143,10 @@ namespace MonkSVG {
 			VGfloat		stroke_width;
 			Transform2d transform;
 			std::string id;
-			
+            VGfloat     stroke_miterlimit;
+            VGint       stroke_linejoin;
+            VGint       stroke_capStyle;
+            
 			path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
 				
 			}

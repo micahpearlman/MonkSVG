@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -10,7 +10,7 @@
  * \date   08.11.2008
  *
  * \brief  This header is the Boost.Log library implementation, see the library documentation
- *         at http://www.boost.org/libs/log/doc/log.html.
+ *         at http://www.boost.org/doc/libs/release/libs/log/doc/html/index.html.
  */
 
 #ifndef BOOST_LOG_DETAIL_CODE_CONVERSION_HPP_INCLUDED_
@@ -21,7 +21,7 @@
 #include <boost/log/detail/config.hpp>
 #include <boost/log/detail/header.hpp>
 
-#ifdef BOOST_LOG_HAS_PRAGMA_ONCE
+#ifdef BOOST_HAS_PRAGMA_ONCE
 #pragma once
 #endif
 
@@ -35,6 +35,9 @@ namespace aux {
 BOOST_LOG_API void code_convert(const wchar_t* str1, std::size_t len, std::string& str2, std::locale const& loc = std::locale());
 //! The function converts one string to the character type of another
 BOOST_LOG_API void code_convert(const char* str1, std::size_t len, std::wstring& str2, std::locale const& loc = std::locale());
+
+// Note: MSVC 2015 (aka VC14) implement char16_t and char32_t types but not codecvt locale facets
+#if !defined(BOOST_MSVC)
 #if !defined(BOOST_NO_CXX11_CHAR16_T)
 //! The function converts one string to the character type of another
 BOOST_LOG_API void code_convert(const char16_t* str1, std::size_t len, std::string& str2, std::locale const& loc = std::locale());
@@ -47,6 +50,7 @@ BOOST_LOG_API void code_convert(const char32_t* str1, std::size_t len, std::stri
 //! The function converts one string to the character type of another
 BOOST_LOG_API void code_convert(const char* str1, std::size_t len, std::u32string& str2, std::locale const& loc = std::locale());
 #endif
+#endif // !defined(BOOST_MSVC)
 
 //! The function converts one string to the character type of another
 template< typename CharT, typename SourceTraitsT, typename SourceAllocatorT, typename TargetTraitsT, typename TargetAllocatorT >

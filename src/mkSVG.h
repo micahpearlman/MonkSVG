@@ -16,17 +16,21 @@
 #include <map>
 #include <cmath>
 #include <boost/shared_ptr.hpp>
-
+#include "stylesheet/Parser.h"
 
 class TiXmlDocument;
 class TiXmlElement;
 
+
+
 namespace MonkSVG {
-	using namespace std;
+
+    using namespace std;
+    using namespace StyleSheet;
     
     class SVG;
-	
-	class ISVGHandler {
+
+    class ISVGHandler {
 	public:
 		
 		typedef boost::shared_ptr<ISVGHandler> SmartPtr;
@@ -107,7 +111,6 @@ namespace MonkSVG {
 		float _height;	
 		
 		friend class SVG;
-		
 	private:
 		bool _relative;
 		
@@ -127,17 +130,22 @@ namespace MonkSVG {
 		// holds svg <symbols>
 		map<string, TiXmlElement*>	_symbols;
 		
+        // CSS StyleSheet Document
+        CssDocument _styleDocument;
+        
 	private:
 		void recursive_parse( TiXmlElement* element );
 		bool handle_xml_element( TiXmlElement* element );
-		void handle_group( TiXmlElement* pathElement ); 
+		void handle_group( TiXmlElement* pathElement );
+   		void handle_stylesheet( TiXmlElement* pathElement );
 		void handle_path( TiXmlElement* pathElement );
 		void handle_rect( TiXmlElement* pathElement );
 		void handle_polygon( TiXmlElement* pathElement );
 		void handle_general_parameter( TiXmlElement* pathElement );
 		void parse_path_d( string& ps );
 		void parse_path_style( string& ps );
-		void parse_path_transform( string& tr );
+		void parse_path_stylesheet( string ps );
+        void parse_path_transform( string& tr );
 		void parse_points( string& points );
 		uint32_t string_hex_color_to_uint( string& hexstring );
 		float d_string_to_float( char *c, char **str );

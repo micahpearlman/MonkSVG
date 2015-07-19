@@ -4,6 +4,11 @@
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
+// This file was modified by Oracle on 2015.
+// Modifications copyright (c) 2015 Oracle and/or its affiliates.
+
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -14,6 +19,8 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_CARTESIAN_CENTROID_BASHEIN_DETMER_HPP
 #define BOOST_GEOMETRY_STRATEGIES_CARTESIAN_CENTROID_BASHEIN_DETMER_HPP
 
+
+#include <cstddef>
 
 #include <boost/mpl/if.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -38,17 +45,26 @@ namespace strategy { namespace centroid
 
 
 /*!
-\brief Centroid calculation using algorith Bashein / Detmer
+\brief Centroid calculation using algorithm Bashein / Detmer
 \ingroup strategies
 \details Calculates centroid using triangulation method published by
     Bashein / Detmer
 \tparam Point point type of centroid to calculate
 \tparam PointOfSegment point type of segments, defaults to Point
-\par Concepts for Point and PointOfSegment:
-- specialized point_traits class
+\tparam CalculationType \tparam_calculation
+
 \author Adapted from  "Centroid of a Polygon" by
     Gerard Bashein and Paul R. Detmer<em>,
 in "Graphics Gems IV", Academic Press, 1994</em>
+
+
+\qbk{
+[heading See also]
+[link geometry.reference.algorithms.centroid.centroid_3_with_strategy centroid (with strategy)]
+}
+*/
+
+/*
 \par Research notes
 The algorithm gives the same results as Oracle and PostGIS but
     differs from MySQL
@@ -100,12 +116,6 @@ Statements:
         , mdsys.sdo_dim_array(mdsys.sdo_dim_element('x',0,10,.00000005)
         ,mdsys.sdo_dim_element('y',0,10,.00000005)))
         from dual
-
-\qbk{
-[heading See also]
-[link geometry.reference.algorithms.centroid.centroid_3_with_strategy centroid (with strategy)]
-}
-
  */
 template
 <
@@ -140,7 +150,7 @@ private :
     class sums
     {
         friend class bashein_detmer;
-        int count;
+        std::size_t count;
         calculation_type sum_a2;
         calculation_type sum_x;
         calculation_type sum_y;
@@ -151,9 +161,7 @@ private :
             , sum_a2(calculation_type())
             , sum_x(calculation_type())
             , sum_y(calculation_type())
-        {
-            typedef calculation_type ct;
-        }
+        {}
     };
 
 public :

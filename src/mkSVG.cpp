@@ -14,7 +14,12 @@
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/regex.hpp>
+#include <boost/algorithm/string.hpp>
+#include "Parser.h"
+#include "Document.h"
+
 using namespace boost;
+using namespace StyleSheet;
 
 namespace MonkSVG {
 	
@@ -73,7 +78,7 @@ namespace MonkSVG {
                 _handler->_height = ::atof( matches[1].str().c_str() );
             }
         }
-		
+        
 		return true;
 		
 	}
@@ -107,8 +112,12 @@ namespace MonkSVG {
 			return false;
 		
 		string type = element->Value();
-		
-		if ( type == "g" ) {
+
+        if (type == "style") {
+            handle_stylesheet(element);
+            return false;
+        }
+        else if ( type == "g" ) {
 			handle_group( element );
 			return true;
 		} else if ( type == "path" ) {
@@ -142,7 +151,12 @@ namespace MonkSVG {
 		return false;
 
 	}
-	
+	void SVG::handle_stylesheet( TiXmlElement* pathElement ) {
+        if (pathElement->GetText()) {
+            parse_path_stylesheet(pathElement->GetText());
+        }
+    }
+    
 	void SVG::handle_group( TiXmlElement* pathElement ) {
 		string id_;
 //		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
@@ -254,6 +268,71 @@ namespace MonkSVG {
 			parse_path_style( style );
 		}
 		
+        string strClass;
+        if ( pathElement->QueryStringAttribute( "class", &strClass) == TIXML_SUCCESS) {
+            
+            if (_styleDocument.getElementCount()) {
+                
+                CssElement theElement = _styleDocument.getElement(CssSelector::CssClassSelector(strClass));
+                
+                if (theElement.getPropertyCount()) {
+                    
+                    CssProperty property = theElement.getProperties().getProperty("stroke");
+                    std::string value = property.getValue();
+                    
+                    if ( !value.empty() ) {
+                        if( value != "none" )
+                            _handler->onPathStrokeColor( string_hex_color_to_uint( value ) );
+                    }
+                    
+                    property = theElement.getProperties().getProperty("stroke-width");
+                    value = property.getValue();
+                    if ( !value.empty() ) {
+                        float width = atof( value.c_str() );
+                        _handler->onPathStrokeWidth( width );
+                    }
+                    
+                    property = theElement.getProperties().getProperty("fill-rule");
+                    value = property.getValue();
+                    if ( !value.empty() ) {
+                        _handler->onPathFillRule( value );
+                    }
+                    
+                    property = theElement.getProperties().getProperty("fill-opacity");
+                    value = property.getValue();
+                    if ( !value.empty() ) {
+                        float o = atof( value.c_str() );
+                        _handler->onPathFillOpacity( o );
+                    }
+                    
+                    property = theElement.getProperties().getProperty("opacity");
+                    value = property.getValue();
+                    if ( !value.empty() ) {
+                        float o = atof( value.c_str() );
+                        _handler->onPathFillOpacity( o );
+                    }
+                    
+                    
+                    property = theElement.getProperties().getProperty("stroke-opacity");
+                    value = property.getValue();
+                    if ( !value.empty() ) {
+                        float o = atof( value.c_str() );
+                        _handler->onPathStrokeOpacity( o );
+                    }
+                    
+                    property = theElement.getProperties().getProperty("fill");
+                    value = property.getValue();
+                    
+                    if ( !value.empty() ) {
+                        if( value != "none" )
+                            _handler->onPathFillColor( string_hex_color_to_uint( value ) );
+                    }
+                }
+                
+            }
+            
+        }
+        
 		string transform;
 		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
 			parse_path_transform( transform );
@@ -261,7 +340,7 @@ namespace MonkSVG {
 		string id_;
 		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
 			_handler->onId( id_ );
-			//cout << id_ << endl;
+			cout << id_ << endl;
 		}
 		
 		string opacity;
@@ -510,6 +589,12 @@ namespace MonkSVG {
 		}
 	}
 	
+    void SVG::parse_path_stylesheet( string ps ) {
+
+        _styleDocument = CssDocument::parse(ps);
+        
+    }
+    
 	// semicolon-separated property declarations of the form "name : value" within the ‘style’ attribute
 	void SVG::parse_path_style( string& ps ) {
 		map< string, string > style_key_values;
@@ -521,7 +606,7 @@ namespace MonkSVG {
 			tokenizer<char_separator<char> >::iterator k = key_value_tokens.begin();
 			tokenizer<char_separator<char> >::iterator v = k;
 			v++;
-			//cout << *k << ":" << *v << endl;
+			cout << *k << ":" << *v << endl;
 			style_key_values[*k] = *v;
 		}
 		
@@ -573,7 +658,7 @@ namespace MonkSVG {
 
 	void SVG::parse_points( string& points ) {
 		char_separator<char> sep(", \t");
-		tokenizer<char_separator<char>> tokens(points,sep);
+		tokenizer<char_separator<char> > tokens(points,sep);
 		float xy[2];
 		int xy_offset = 0;  // 0:x, 1:y
 		bool first = true;

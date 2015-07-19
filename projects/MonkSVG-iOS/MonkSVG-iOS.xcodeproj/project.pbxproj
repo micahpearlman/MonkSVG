@@ -21,6 +21,13 @@
 		FAE2841E121B06F000823BCB /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28416121B06F000823BCB /* tinyxmlparser.cpp */; };
 		FAE2841F121B06F000823BCB /* mkSVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAE28417121B06F000823BCB /* mkSVG.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAE28420121B06F000823BCB /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAE28418121B06F000823BCB /* mkSVG.cpp */; };
+		FF932CA61B5A9C3800A1EAD3 /* Document.h in Headers */ = {isa = PBXBuildFile; fileRef = FF932C9F1B5A9C3800A1EAD3 /* Document.h */; };
+		FF932CA71B5A9C3800A1EAD3 /* Element.h in Headers */ = {isa = PBXBuildFile; fileRef = FF932CA01B5A9C3800A1EAD3 /* Element.h */; };
+		FF932CA81B5A9C3800A1EAD3 /* Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = FF932CA11B5A9C3800A1EAD3 /* Parser.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FF932CA91B5A9C3800A1EAD3 /* Property.h in Headers */ = {isa = PBXBuildFile; fileRef = FF932CA21B5A9C3800A1EAD3 /* Property.h */; };
+		FF932CAA1B5A9C3800A1EAD3 /* PropertySet.h in Headers */ = {isa = PBXBuildFile; fileRef = FF932CA31B5A9C3800A1EAD3 /* PropertySet.h */; };
+		FF932CAB1B5A9C3800A1EAD3 /* Selector.h in Headers */ = {isa = PBXBuildFile; fileRef = FF932CA41B5A9C3800A1EAD3 /* Selector.h */; };
+		FF932CAC1B5A9C3800A1EAD3 /* Style.h in Headers */ = {isa = PBXBuildFile; fileRef = FF932CA51B5A9C3800A1EAD3 /* Style.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +46,13 @@
 		FAE28416121B06F000823BCB /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		FAE28417121B06F000823BCB /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkSVG.h; path = ../../src/mkSVG.h; sourceTree = SOURCE_ROOT; };
 		FAE28418121B06F000823BCB /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkSVG.cpp; path = ../../src/mkSVG.cpp; sourceTree = SOURCE_ROOT; };
+		FF932C9F1B5A9C3800A1EAD3 /* Document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Document.h; sourceTree = "<group>"; };
+		FF932CA01B5A9C3800A1EAD3 /* Element.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Element.h; sourceTree = "<group>"; };
+		FF932CA11B5A9C3800A1EAD3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
+		FF932CA21B5A9C3800A1EAD3 /* Property.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Property.h; sourceTree = "<group>"; };
+		FF932CA31B5A9C3800A1EAD3 /* PropertySet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertySet.h; sourceTree = "<group>"; };
+		FF932CA41B5A9C3800A1EAD3 /* Selector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Selector.h; sourceTree = "<group>"; };
+		FF932CA51B5A9C3800A1EAD3 /* Style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Style.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +117,7 @@
 		FAE2840F121B06F000823BCB /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FF932C9E1B5A9C3800A1EAD3 /* stylesheet */,
 				FA5FD9501399F18B00863CBC /* mkTransform2d.h */,
 				FAC06DF3139445BD0075231C /* openvg */,
 				FAE28410121B06F000823BCB /* tinyxml */,
@@ -126,6 +141,21 @@
 			path = ../../src/tinyxml;
 			sourceTree = SOURCE_ROOT;
 		};
+		FF932C9E1B5A9C3800A1EAD3 /* stylesheet */ = {
+			isa = PBXGroup;
+			children = (
+				FF932C9F1B5A9C3800A1EAD3 /* Document.h */,
+				FF932CA01B5A9C3800A1EAD3 /* Element.h */,
+				FF932CA11B5A9C3800A1EAD3 /* Parser.h */,
+				FF932CA21B5A9C3800A1EAD3 /* Property.h */,
+				FF932CA31B5A9C3800A1EAD3 /* PropertySet.h */,
+				FF932CA41B5A9C3800A1EAD3 /* Selector.h */,
+				FF932CA51B5A9C3800A1EAD3 /* Style.h */,
+			);
+			name = stylesheet;
+			path = ../../src/stylesheet;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -133,10 +163,17 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF932CAB1B5A9C3800A1EAD3 /* Selector.h in Headers */,
+				FF932CA81B5A9C3800A1EAD3 /* Parser.h in Headers */,
 				FAE2841F121B06F000823BCB /* mkSVG.h in Headers */,
+				FF932CA71B5A9C3800A1EAD3 /* Element.h in Headers */,
 				FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */,
+				FF932CAA1B5A9C3800A1EAD3 /* PropertySet.h in Headers */,
+				FF932CA61B5A9C3800A1EAD3 /* Document.h in Headers */,
+				FF932CA91B5A9C3800A1EAD3 /* Property.h in Headers */,
 				FA5FD9511399F18B00863CBC /* mkTransform2d.h in Headers */,
 				AA747D9F0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch in Headers */,
+				FF932CAC1B5A9C3800A1EAD3 /* Style.h in Headers */,
 				FAE2841A121B06F000823BCB /* tinystr.h in Headers */,
 				FAE2841C121B06F000823BCB /* tinyxml.h in Headers */,
 			);
