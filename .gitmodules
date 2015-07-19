@@ -1,6 +1,6 @@
 [submodule "thirdparty/monkvg"]
 	path = thirdparty/monkvg
-	url = https://github.com/micahpearlman/MonkVG.git
+	url = https://github.com/adozenlines/MonkVG.git
 [submodule "thirdparty/MonkVG"]
 	path = thirdparty/MonkVG
-	url = https://github.com/micahpearlman/MonkVG.git
+	url = https://github.com/adozenlines/MonkVG.git
