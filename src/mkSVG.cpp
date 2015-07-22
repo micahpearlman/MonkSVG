@@ -393,6 +393,7 @@ namespace MonkSVG {
 	
 	uint32_t SVG::string_hex_color_to_uint( string& hexstring ) {
 		uint32_t color = (uint32_t)strtol( hexstring.c_str() + 1, 0, 16 );
+        
 		if ( hexstring.length() == 7 ) {	// fix up to rgba if the color is only rgb
 			color = color << 8;
 			color |= 0x000000ff;

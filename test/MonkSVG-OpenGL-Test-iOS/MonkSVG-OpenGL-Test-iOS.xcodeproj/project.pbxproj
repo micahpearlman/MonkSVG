@@ -27,9 +27,9 @@
 		FA73CEE613B3EB1600BAA88D /* fish03.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CEE513B3EB1600BAA88D /* fish03.svg */; };
 		FA73CF0413B41B4300BAA88D /* fish02.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA73CF0313B41B4300BAA88D /* fish02.svg */; };
 		FAD5174C18445595003E2720 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FAD5174B18445595003E2720 /* Default-568h@2x.png */; };
+		FF612BDE1B5D9F3E005DE348 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF612BDD1B5D9F3E005DE348 /* GLKit.framework */; };
 		FF6536E91B5A0176002AE54F /* libMonkSVG_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6536E41B5A015C002AE54F /* libMonkSVG_iOS.a */; };
 		FF6536EA1B5A0176002AE54F /* libMonkVG_iOS_OpenGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6536DE1B5A0153002AE54F /* libMonkVG_iOS_OpenGL.a */; };
-		FF6536EE1B5A0A15002AE54F /* map.svg in Resources */ = {isa = PBXBuildFile; fileRef = FF6536ED1B5A0A15002AE54F /* map.svg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,9 +90,9 @@
 		FA73CEE513B3EB1600BAA88D /* fish03.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish03.svg; sourceTree = "<group>"; };
 		FA73CF0313B41B4300BAA88D /* fish02.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = fish02.svg; sourceTree = "<group>"; };
 		FAD5174B18445595003E2720 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		FF612BDD1B5D9F3E005DE348 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		FF6536D91B5A0153002AE54F /* MonkVG-iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "MonkVG-iOS.xcodeproj"; path = "../../thirdparty/MonkVG/projects/MonkVG-iOS/MonkVG-iOS.xcodeproj"; sourceTree = "<group>"; };
 		FF6536DF1B5A015B002AE54F /* MonkSVG-iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "MonkSVG-iOS.xcodeproj"; path = "../../projects/MonkSVG-iOS/MonkSVG-iOS.xcodeproj"; sourceTree = "<group>"; };
-		FF6536ED1B5A0A15002AE54F /* map.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = map.svg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF612BDE1B5D9F3E005DE348 /* GLKit.framework in Frameworks */,
 				FF6536E91B5A0176002AE54F /* libMonkSVG_iOS.a in Frameworks */,
 				FF6536EA1B5A0176002AE54F /* libMonkVG_iOS_OpenGL.a in Frameworks */,
 				FA169A12184D615A007EFBF0 /* boost.framework in Frameworks */,
@@ -138,6 +139,7 @@
 		FA22100413B2706700305221 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FF612BDD1B5D9F3E005DE348 /* GLKit.framework */,
 				FA169A11184D6159007EFBF0 /* boost.framework */,
 				FA22100513B2706700305221 /* UIKit.framework */,
 				FA22100713B2706700305221 /* Foundation.framework */,
@@ -180,7 +182,6 @@
 		FA739BAB13B2776E00B186A7 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				FF6536ED1B5A0A15002AE54F /* map.svg */,
 				FA73CF0313B41B4300BAA88D /* fish02.svg */,
 				FA73CEE513B3EB1600BAA88D /* fish03.svg */,
 				FA739BAE13B27D8700B186A7 /* fish_top.svg */,
@@ -289,7 +290,6 @@
 				FA22101D13B2706700305221 /* MainWindow.xib in Resources */,
 				FA22101F13B2706700305221 /* Shader.fsh in Resources */,
 				FAD5174C18445595003E2720 /* Default-568h@2x.png in Resources */,
-				FF6536EE1B5A0A15002AE54F /* map.svg in Resources */,
 				FA22102113B2706700305221 /* Shader.vsh in Resources */,
 				FA22102A13B2706700305221 /* MonkSVG_OpenGL_Test_iOSViewController.xib in Resources */,
 				FA739BAD13B277CE00B186A7 /* tiger.svg in Resources */,
@@ -410,7 +410,7 @@
 					../../../thirdparty/MonkVG/include,
 				);
 				INFOPLIST_FILE = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -442,7 +442,7 @@
 					../../../thirdparty/MonkVG/include,
 				);
 				INFOPLIST_FILE = "MonkSVG-OpenGL-Test-iOS/MonkSVG-OpenGL-Test-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
