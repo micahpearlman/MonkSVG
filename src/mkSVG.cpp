@@ -23,6 +23,7 @@ using namespace StyleSheet;
 
 namespace MonkSVG {
 	
+    CssDocument _styleDocument;
 	
 	bool SVG::initialize( ISVGHandler::SmartPtr handler ) {
 		_handler = handler;
@@ -284,7 +285,7 @@ namespace MonkSVG {
                         if( value != "none" )
                             _handler->onPathStrokeColor( string_hex_color_to_uint( value ) );
                     }
-                    
+
                     property = theElement.getProperties().getProperty("stroke-width");
                     value = property.getValue();
                     if ( !value.empty() ) {
@@ -292,6 +293,14 @@ namespace MonkSVG {
                         _handler->onPathStrokeWidth( width );
                     }
                     
+                    property = theElement.getProperties().getProperty("fill");
+                    value = property.getValue();
+                    
+                    if ( !value.empty() ) {
+                        if( value != "none" )
+                            _handler->onPathFillColor( string_hex_color_to_uint( value ) );
+                    }
+
                     property = theElement.getProperties().getProperty("fill-rule");
                     value = property.getValue();
                     if ( !value.empty() ) {
@@ -311,8 +320,7 @@ namespace MonkSVG {
                         float o = atof( value.c_str() );
                         _handler->onPathFillOpacity( o );
                     }
-                    
-                    
+
                     property = theElement.getProperties().getProperty("stroke-opacity");
                     value = property.getValue();
                     if ( !value.empty() ) {
@@ -320,13 +328,6 @@ namespace MonkSVG {
                         _handler->onPathStrokeOpacity( o );
                     }
                     
-                    property = theElement.getProperties().getProperty("fill");
-                    value = property.getValue();
-                    
-                    if ( !value.empty() ) {
-                        if( value != "none" )
-                            _handler->onPathFillColor( string_hex_color_to_uint( value ) );
-                    }
                 }
                 
             }
