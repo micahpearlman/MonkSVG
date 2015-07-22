@@ -16,7 +16,6 @@
 #include <map>
 #include <cmath>
 #include <boost/shared_ptr.hpp>
-#include "stylesheet/Parser.h"
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -26,7 +25,6 @@ class TiXmlElement;
 namespace MonkSVG {
 
     using namespace std;
-    using namespace StyleSheet;
     
     class SVG;
 
@@ -130,9 +128,6 @@ namespace MonkSVG {
 		// holds svg <symbols>
 		map<string, TiXmlElement*>	_symbols;
 		
-        // CSS StyleSheet Document
-        CssDocument _styleDocument;
-        
 	private:
 		void recursive_parse( TiXmlElement* element );
 		bool handle_xml_element( TiXmlElement* element );
