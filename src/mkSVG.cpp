@@ -80,6 +80,21 @@ namespace MonkSVG {
             }
         }
         
+        
+        if (_handler->_width == 0.0f && _handler->_height == 0.0f) {
+            if ( root->QueryStringAttribute( "viewBox", &numberWithUnitString) == TIXML_SUCCESS ) {
+                match_results<string::const_iterator> matches;
+                regex numberWithUnitPatternVBox( "(\\d+)[ ](\\d+)[ ](\\d+)[ ](\\d+)" );
+                if ( regex_search( numberWithUnitString, matches, numberWithUnitPatternVBox ) ) {
+                    _handler->_minX = ::atof( matches[1].str().c_str() );
+                    _handler->_minY = ::atof( matches[2].str().c_str() );
+                    _handler->_width = ::atof( matches[3].str().c_str() );
+                    _handler->_height  = ::atof( matches[4].str().c_str() );
+                }
+            }
+            
+        }
+        
 		return true;
 		
 	}
