@@ -15,7 +15,7 @@ Use git to clone:
 Added by Sean Batson 
 <tt>https://github.com/adozenlines</tt>
 
-## StyleSheet Credit's
+## StyleSheet Credits
 
 Marco Ambu (C++ StyleSheet library)
 <tt> https://code.google.com/p/stylesheet/ </tt>
