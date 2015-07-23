@@ -169,7 +169,7 @@ namespace MonkSVG {
 	}
 	void SVG::handle_stylesheet( TiXmlElement* pathElement ) {
         if (pathElement->GetText()) {
-            parse_path_stylesheet(pathElement->GetText());
+            _styleDocument = CssDocument::parse(pathElement->GetText());
         }
     }
     
@@ -284,69 +284,9 @@ namespace MonkSVG {
 			parse_path_style( style );
 		}
 		
-        string strClass;
-        if ( pathElement->QueryStringAttribute( "class", &strClass) == TIXML_SUCCESS) {
-            
-            if (_styleDocument.getElementCount()) {
-                
-                CssElement theElement = _styleDocument.getElement(CssSelector::CssClassSelector(strClass));
-                
-                if (theElement.getPropertyCount()) {
-                    
-                    CssProperty property = theElement.getProperties().getProperty("stroke");
-                    std::string value = property.getValue();
-                    
-                    if ( !value.empty() ) {
-                        if( value != "none" )
-                            _handler->onPathStrokeColor( string_hex_color_to_uint( value ) );
-                    }
-
-                    property = theElement.getProperties().getProperty("stroke-width");
-                    value = property.getValue();
-                    if ( !value.empty() ) {
-                        float width = atof( value.c_str() );
-                        _handler->onPathStrokeWidth( width );
-                    }
-                    
-                    property = theElement.getProperties().getProperty("fill");
-                    value = property.getValue();
-                    
-                    if ( !value.empty() ) {
-                        if( value != "none" )
-                            _handler->onPathFillColor( string_hex_color_to_uint( value ) );
-                    }
-
-                    property = theElement.getProperties().getProperty("fill-rule");
-                    value = property.getValue();
-                    if ( !value.empty() ) {
-                        _handler->onPathFillRule( value );
-                    }
-                    
-                    property = theElement.getProperties().getProperty("fill-opacity");
-                    value = property.getValue();
-                    if ( !value.empty() ) {
-                        float o = atof( value.c_str() );
-                        _handler->onPathFillOpacity( o );
-                    }
-                    
-                    property = theElement.getProperties().getProperty("opacity");
-                    value = property.getValue();
-                    if ( !value.empty() ) {
-                        float o = atof( value.c_str() );
-                        _handler->onPathFillOpacity( o );
-                    }
-
-                    property = theElement.getProperties().getProperty("stroke-opacity");
-                    value = property.getValue();
-                    if ( !value.empty() ) {
-                        float o = atof( value.c_str() );
-                        _handler->onPathStrokeOpacity( o );
-                    }
-                    
-                }
-                
-            }
-            
+        string class_;
+        if ( pathElement->QueryStringAttribute( "class", &class_) == TIXML_SUCCESS) {
+            parse_path_stylesheet(class_);
         }
         
 		string transform;
@@ -608,8 +548,65 @@ namespace MonkSVG {
 	
     void SVG::parse_path_stylesheet( string ps ) {
 
-        _styleDocument = CssDocument::parse(ps);
-        
+        if (_styleDocument.getElementCount()) {
+            
+            CssElement theElement = _styleDocument.getElement(CssSelector::CssClassSelector(ps));
+            
+            if (theElement.getPropertyCount()) {
+                
+                CssProperty property = theElement.getProperties().getProperty("stroke");
+                std::string value = property.getValue();
+                
+                if ( !value.empty() ) {
+                    if( value != "none" )
+                        _handler->onPathStrokeColor( string_hex_color_to_uint( value ) );
+                }
+                
+                property = theElement.getProperties().getProperty("stroke-width");
+                value = property.getValue();
+                if ( !value.empty() ) {
+                    float width = atof( value.c_str() );
+                    _handler->onPathStrokeWidth( width );
+                }
+                
+                property = theElement.getProperties().getProperty("fill");
+                value = property.getValue();
+                
+                if ( !value.empty() ) {
+                    if( value != "none" )
+                        _handler->onPathFillColor( string_hex_color_to_uint( value ) );
+                }
+                
+                property = theElement.getProperties().getProperty("fill-rule");
+                value = property.getValue();
+                if ( !value.empty() ) {
+                    _handler->onPathFillRule( value );
+                }
+                
+                property = theElement.getProperties().getProperty("fill-opacity");
+                value = property.getValue();
+                if ( !value.empty() ) {
+                    float o = atof( value.c_str() );
+                    _handler->onPathFillOpacity( o );
+                }
+                
+                property = theElement.getProperties().getProperty("opacity");
+                value = property.getValue();
+                if ( !value.empty() ) {
+                    float o = atof( value.c_str() );
+                    _handler->onPathFillOpacity( o );
+                }
+                
+                property = theElement.getProperties().getProperty("stroke-opacity");
+                value = property.getValue();
+                if ( !value.empty() ) {
+                    float o = atof( value.c_str() );
+                    _handler->onPathStrokeOpacity( o );
+                }
+                
+            }
+            
+        }
     }
     
 	// semicolon-separated property declarations of the form "name : value" within the ‘style’ attribute
