@@ -76,7 +76,7 @@ namespace MonkSVG {
 		
 		// push the group matrix onto the stack
 		pushTransform( group.transform ); vgLoadMatrix( topTransform().m );
-		
+
 		for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
 			path_object_t& po = *it;
 			uint32_t draw_params = 0;
@@ -98,6 +98,7 @@ namespace MonkSVG {
 			
 			// set the fill rule
 			vgSeti( VG_FILL_RULE, po.fill_rule );
+
 			// trasnform
 			pushTransform( po.transform );	vgLoadMatrix( topTransform().m );
 			vgDrawPath( po.path, draw_params );
@@ -419,12 +420,12 @@ namespace MonkSVG {
 	}
 	void OpenVG_SVGHandler::onPathStrokeOpacity( float o ) {
 		VGfloat fcolor[4];
+        
 		if( _mode == kGroupParseMode ) {
 			vgGetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0] );
 			// set the opacity
 			fcolor[3] = o;
 			vgSetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
-			
 		} else {
 			vgGetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0] );
 			// set the opacity
@@ -433,6 +434,84 @@ namespace MonkSVG {
 		}
 		_has_transparent_colors = _has_transparent_colors || (o < 1.0f);
 	}
+
+    void OpenVG_SVGHandler::onPathStrokDashPattern( int *pattern ) {
+        
+        if ( _mode == kGroupParseMode) {
+            vgSetiv( VG_STROKE_DASH_PATTERN, sizeof(pattern) / sizeof(pattern[0]), pattern );
+        } else {
+            vgSetiv( VG_STROKE_DASH_PATTERN, sizeof(pattern) / sizeof(pattern[0]), pattern );
+        }
+        
+    }
+    
+    void OpenVG_SVGHandler::onPathStrokeCapStyle( const string& style ) {
+        if ( _mode == kGroupParseMode) {
+
+            if ( style == "butt" ) {
+                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_BUTT );
+            }
+            else if ( style == "round" ) {
+                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_ROUND );
+            }
+            else if ( style == "square" ) {
+                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_SQUARE );
+            }
+            
+        } else {
+
+            if ( style == "butt" ) {
+                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_BUTT );
+            }
+            else if ( style == "round" ) {
+                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_ROUND );
+            }
+            else if ( style == "square" ) {
+                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_SQUARE );
+            }
+        }
+    
+    }
+    
+    void OpenVG_SVGHandler::onPathStrokeDashPhase( unsigned int phase ) {
+        if ( _mode == kGroupParseMode) {
+            vgSeti( VG_STROKE_DASH_PHASE, phase );
+        } else {
+            vgSeti( VG_STROKE_DASH_PHASE, phase );
+        }
+    }
+    
+    void OpenVG_SVGHandler::onPathStrokeLineJoin( const string& join ) {
+        if ( _mode == kGroupParseMode) {
+            if ( join == "bevel" ) {
+                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_BEVEL );
+            }
+            else if ( join == "miter" ) {
+                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_MITER );
+            }
+            else if ( join == "round" ) {
+                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_ROUND );
+            }
+        } else {
+            if ( join == "bevel" ) {
+                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_BEVEL );
+            }
+            else if ( join == "miter" ) {
+                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_MITER );
+            }
+            else if ( join == "round" ) {
+                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_ROUND );
+            }
+        }
+    }
+    
+    void OpenVG_SVGHandler::onPathStrokeMiterLimit( float o) {
+        if ( _mode == kGroupParseMode) {
+            vgSeti( VG_STROKE_MITER_LIMIT, o );
+        } else {
+            vgSeti( VG_STROKE_MITER_LIMIT, o );
+        }
+    }
 
 	void OpenVG_SVGHandler::onPathStrokeWidth( float width ) {
 		if( _mode == kGroupParseMode ) {

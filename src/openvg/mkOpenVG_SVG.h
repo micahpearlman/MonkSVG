@@ -89,6 +89,11 @@ namespace MonkSVG {
 		virtual void onPathStrokeColor( unsigned int color );
 		virtual void onPathStrokeWidth( float width );
 		virtual void onPathStrokeOpacity( float o );
+        virtual void onPathStrokDashPattern( int *pattern );
+        virtual void onPathStrokeCapStyle( const string& style );
+        virtual void onPathStrokeDashPhase( unsigned int phase );
+        virtual void onPathStrokeLineJoin( const string& join );
+        virtual void onPathStrokeMiterLimit( float o);
 
 		
 		// transforms 

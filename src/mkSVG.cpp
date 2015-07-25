@@ -17,9 +17,11 @@
 #include <boost/algorithm/string.hpp>
 #include "Parser.h"
 #include "Document.h"
+#include <vector>
 
 using namespace boost;
 using namespace StyleSheet;
+using namespace std;
 
 namespace MonkSVG {
 	
@@ -597,6 +599,34 @@ namespace MonkSVG {
                     _handler->onPathFillOpacity( o );
                 }
                 
+                property = theElement.getProperties().getProperty( "stroke-linejoin" );
+                value = property.getValue();
+                if ( value != "none" ) {
+                    _handler->onPathStrokeLineJoin( value );
+                }
+                
+                property = theElement.getProperties().getProperty( "stroke-dasharray" );
+                value = property.getValue();
+                if ( value != "none" ) {
+                    char_separator<char> sep(", \t");
+                    tokenizer<char_separator<char> > tokens(value,sep);
+                    vector<int> dasharray;
+                    
+                    BOOST_FOREACH( string p, tokens ) {
+                        dasharray.push_back(atoi(p.c_str()));
+                        
+                    }
+                    _handler->onPathStrokDashPattern((int *)dasharray.data());
+                }
+                
+                property = theElement.getProperties().getProperty( "stroke-miterlimit" );
+                value = property.getValue();
+                if ( !value.empty()) {
+                    float o = atof( value.c_str() );
+                    _handler->onPathStrokeMiterLimit( o );
+                    
+                }
+
                 property = theElement.getProperties().getProperty("stroke-opacity");
                 value = property.getValue();
                 if ( !value.empty() ) {
@@ -659,8 +689,43 @@ namespace MonkSVG {
 			_handler->onPathFillOpacity( o );
 			// ?? TODO: stroke Opacity???
 		}
+        
+        kv = style_key_values.find( "stroke-linejoin" );
+        if ( kv != style_key_values.end() ) {
+            if ( kv->second != "none" ) {
+                _handler->onPathStrokeLineJoin( kv->second );
+            }
+        }
 
+        kv = style_key_values.find( "stroke-linecap" );
+        if ( kv != style_key_values.end() ) {
+            if ( kv->second != "none" ) {
+                _handler->onPathStrokeCapStyle( kv->second );
+            }
+        }
 
+        kv = style_key_values.find( "stroke-dasharray" );
+        if ( kv != style_key_values.end() ) {
+            if ( kv->second != "none" ) {
+                char_separator<char> sep(", \t");
+                tokenizer<char_separator<char> > tokens(kv->second,sep);
+                vector<int> dasharray;
+                
+                BOOST_FOREACH( string p, tokens ) {
+                     dasharray.push_back(atoi(p.c_str()));
+                    
+                }
+                _handler->onPathStrokDashPattern((int *)dasharray.data());
+            }
+        }
+
+        kv = style_key_values.find( "stroke-miterlimit" );
+        if ( kv != style_key_values.end() ) {
+            float o = atof( kv->second.c_str() );
+            _handler->onPathStrokeMiterLimit( o );
+            
+        }
+        
 		kv = style_key_values.find( "stroke-opacity" );
 		if ( kv != style_key_values.end() ) {
 			float o = atof( kv->second.c_str() );
