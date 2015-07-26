@@ -149,10 +149,11 @@ namespace MonkSVG {
 			Transform2d transform;
 			std::string id;
             VGfloat     stroke_miterlimit;
-            VGint       stroke_linejoin;
-            VGint       stroke_capStyle;
+            VGJoinStyle joinStyle;
+            VGCapStyle  capStyle;
             
-			path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
+			path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( -1 )
+            , fill_rule( VG_NON_ZERO ), joinStyle( VG_JOIN_ROUND ), capStyle( VG_CAP_ROUND ), stroke_miterlimit( - 1) {
 				
 			}
 			virtual ~path_object_t() {
@@ -167,6 +168,7 @@ namespace MonkSVG {
 			:	parent( 0 )
 			,	current_path( 0 )
 			,	fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO )
+            , joinStyle( VG_JOIN_ROUND ), capStyle( VG_CAP_ROUND ), stroke_miterlimit( -1 )
 			{
 				
 			}
@@ -181,6 +183,9 @@ namespace MonkSVG {
 			VGFillRule	fill_rule;
 			VGPaint		stroke;
 			VGfloat		stroke_width;
+            VGJoinStyle joinStyle;
+            VGCapStyle  capStyle;
+            VGfloat     stroke_miterlimit;
 
 		};
 		

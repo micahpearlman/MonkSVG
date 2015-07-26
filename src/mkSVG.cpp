@@ -134,8 +134,7 @@ namespace MonkSVG {
         if (type == "style") {
             handle_stylesheet(element);
             return false;
-        }
-        else if ( type == "g" ) {
+        } else if ( type == "g" ) {
 			handle_group( element );
 			return true;
 		} else if ( type == "path" ) {
@@ -144,7 +143,13 @@ namespace MonkSVG {
 		} else if ( type == "rect" ) {
 			handle_rect( element );
 			return true;
-		} else if ( type == "polygon" ) {
+        } else if ( type == "line" ) {
+            handle_line( element );
+            return true;
+        } else if ( type == "polyline" ) {
+            handle_polyline( element );
+            return true;
+        } else if ( type == "polygon" ) {
 			handle_polygon ( element );
 			return true;
 		} else if( type == "symbol" ) {
@@ -165,10 +170,11 @@ namespace MonkSVG {
 			}
 			
 			return true;
-		}
+        } 
 		return false;
 
 	}
+    
 	void SVG::handle_stylesheet( TiXmlElement* pathElement ) {
         if (pathElement->GetText()) {
             _styleDocument = CssDocument::parse(pathElement->GetText());
@@ -223,6 +229,40 @@ namespace MonkSVG {
 		_handler->onPathEnd();		
 	}
 	
+    void SVG::handle_line( TiXmlElement* pathElement ) {
+        _handler->onPathBegin();
+        
+        double pos [4];
+        if ( pathElement->QueryDoubleAttribute( "x1", &pos[0]) == TIXML_SUCCESS) {
+        }
+        if ( pathElement->QueryDoubleAttribute( "y1", &pos[1]) == TIXML_SUCCESS) {
+        }
+        if ( pathElement->QueryDoubleAttribute( "x2", &pos[2]) == TIXML_SUCCESS) {
+        }
+        if ( pathElement->QueryDoubleAttribute( "y2", &pos[3]) == TIXML_SUCCESS) {
+        }
+        _handler->setRelative(false);
+        _handler->onPathMoveTo(pos[0], pos[1]);
+        _handler->onPathLineTo(pos[2], pos[3]);
+        
+        handle_general_parameter( pathElement );
+
+        _handler->onPathEnd();
+    }
+    
+    void SVG::handle_polyline( TiXmlElement* pathElement ) {
+        _handler->onPathBegin();
+        string points;
+        if ( pathElement->QueryStringAttribute( "points", &points ) == TIXML_SUCCESS ) {
+            parse_polyline_points( points );
+        }
+        
+        handle_general_parameter( pathElement );
+        
+        _handler->onPathEnd();
+
+    }
+    
 	void SVG::handle_rect( TiXmlElement* pathElement ) {
 		_handler->onPathBegin();
 		
@@ -298,7 +338,6 @@ namespace MonkSVG {
 		string id_;
 		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
 			_handler->onId( id_ );
-			cout << id_ << endl;
 		}
 		
 		string opacity;
@@ -551,31 +590,16 @@ namespace MonkSVG {
     void SVG::parse_path_stylesheet( string ps ) {
 
         if (_styleDocument.getElementCount()) {
-            
+
             CssElement theElement = _styleDocument.getElement(CssSelector::CssClassSelector(ps));
             
             if (theElement.getPropertyCount()) {
                 
-                CssProperty property = theElement.getProperties().getProperty("stroke");
+                CssProperty property = theElement.getProperties().getProperty("fill");
                 std::string value = property.getValue();
                 
                 if ( !value.empty() ) {
-                    if( value != "none" )
-                        _handler->onPathStrokeColor( string_hex_color_to_uint( value ) );
-                }
-                
-                property = theElement.getProperties().getProperty("stroke-width");
-                value = property.getValue();
-                if ( !value.empty() ) {
-                    float width = atof( value.c_str() );
-                    _handler->onPathStrokeWidth( width );
-                }
-                
-                property = theElement.getProperties().getProperty("fill");
-                value = property.getValue();
-                
-                if ( !value.empty() ) {
-                    if( value != "none" )
+                    if( value != "none" && !value.empty())
                         _handler->onPathFillColor( string_hex_color_to_uint( value ) );
                 }
                 
@@ -592,22 +616,36 @@ namespace MonkSVG {
                     _handler->onPathFillOpacity( o );
                 }
                 
-                property = theElement.getProperties().getProperty("opacity");
+                property = theElement.getProperties().getProperty("stroke");
                 value = property.getValue();
+                
                 if ( !value.empty() ) {
-                    float o = atof( value.c_str() );
-                    _handler->onPathFillOpacity( o );
+                    if( value != "none" && !value.empty())
+                        _handler->onPathStrokeColor( string_hex_color_to_uint( value ) );
                 }
                 
+                property = theElement.getProperties().getProperty("stroke-width");
+                value = property.getValue();
+                if ( !value.empty() ) {
+                    float width = atof( value.c_str() );
+                    _handler->onPathStrokeWidth( width );
+                }
+                
+                property = theElement.getProperties().getProperty( "stroke-linecap" );
+                value = property.getValue();
+                if ( value != "none" && !value.empty() ) {
+                    _handler->onPathStrokeCapStyle( value );
+                }
+
                 property = theElement.getProperties().getProperty( "stroke-linejoin" );
                 value = property.getValue();
-                if ( value != "none" ) {
+                if ( value != "none" && !value.empty() ) {
                     _handler->onPathStrokeLineJoin( value );
                 }
                 
                 property = theElement.getProperties().getProperty( "stroke-dasharray" );
                 value = property.getValue();
-                if ( value != "none" ) {
+                if ( value != "none" && !value.empty() ) {
                     char_separator<char> sep(", \t");
                     tokenizer<char_separator<char> > tokens(value,sep);
                     vector<int> dasharray;
@@ -626,12 +664,19 @@ namespace MonkSVG {
                     _handler->onPathStrokeMiterLimit( o );
                     
                 }
-
+                
                 property = theElement.getProperties().getProperty("stroke-opacity");
                 value = property.getValue();
                 if ( !value.empty() ) {
                     float o = atof( value.c_str() );
                     _handler->onPathStrokeOpacity( o );
+                }
+                
+                property = theElement.getProperties().getProperty("opacity");
+                value = property.getValue();
+                if ( !value.empty() ) {
+                    float o = atof( value.c_str() );
+                    _handler->onPathFillOpacity( o );
                 }
                 
             }
@@ -659,7 +704,19 @@ namespace MonkSVG {
 			if( kv->second != "none" )
 				_handler->onPathFillColor( string_hex_color_to_uint( kv->second ) );
 		}
-		
+
+        kv = style_key_values.find( "fill-rule" );
+        if ( kv != style_key_values.end() ) {
+            _handler->onPathFillRule( kv->second );
+        }
+        
+        kv = style_key_values.find( "fill-opacity" );
+        if ( kv != style_key_values.end() ) {
+            float o = atof( kv->second.c_str() );
+            _handler->onPathFillOpacity( o );
+        }
+        
+
 		kv = style_key_values.find( "stroke" );
 		if ( kv != style_key_values.end() ) {
 			if( kv->second != "none" )
@@ -672,38 +729,20 @@ namespace MonkSVG {
 			_handler->onPathStrokeWidth( width );
 		}
 		
-		kv = style_key_values.find( "fill-rule" );
-		if ( kv != style_key_values.end() ) {
-			_handler->onPathFillRule( kv->second );
-		}
-		
-		kv = style_key_values.find( "fill-opacity" );
-		if ( kv != style_key_values.end() ) {
-			float o = atof( kv->second.c_str() );
-			_handler->onPathFillOpacity( o );
-		}
-		
-		kv = style_key_values.find( "opacity" );
-		if ( kv != style_key_values.end() ) {
-			float o = atof( kv->second.c_str() );
-			_handler->onPathFillOpacity( o );
-			// ?? TODO: stroke Opacity???
-		}
-        
         kv = style_key_values.find( "stroke-linejoin" );
         if ( kv != style_key_values.end() ) {
             if ( kv->second != "none" ) {
                 _handler->onPathStrokeLineJoin( kv->second );
             }
         }
-
+        
         kv = style_key_values.find( "stroke-linecap" );
         if ( kv != style_key_values.end() ) {
             if ( kv->second != "none" ) {
                 _handler->onPathStrokeCapStyle( kv->second );
             }
         }
-
+        
         kv = style_key_values.find( "stroke-dasharray" );
         if ( kv != style_key_values.end() ) {
             if ( kv->second != "none" ) {
@@ -712,13 +751,13 @@ namespace MonkSVG {
                 vector<int> dasharray;
                 
                 BOOST_FOREACH( string p, tokens ) {
-                     dasharray.push_back(atoi(p.c_str()));
+                    dasharray.push_back(atoi(p.c_str()));
                     
                 }
                 _handler->onPathStrokDashPattern((int *)dasharray.data());
             }
         }
-
+        
         kv = style_key_values.find( "stroke-miterlimit" );
         if ( kv != style_key_values.end() ) {
             float o = atof( kv->second.c_str() );
@@ -726,15 +765,44 @@ namespace MonkSVG {
             
         }
         
-		kv = style_key_values.find( "stroke-opacity" );
+        kv = style_key_values.find( "stroke-opacity" );
+        if ( kv != style_key_values.end() ) {
+            float o = atof( kv->second.c_str() );
+            _handler->onPathStrokeOpacity( o );
+        }
+
+		kv = style_key_values.find( "opacity" );
 		if ( kv != style_key_values.end() ) {
 			float o = atof( kv->second.c_str() );
-			_handler->onPathStrokeOpacity( o );
+			_handler->onPathFillOpacity( o );
+			// ?? TODO: stroke Opacity???
 		}
-
+        
 		
 	}
 
+    void SVG::parse_polyline_points( string& points ) {
+        char_separator<char> sep(", \t");
+        tokenizer<char_separator<char> > tokens(points,sep);
+        float xy[2];
+        int xy_offset = 0;  // 0:x, 1:y
+        bool first = true;
+        _handler->setRelative(false);
+        BOOST_FOREACH( string p, tokens ) {
+            xy[xy_offset++] = (float)atof(p.c_str());
+            
+            if (xy_offset == 2) {
+                xy_offset = 0;
+                if (first) {
+                    _handler->onPathMoveTo( xy[0], xy[1] );
+                    first = false;
+                } else
+                    _handler->onPathLineTo( xy[0], xy[1] );
+            }
+        }
+        //_handler->onPathClose();
+    }
+    
 	void SVG::parse_points( string& points ) {
 		char_separator<char> sep(", \t");
 		tokenizer<char_separator<char> > tokens(points,sep);

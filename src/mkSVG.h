@@ -59,7 +59,6 @@ namespace MonkSVG {
 		virtual void onPathRect( float x, float y, float w, float h ) {}
 		virtual void onPathHorizontalLine( float x ) {}
 		virtual void onPathVerticalLine( float y ) {}
-        
         virtual void onPathQuad( float x1, float y1, float x2, float y2 ) {}
 
 		// fill
@@ -138,7 +137,9 @@ namespace MonkSVG {
 		bool handle_xml_element( TiXmlElement* element );
 		void handle_group( TiXmlElement* pathElement );
    		void handle_stylesheet( TiXmlElement* pathElement );
-		void handle_path( TiXmlElement* pathElement );
+		void handle_line( TiXmlElement* pathElement );
+        void handle_polyline( TiXmlElement* pathElement );
+        void handle_path( TiXmlElement* pathElement );
 		void handle_rect( TiXmlElement* pathElement );
 		void handle_polygon( TiXmlElement* pathElement );
 		void handle_general_parameter( TiXmlElement* pathElement );
@@ -147,6 +148,7 @@ namespace MonkSVG {
 		void parse_path_stylesheet( string ps );
         void parse_path_transform( string& tr );
 		void parse_points( string& points );
+        void parse_polyline_points( string& points );
 		uint32_t string_hex_color_to_uint( string& hexstring );
 		float d_string_to_float( char *c, char **str );
 		int d_string_to_int( char *c, char **str );

@@ -91,6 +91,21 @@ namespace MonkSVG {
 				draw_params |= VG_STROKE_PATH;
 			}
 			
+            if ( po.joinStyle ) {
+                vgSeti( VG_STROKE_JOIN_STYLE, po.joinStyle );
+                //draw_params |= VG_STROKE_JOIN_STYLE;
+            }
+
+            if ( po.capStyle ) {
+                vgSeti( VG_STROKE_CAP_STYLE, po.capStyle );
+                //draw_params |= VG_STROKE_CAP_STYLE;
+            }
+
+            if ( po.stroke_miterlimit > 0) {
+                vgSetf( VG_STROKE_MITER_LIMIT, po.stroke_miterlimit );
+                //draw_params |= VG_STROKE_MITER_LIMIT;
+            }
+            
 			if( draw_params == 0 ) {	// if no stroke or fill use the default black fill
 				vgSetPaint( _blackBackFill, VG_FILL_PATH );
 				draw_params |= VG_FILL_PATH;
@@ -212,7 +227,10 @@ namespace MonkSVG {
 		_current_group->current_path->stroke		= _current_group->stroke;
 		_current_group->current_path->stroke_width	= _current_group->stroke_width;
 		_current_group->current_path->fill_rule		= _current_group->fill_rule;
-		
+        _current_group->current_path->capStyle      = _current_group->capStyle;
+        _current_group->current_path->joinStyle     = _current_group->joinStyle;
+        _current_group->current_path->stroke_miterlimit = _current_group->stroke_miterlimit;
+        
 	}
 	
 	void OpenVG_SVGHandler::onPathEnd() {  
@@ -449,25 +467,25 @@ namespace MonkSVG {
         if ( _mode == kGroupParseMode) {
 
             if ( style == "butt" ) {
-                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_BUTT );
+                _current_group->capStyle = VG_CAP_BUTT;
             }
             else if ( style == "round" ) {
-                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_ROUND );
+                _current_group->capStyle = VG_CAP_ROUND;
             }
             else if ( style == "square" ) {
-                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_SQUARE );
+                _current_group->capStyle = VG_CAP_SQUARE;
             }
             
         } else {
 
             if ( style == "butt" ) {
-                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_BUTT );
+                _current_group->current_path->capStyle = VG_CAP_BUTT;
             }
             else if ( style == "round" ) {
-                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_ROUND );
+                _current_group->current_path->capStyle = VG_CAP_ROUND;
             }
             else if ( style == "square" ) {
-                vgSeti( VG_STROKE_CAP_STYLE, VG_CAP_SQUARE );
+                _current_group->current_path->capStyle = VG_CAP_SQUARE;
             }
         }
     
@@ -484,32 +502,32 @@ namespace MonkSVG {
     void OpenVG_SVGHandler::onPathStrokeLineJoin( const string& join ) {
         if ( _mode == kGroupParseMode) {
             if ( join == "bevel" ) {
-                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_BEVEL );
+                _current_group->joinStyle = VG_JOIN_BEVEL ;
             }
             else if ( join == "miter" ) {
-                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_MITER );
+                _current_group->joinStyle = VG_JOIN_MITER ;
             }
             else if ( join == "round" ) {
-                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_ROUND );
+                _current_group->joinStyle = VG_JOIN_ROUND ;
             }
         } else {
             if ( join == "bevel" ) {
-                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_BEVEL );
+                _current_group->current_path->joinStyle = VG_JOIN_BEVEL ;
             }
             else if ( join == "miter" ) {
-                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_MITER );
+                _current_group->current_path->joinStyle = VG_JOIN_MITER ;
             }
             else if ( join == "round" ) {
-                vgSeti( VG_STROKE_JOIN_STYLE, VG_JOIN_ROUND );
+                _current_group->current_path->joinStyle = VG_JOIN_ROUND ;
             }
         }
     }
     
     void OpenVG_SVGHandler::onPathStrokeMiterLimit( float o) {
         if ( _mode == kGroupParseMode) {
-            vgSeti( VG_STROKE_MITER_LIMIT, o );
+            _current_group->stroke_miterlimit = o;
         } else {
-            vgSeti( VG_STROKE_MITER_LIMIT, o );
+            _current_group->current_path->stroke_miterlimit = o;
         }
     }
 
