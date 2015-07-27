@@ -63,6 +63,7 @@ namespace MonkVG {
 		virtual void scale( VGfloat sx, VGfloat sy );
 		virtual void translate( VGfloat x, VGfloat y );
 		virtual void rotate( VGfloat angle );
+        virtual void rotate( VGfloat angle , VGfloat x, VGfloat y, VGfloat z);
 		virtual void setTransform( const VGfloat* t ) ;
 		virtual void multiply( const VGfloat* t );
 		virtual void setMatrixMode( VGMatrixMode mode ) {

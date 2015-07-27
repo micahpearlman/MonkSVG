@@ -99,8 +99,15 @@ namespace MonkVG {
 		
 		// turn on blending
 		gl()->glEnable(GL_BLEND);
-		gl()->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
+        gl()->glEnable(GL_POINT_SMOOTH);
+        gl()->glEnable(GL_LINE_SMOOTH);
+        gl()->glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        gl()->glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    
+        gl()->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        gl()->glEnable(GL_MULTISAMPLE);
+        gl()->glEnable(GL_DEPTH_TEST);
+    
 		gl()->glDisable(GL_TEXTURE_2D);
 		gl()->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		gl()->glDisableClientState( GL_COLOR_ARRAY );
@@ -433,7 +440,15 @@ namespace MonkVG {
 		active->copy( tmp );
 		loadGLMatrix();
 	}
-	
+    
+	void OpenGLContext::rotate(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) {
+        
+        if ( gl() ) {
+            gl()->glRotatef(angle, x, y, z);
+        }
+        
+    }
+    
 	void OpenGLContext::setImageMode( VGImageMode im ) {
 		IContext::setImageMode( im );
 		switch ( im ) {
