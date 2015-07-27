@@ -575,6 +575,7 @@ VG_API_CALL void VG_API_ENTRY vgTranslate(VGfloat tx, VGfloat ty) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgScale(VGfloat sx, VGfloat sy) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgShear(VGfloat shx, VGfloat shy) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgRotate(VGfloat angle) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgRotateXYZ(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) VG_API_EXIT;
 
 /* Masking and Clearing */
 VG_API_CALL void VG_API_ENTRY vgMask(VGHandle mask, VGMaskOperation operation,
