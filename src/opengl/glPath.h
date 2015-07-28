@@ -121,7 +121,8 @@ namespace MonkVG {
 		void buildFill();
 		void buildStroke();
 		void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
-
+        void applyLineStyles( vector<v2_t>& vertices, VGCapStyle style, VGJoinStyle join, VGfloat miter, VGfloat stroke_width );
+        bool numberOfvertices( vector<v2_t>& vertices );
 	};
 }
 

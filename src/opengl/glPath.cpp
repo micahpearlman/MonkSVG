@@ -74,7 +74,7 @@ namespace MonkVG {
 		}
 		
 		endOfTesselation( paintModes );
-
+    
 
 		if ( glContext.currentBatch() ) {
 			return true;		// creating a batch so bail from here
@@ -589,8 +589,33 @@ namespace MonkVG {
 		v3.y = p1.y - radius * dy;
 		vertices.push_back( v3 );
 		
+        cout << "stroke cap " << getCapStyle() << endl;
+        cout << "stroke join " << getJoinStyle() << endl;
+        cout << "stroke miter " << getMiterlimit() << endl;
+        
+        applyLineStyles(vertices, getCapStyle(), getJoinStyle(), getMiterlimit(), stroke_width);
+        
 	}
 	
+    bool OpenGLPath::numberOfvertices(vector<v2_t>& vertices) {
+        size_t l = vertices.size();
+        // If the line has duplicate vertices at the end, adjust length to remove them.
+        while (l > 2 && vertices[l - 1].x == vertices[l - 2].x && vertices[l - 1].y == vertices[l - 2].y) {
+            l--;
+        }
+        return l > 2;
+        
+    }
+    
+    void OpenGLPath::applyLineStyles( vector<v2_t> &vertices, VGCapStyle style, VGJoinStyle join, VGfloat miter, VGfloat stroke_width) {
+    
+        if (numberOfvertices(vertices)) {
+            
+            
+        }
+    
+    }
+    
 	void OpenGLPath::buildStroke() {
 		_strokeVertices.clear();
 		
