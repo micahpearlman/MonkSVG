@@ -603,6 +603,9 @@ VG_API_CALL VGPath VG_API_ENTRY vgCreatePath(VGint pathFormat,
                                 VGint segmentCapacityHint,
                                 VGint coordCapacityHint,
                                 VGbitfield capabilities) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgPathMiterLimit(VGPath path, VGfloat miterlimit) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgPathJoinStyle(VGPath path, VGJoinStyle joinstyle) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgPathCapStyle(VGPath path, VGCapStyle capstyle) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgClearPath(VGPath path, VGbitfield capabilities) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgDestroyPath(VGPath path) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgRemovePathCapabilities(VGPath path,
