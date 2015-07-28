@@ -190,6 +190,40 @@ VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes) {
 	p->draw( paintModes );
 }
 
+VG_API_CALL void VG_API_ENTRY vgPathMiterLimit(VGPath path, VGfloat miterlimit) VG_API_EXIT {
+    if ( path == VG_INVALID_HANDLE ) {
+        SetError( VG_BAD_HANDLE_ERROR );
+        return;
+    }
+    
+    IPath* p = (IPath*)path;
+    
+    p->setMiterlimit( miterlimit );
+}
+
+VG_API_CALL void VG_API_ENTRY vgPathJoinStyle(VGPath path, VGJoinStyle joinstyle) VG_API_EXIT {
+    if ( path == VG_INVALID_HANDLE ) {
+        SetError( VG_BAD_HANDLE_ERROR );
+        return;
+    }
+    
+    IPath* p = (IPath*)path;
+    
+    p->setJoinStyle( joinstyle );
+}
+
+VG_API_CALL void VG_API_ENTRY vgPathCapStyle(VGPath path, VGCapStyle capstyle) VG_API_EXIT {
+    if ( path == VG_INVALID_HANDLE ) {
+        SetError( VG_BAD_HANDLE_ERROR );
+        return;
+    }
+    
+    IPath* p = (IPath*)path;
+    
+    p->setCapStyle( capstyle );
+}
+
+
 VG_API_CALL void VG_API_ENTRY vgClearPath(VGPath path, VGbitfield capabilities) VG_API_EXIT {
 	if ( path == VG_INVALID_HANDLE ) {
 		SetError( VG_BAD_HANDLE_ERROR );

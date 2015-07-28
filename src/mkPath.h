@@ -24,7 +24,7 @@ namespace MonkVG {
 		virtual bool draw( VGbitfield paintModes ) = 0;
 		
 		virtual void clear( VGbitfield caps );
-		
+
 		inline BaseObject::Type getType() const {
 			return BaseObject::kPathType;
 		}
@@ -86,6 +86,34 @@ namespace MonkVG {
 			_isStrokeDirty = b;
 		}
 		
+        inline VGfloat  getMiterlimit ()
+        {
+            return getJoinStyle() == VG_JOIN_BEVEL ? 1.05f : _stroke_miterlimit;
+        }
+        inline VGJoinStyle getJoinStyle ()
+        {
+            return  _joinStyle;
+        }
+        inline VGCapStyle  getCapStyle ()
+        {
+            return _capStyle;
+        }
+        
+        inline void setMiterlimit (VGfloat m)
+        {
+            _stroke_miterlimit = m;
+        }
+        
+        inline void setJoinStyle (VGJoinStyle s)
+        {
+            _joinStyle = s;
+        }
+        
+        inline void setCapStyle (VGCapStyle c)
+        {
+            _capStyle = c;
+        }
+
 		// bounds
 		inline VGfloat getMinX() {
 			return _minX;
@@ -179,6 +207,9 @@ namespace MonkVG {
 		VGfloat				_height;
 		VGfloat				_width;
 
+        VGfloat     _stroke_miterlimit;
+        VGJoinStyle _joinStyle;
+        VGCapStyle  _capStyle;
 		
 		
 	};
