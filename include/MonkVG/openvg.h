@@ -307,7 +307,9 @@ typedef enum {
   VG_JOIN_MITER                               = 0x1800,
   VG_JOIN_ROUND                               = 0x1801,
   VG_JOIN_BEVEL                               = 0x1802,
-
+  VG_JOIN_FAKE_ROUND                          = 0x1803,
+  VG_JOIN_FLIP_BEVEL                          = 0x1804,
+    
   VG_JOIN_STYLE_FORCE_SIZE                    = VG_MAX_ENUM
 } VGJoinStyle;
 
@@ -576,7 +578,7 @@ VG_API_CALL void VG_API_ENTRY vgScale(VGfloat sx, VGfloat sy) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgShear(VGfloat shx, VGfloat shy) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgRotate(VGfloat angle) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgRotateXYZ(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) VG_API_EXIT;
-
+VG_API_CALL float VG_API_ENTRY vgAngle() VG_API_EXIT;
 /* Masking and Clearing */
 VG_API_CALL void VG_API_ENTRY vgMask(VGHandle mask, VGMaskOperation operation,
                                      VGint x, VGint y,

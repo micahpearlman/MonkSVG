@@ -15,6 +15,8 @@
 #include <list>
 #include <vector>
 #include "glPaint.h"
+#include "vec.hpp"
+#include "math.hpp"
 
 namespace MonkVG {
 	
@@ -39,21 +41,11 @@ namespace MonkVG {
 		virtual void buildFillIfDirty();
 
 	private:
-		struct v2_t {
-			GLfloat x, y;
-		};
 		
-		struct v3_t {
-			GLdouble x,y,z;
-			v3_t() {}
-	       		v3_t( GLdouble * v) : x(v[0]), y(v[1]), z(v[2]) {}
-			v3_t(GLdouble ix, GLdouble iy, GLdouble iz) : x(ix), y(iy), z(iz) {}
-			void print() const {
-				printf("(%f, %f)\n", x, y);
-			}
-			
-		};
-		
+        typedef vec2<GLfloat> v2_t;
+        
+		typedef vec3<GLdouble> v3_t;
+        
 		struct textured_vertex_t {
 			GLfloat		v[2];
 			GLfloat		uv[2];
@@ -68,7 +60,7 @@ namespace MonkVG {
 		GLenum				_primType;
 		GLuint				_fillVBO;
 		GLuint				_strokeVBO;
-		int					_numberFillVertices;
+        int					_numberFillVertices;
 		int					_numberStrokeVertices;
 		OpenGLPaint*		_fillPaintForPath;
 		OpenGLPaint*		_strokePaintForPath;
@@ -121,9 +113,37 @@ namespace MonkVG {
 		void buildFill();
 		void buildStroke();
 		void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
+        
+        // stroke styles
         void applyLineStyles( vector<v2_t>& vertices, VGCapStyle style, VGJoinStyle join, VGfloat miter, VGfloat stroke_width );
-        bool numberOfvertices( vector<v2_t>& vertices );
+        size_t numberOfvertices( vector<v2_t>& vertices );
+        
+        int32_t e1;
+        int32_t e2;
+        int32_t e3;
+
+        struct TriangleElement {
+            TriangleElement(uint16_t a_, uint16_t b_, uint16_t c_) : a(a_), b(b_), c(c_) {}
+            uint16_t a, b, c;
+        };
+        void addCurrentVertex(const Coordinate& currentVertex, float flip, double distance,
+                              const vec2<double>& normal, float endLeft, float endRight, bool round,
+                              int32_t startVertex, std::vector<TriangleElement>& triangleStore, vector<v2_t> &vertices);
+        void addPieSliceVertex(const Coordinate& currentVertex, float flip, double distance,
+                               const vec2<double>& extrude, bool lineTurnsLeft, int32_t startVertex,
+                               std::vector<TriangleElement>& triangleStore, vector<v2_t> &vertices);
+        size_t addVertix(vector<v2_t> &vertices, int8_t x, int8_t y, float ex, float ey, int8_t tx, int8_t ty, int32_t linesofar);
+        
+        /*
+         * Scale the extrusion vector so that the normal length is this value.
+         * Contains the "texture" normals (-1..1). This is distinct from the extrude
+         * normals for line joins, because the x-value remains 0 for the texture
+         * normal array, while the extrude normal actually moves the vertex to create
+         * the acute/bevelled line join.
+         */
+        static const int8_t extrudeScale = 63;
 	};
+
 }
 
 #endif // __glPath_h__

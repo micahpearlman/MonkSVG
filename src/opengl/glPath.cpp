@@ -12,6 +12,10 @@
 #include "glContext.h"
 #include "glBatch.h"
 #include <cassert>
+#include "vec.hpp"
+#include <vector>
+
+using namespace std;
 
 namespace MonkVG {
 	
@@ -559,7 +563,7 @@ namespace MonkVG {
 	
 	void OpenGLPath::buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width ) {
 		
-		if ( (p0.x == p1.x) && (p0.y == p1.y ) ) {
+		if ( p0 == p1 ) {
 			return;
 		}
 		
@@ -589,31 +593,351 @@ namespace MonkVG {
 		v3.y = p1.y - radius * dy;
 		vertices.push_back( v3 );
 		
-        cout << "stroke cap " << getCapStyle() << endl;
-        cout << "stroke join " << getJoinStyle() << endl;
-        cout << "stroke miter " << getMiterlimit() << endl;
-        
-        applyLineStyles(vertices, getCapStyle(), getJoinStyle(), getMiterlimit(), stroke_width);
-        
 	}
 	
-    bool OpenGLPath::numberOfvertices(vector<v2_t>& vertices) {
+    size_t OpenGLPath::numberOfvertices(vector<v2_t>& vertices) {
         size_t l = vertices.size();
         // If the line has duplicate vertices at the end, adjust length to remove them.
-        while (l > 2 && vertices[l - 1].x == vertices[l - 2].x && vertices[l - 1].y == vertices[l - 2].y) {
+        while (l > 2 && vertices[l - 1] == vertices[l - 2]) {
             l--;
         }
-        return l > 2;
+        return l;
         
     }
     
-    void OpenGLPath::applyLineStyles( vector<v2_t> &vertices, VGCapStyle style, VGJoinStyle join, VGfloat miter, VGfloat stroke_width) {
+    void OpenGLPath::applyLineStyles( vector<v2_t> &vertices, VGCapStyle style, VGJoinStyle join, VGfloat miterLimit, VGfloat stroke_width) {
+        size_t len = numberOfvertices(vertices);
+
+        const Coordinate firstVertex = vertices.front();
+        const Coordinate lastVertex = vertices[len - 1];
+        const bool closed = firstVertex == lastVertex;
+
+        if (len == 2 && closed)return;
     
-        if (numberOfvertices(vertices)) {
-            
-            
+        const VGCapStyle beginCap = style;
+        const VGCapStyle endCap = closed ? VG_CAP_BUTT : style;
+
+        int8_t flip = 1;
+        double distance = 0;
+        bool startOfLine = true;
+
+        Coordinate currentVertex = Coordinate::null(), prevVertex = Coordinate::null(),
+        nextVertex = Coordinate::null();
+        vec2<double> prevNormal = vec2<double>::null(), nextNormal = vec2<double>::null();
+
+        // the last three vertices added
+        e1 = e2 = e3 = -1;
+        
+        if (closed) {
+            currentVertex = vertices[len - 2];
+            nextNormal = util::perp(util::unit(vec2<double>(firstVertex - currentVertex)));
         }
+
+        const int32_t startVertex = 0;
+
+        std::vector<TriangleElement> triangleStore;
+        
+        for (size_t i = 0; i < len; ++i) {
+            if (closed && i == len - 1) {
+                // if the line is closed, we treat the last vertex like the first
+                nextVertex = vertices[1];
+            } else if (i + 1 < len) {
+                // just the next vertex
+                nextVertex = vertices[i + 1];
+            } else {
+                // there is no next vertex
+                nextVertex = Coordinate::null();
+            }
+            
+            // if two consecutive vertices exist, skip the current one
+            if (nextVertex && vertices[i] == nextVertex) {
+                continue;
+            }
+            
+            if (nextNormal) {
+                prevNormal = nextNormal;
+            }
+            if (currentVertex) {
+                prevVertex = currentVertex;
+            }
+            
+            currentVertex = vertices[i];
+            
+            // Calculate how far along the line the currentVertex is
+            if (prevVertex)
+                distance += util::dist<double>(currentVertex, prevVertex);
+            
+            // Calculate the normal towards the next vertex in this line. In case
+            // there is no next vertex, pretend that the line is continuing straight,
+            // meaning that we are just using the previous normal.
+            nextNormal = nextVertex ? util::perp(util::unit(vec2<double>(nextVertex - currentVertex)))
+            : prevNormal;
+            
+            // If we still don't have a previous normal, this is the beginning of a
+            // non-closed line, so we're doing a straight "join".
+            if (!prevNormal) {
+                prevNormal = nextNormal;
+            }
+            
+            // Determine the normal of the join extrusion. It is the angle bisector
+            // of the segments between the previous line and the next line.
+            vec2<double> joinNormal = util::unit(prevNormal + nextNormal);
+            
+            /*  joinNormal     prevNormal
+             *             ↖      ↑
+             *                .________. prevVertex
+             *                |
+             * nextNormal  ←  |  currentVertex
+             *                |
+             *     nextVertex !
+             *
+             */
+            
+            // Calculate the length of the miter (the ratio of the miter to the width).
+            // Find the cosine of the angle between the next and join normals
+            // using dot product. The inverse of that is the miter length.
+            const float cosHalfAngle = joinNormal.x * nextNormal.x + joinNormal.y * nextNormal.y;
+            const float miterLength = cosHalfAngle != 0 ? 1 / cosHalfAngle: 1;
+            
+            // The join if a middle vertex, otherwise the cap
+            const bool middleVertex = prevVertex && nextVertex;
+            VGJoinStyle currentJoin = join;
+            const VGCapStyle currentCap = nextVertex ? beginCap : endCap;
+            
+            if (middleVertex) {
+                if (currentJoin == VG_JOIN_ROUND) {
+                    if (miterLength < miterLimit) {
+                        currentJoin = VG_JOIN_MITER;
+                    } else if (miterLength <= 2) {
+                        currentJoin = VG_JOIN_FAKE_ROUND;
+                    }
+                }
+                
+                if (currentJoin == VG_JOIN_MITER && miterLength > miterLimit) {
+                    currentJoin = VG_JOIN_BEVEL;
+                }
+                
+                if (currentJoin == VG_JOIN_BEVEL) {
+                    // The maximum extrude length is 128 / 63 = 2 times the width of the line
+                    // so if miterLength >= 2 we need to draw a different type of bevel where.
+                    if (miterLength > 2) {
+                        currentJoin = VG_JOIN_FLIP_BEVEL;
+                    }
+                    
+                    // If the miterLength is really small and the line bevel wouldn't be visible,
+                    // just draw a miter join to save a triangle.
+                    if (miterLength < miterLimit) {
+                        currentJoin = VG_JOIN_MITER;
+                    }
+                }
+            }
+            
+            if (middleVertex && currentJoin == VG_JOIN_MITER) {
+                joinNormal = joinNormal * miterLength;
+                addCurrentVertex(currentVertex, flip, distance, joinNormal, 0, 0, false, startVertex,
+                                 triangleStore, vertices);
+                
+            } else if (middleVertex && currentJoin == VG_JOIN_FLIP_BEVEL) {
+                // miter is too big, flip the direction to make a beveled join
+                
+                if (miterLength > 100) {
+                    // Almost parallel lines
+                    joinNormal = nextNormal;
+                } else {
+                    const float direction = prevNormal.x * nextNormal.y - prevNormal.y * nextNormal.x > 0 ? -1 : 1;
+                    const float bevelLength = miterLength * util::mag(prevNormal + nextNormal) /
+                    util::mag(prevNormal - nextNormal);
+                    joinNormal = util::perp(joinNormal) * bevelLength * direction;
+                }
+                
+                addCurrentVertex(currentVertex, flip, distance, joinNormal, 0, 0, false, startVertex,
+                                 triangleStore, vertices);
+                flip = -flip;
+                
+            } else if (middleVertex && (currentJoin == VG_JOIN_BEVEL || currentJoin == VG_JOIN_FAKE_ROUND)) {
+                const bool lineTurnsLeft = flip * (prevNormal.x * nextNormal.y - prevNormal.y * nextNormal.x) > 0;
+                const float offset = -std::sqrt(miterLength * miterLength - 1);
+                float offsetA;
+                float offsetB;
+                
+                if (lineTurnsLeft) {
+                    offsetB = 0;
+                    offsetA = offset;
+                } else {
+                    offsetA = 0;
+                    offsetB = offset;
+                }
+                
+                // Close previous segement with bevel
+                if (!startOfLine) {
+                    addCurrentVertex(currentVertex, flip, distance, prevNormal, offsetA, offsetB, false,
+                                     startVertex, triangleStore, vertices);
+                }
+                
+                if (currentJoin == VG_JOIN_FAKE_ROUND) {
+                    // The join angle is sharp enough that a round join would be visible.
+                    // Bevel joins fill the gap between segments with a single pie slice triangle.
+                    // Create a round join by adding multiple pie slices. The join isn't actually round, but
+                    // it looks like it is at the sizes we render lines at.
+                    
+                    // Add more triangles for sharper angles.
+                    // This math is just a good enough approximation. It isn't "correct".
+                    const int n = std::floor((0.5 - (cosHalfAngle - 0.5)) * 8);
+                    
+                    for (int m = 0; m < n; m++) {
+                        auto approxFractionalJoinNormal = util::unit(nextNormal * ((m + 1.0f) / (n + 1.0f)) + prevNormal);
+                        addPieSliceVertex(currentVertex, flip, distance, approxFractionalJoinNormal, lineTurnsLeft, startVertex, triangleStore, vertices);
+                    }
+                    
+                    addPieSliceVertex(currentVertex, flip, distance, joinNormal, lineTurnsLeft, startVertex, triangleStore, vertices);
+                    
+                    for (int k = n - 1; k >= 0; k--) {
+                        auto approxFractionalJoinNormal = util::unit(prevNormal * ((k + 1.0f) / (n + 1.0f)) + nextNormal);
+                        addPieSliceVertex(currentVertex, flip, distance, approxFractionalJoinNormal, lineTurnsLeft, startVertex, triangleStore, vertices);
+                    }
+                }
+                
+                // Start next segment
+                if (nextVertex) {
+                    addCurrentVertex(currentVertex, flip, distance, nextNormal, -offsetA, -offsetB,
+                                     false, startVertex, triangleStore, vertices);
+                }
+                
+            } else if (!middleVertex && currentCap == VG_CAP_BUTT) {
+                if (!startOfLine) {
+                    // Close previous segment with a butt
+                    addCurrentVertex(currentVertex, flip, distance, prevNormal, 0, 0, false,
+                                     startVertex, triangleStore, vertices);
+                }
+                
+                // Start next segment with a butt
+                if (nextVertex) {
+                    addCurrentVertex(currentVertex, flip, distance, nextNormal, 0, 0, false,
+                                     startVertex, triangleStore, vertices);
+                }
+                
+            } else if (!middleVertex && currentCap == VG_CAP_SQUARE) {
+                if (!startOfLine) {
+                    // Close previous segment with a square cap
+                    addCurrentVertex(currentVertex, flip, distance, prevNormal, 1, 1, false,
+                                     startVertex, triangleStore, vertices);
+                    
+                    // The segment is done. Unset vertices to disconnect segments.
+                    e1 = e2 = -1;
+                    flip = 1;
+                }
+                
+                // Start next segment
+                if (nextVertex) {
+                    addCurrentVertex(currentVertex, flip, distance, nextNormal, -1, -1, false,
+                                     startVertex, triangleStore, vertices);
+                }
+                
+            } else if (middleVertex ? currentJoin == VG_JOIN_ROUND : currentCap == VG_CAP_ROUND) {
+                if (!startOfLine) {
+                    // Close previous segment with a butt
+                    addCurrentVertex(currentVertex, flip, distance, prevNormal, 0, 0, false,
+                                     startVertex, triangleStore, vertices);
+                    
+                    // Add round cap or linejoin at end of segment
+                    addCurrentVertex(currentVertex, flip, distance, prevNormal, 1, 1, true, startVertex,
+                                     triangleStore, vertices);
+                    
+                    // The segment is done. Unset vertices to disconnect segments.
+                    e1 = e2 = -1;
+                    flip = 1;
+                }
+                
+                // Start next segment with a butt
+                if (nextVertex) {
+                    // Add round cap before first segment
+                    addCurrentVertex(currentVertex, flip, distance, nextNormal, -1, -1, true,
+                                     startVertex, triangleStore, vertices);
+                    
+                    addCurrentVertex(currentVertex, flip, distance, nextNormal, 0, 0, false,
+                                     startVertex, triangleStore, vertices);
+                }
+            }
+            
+            startOfLine = false;
+        }
+        
+        
+    }
+
+    void OpenGLPath::addCurrentVertex(const Coordinate& currentVertex,
+                                      float flip,
+                                      double distance,
+                                      const vec2<double>& normal,
+                                      float endLeft,
+                                      float endRight,
+                                      bool round,
+                                      int32_t startVertex,
+                                      std::vector<TriangleElement>& triangleStore, vector<v2_t> &vertices) {
+        int8_t tx = round ? 1 : 0;
+
+        vec2<double> extrude = normal * flip;
+        if (endLeft)
+            extrude = extrude - (util::perp(normal) * endLeft);
+        e3 = (int32_t)addVertix(vertices, currentVertex.x, currentVertex.y, extrude.x, extrude.y, tx, 0,
+                                       distance) - startVertex;
+        if (e1 >= 0 && e2 >= 0) {
+            triangleStore.emplace_back(e1, e2, e3);
+        }
+        e1 = e2;
+        e2 = e3;
+        
+        extrude = normal * (-flip);
+        if (endRight)
+            extrude = extrude - (util::perp(normal) * endRight);
+        e3 = (int32_t)addVertix(vertices, currentVertex.x, currentVertex.y, extrude.x, extrude.y, tx, 1,
+                                       distance) - startVertex;
+        if (e1 >= 0 && e2 >= 0) {
+            triangleStore.emplace_back(e1, e2, e3);
+        }
+        e1 = e2;
+        e2 = e3;
+    }
     
+    void OpenGLPath::addPieSliceVertex(const Coordinate& currentVertex,
+                                       float flip,
+                                       double distance,
+                                       const vec2<double>& extrude,
+                                       bool lineTurnsLeft,
+                                       int32_t startVertex,
+                                       std::vector<TriangleElement>& triangleStore, vector<v2_t> &vertices) {
+        int8_t ty = lineTurnsLeft;
+
+        auto flippedExtrude = extrude * (flip * (lineTurnsLeft ? -1 : 1));
+        e3 = (int32_t)addVertix(vertices, currentVertex.x, currentVertex.y, flippedExtrude.x, flippedExtrude.y, 0, ty,
+                                       distance) - startVertex;
+        if (e1 >= 0 && e2 >= 0) {
+            triangleStore.emplace_back(e1, e2, e3);
+        }
+        
+        if (lineTurnsLeft) {
+            e2 = e3;
+        } else {
+            e1 = e3;
+        }
+
+    }
+
+    size_t OpenGLPath::addVertix(vector<v2_t> &vertices, int8_t x, int8_t y, float ex, float ey, int8_t tx, int8_t ty, int32_t linesofar) {
+
+        intptr_t idx = vertices.size();
+
+        int16_t coords[2];
+        coords[0] = (x * 2) | tx;
+        coords[1] = (y * 2) | ty;
+        
+        int8_t extrude[4];
+        extrude[0] = std::round(extrudeScale * ex);
+        extrude[1] = std::round(extrudeScale * ey);
+        extrude[2] = static_cast<int8_t>(linesofar / 128);
+        extrude[3] = static_cast<int8_t>(linesofar % 128);
+        
+        return idx;
     }
     
 	void OpenGLPath::buildStroke() {
@@ -626,9 +950,9 @@ namespace MonkVG {
 		
 		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
 		VGbyte segment = VG_CLOSE_PATH;
-		v2_t coords = {0,0};
-		v2_t prev = {0,0};
-		v2_t closeTo = {0,0}; 
+		v2_t coords = v2_t(0,0);
+		v2_t prev = v2_t(0,0);
+		v2_t closeTo = v2_t(0,0);
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
 			//int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
@@ -883,7 +1207,14 @@ namespace MonkVG {
 			}
 		}	// foreach segment
 		
-		
+        if (getMiterlimit()) {
+            
+            cout << "stroke cap " << getCapStyle() << endl;
+            cout << "stroke join " << getJoinStyle() << endl;
+            cout << "stroke miter " << getMiterlimit() << endl;
+            //work in progress
+            //applyLineStyles(_strokeVertices, getCapStyle(), getJoinStyle(), getMiterlimit(), stroke_width);
+        }
 		
 	}
 	
@@ -938,7 +1269,7 @@ namespace MonkVG {
 			GL->glGenBuffers( 1, &_strokeVBO );
 			GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
 			GL->glBufferData( GL_ARRAY_BUFFER, _strokeVertices.size() * sizeof(float) * 2, &_strokeVertices[0], GL_STATIC_DRAW );
-			_numberStrokeVertices = (int)_strokeVertices.size();
+            _numberStrokeVertices = (int)_strokeVertices.size();
 
 		}
 		
@@ -1055,7 +1386,7 @@ namespace MonkVG {
 								 void *polygonData ) {
 
 		OpenGLPath* me = (OpenGLPath*)polygonData;
-		*outData = me->addTessVertex( coords );
+		*outData = me->addTessVertex( vec3<GLdouble>(coords[0], coords[1], coords[2]) );
 		
 	}
 	
@@ -1071,5 +1402,5 @@ namespace MonkVG {
 		
 		GL->glDeleteBuffers( 1, &_fillVBO );
 	}
-	
+    
 }

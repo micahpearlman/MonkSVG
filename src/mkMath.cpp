@@ -48,3 +48,7 @@ VG_API_CALL void VG_API_ENTRY vgRotate(VGfloat angle) VG_API_EXIT {
 VG_API_CALL void VG_API_ENTRY vgRotateXYZ(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) VG_API_EXIT {
     IContext::instance().rotate( angle , x , y , z );
 }
+
+VG_API_CALL float VG_API_ENTRY vgAngle() VG_API_EXIT {
+   return IContext::instance().angle();
+}

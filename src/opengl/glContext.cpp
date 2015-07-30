@@ -430,6 +430,13 @@ namespace MonkVG {
 		active->copy( tmp );
 		loadGLMatrix();
 	}
+    float OpenGLContext::angle()
+    {
+        Matrix33* active = getActiveMatrix();
+        
+        return active->angle();
+    }
+    
 	void OpenGLContext::rotate( VGfloat angle ) {
 		Matrix33* active = getActiveMatrix();
 		Matrix33 rotate;
@@ -443,9 +450,8 @@ namespace MonkVG {
     
 	void OpenGLContext::rotate(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) {
         
-        if ( gl() ) {
-            gl()->glRotatef(angle, x, y, z);
-        }
+        translate(x, y);
+        rotate(angle);
         
     }
     
