@@ -120,7 +120,7 @@ namespace MonkVG {
 	}
 	
 	void OpenGLContext::resize() {
-		// setup GL projection 
+		// setup GL projection
 		gl()->glViewport(0,0, _width, _height);
 		
 		gl()->glMatrixMode(GL_PROJECTION);
