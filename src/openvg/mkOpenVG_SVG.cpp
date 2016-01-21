@@ -375,16 +375,25 @@ namespace MonkSVG {
 			vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
 			
 		} else if( _mode == kPathParseMode ) {
-			if( _current_group->current_path->fill == 0 ) {	// if no fill create a black fill
-				_current_group->current_path->fill = vgCreatePaint();
-				VGfloat fcolor[4] = { 0,0,0,1 };
-				vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
-			}
-
-			vgGetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
-			// set the opacity
-			fcolor[3] = o;
-			vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+// #warning the following logic is incorrect for 'fill:none'
+//			if( _current_group->current_path->fill == 0 ) {	// if no fill create a black fill
+//				_current_group->current_path->fill = vgCreatePaint();
+//				VGfloat fcolor[4] = { 0,0,0,1 };
+//				vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+//			}
+//
+//			vgGetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
+//			// set the opacity
+//			fcolor[3] = o;
+//			vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+            
+            // this is a temporary fix for 'fill:none'
+            if ( _current_group->current_path->fill != 0 ) {	// set opacity if only there is some fill
+                vgGetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
+                // set the opacity
+                fcolor[3] = o;
+                vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+            }
 		} else if( _mode == kUseParseMode ) {
 			_use_opacity = o;
 			if( _current_group->fill == 0 ) {	// if no fill create a black fill

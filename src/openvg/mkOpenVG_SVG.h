@@ -16,7 +16,6 @@
 #include <list>
 #include <cmath>
 #include <memory>
-#include <boost/make_shared.hpp>
 #include "mkSVG.h"
 #include "mkTransform2d.h"
 
@@ -28,10 +27,10 @@ namespace MonkSVG {
 		
 	public:
 		
-		typedef boost::shared_ptr<OpenVG_SVGHandler> SmartPtr;
+		typedef std::shared_ptr<OpenVG_SVGHandler> SmartPtr;
 		
 		static ISVGHandler::SmartPtr create( ) {
-			return boost::make_shared<OpenVG_SVGHandler>( );
+			return std::make_shared<OpenVG_SVGHandler>( );
 		}
 
 		

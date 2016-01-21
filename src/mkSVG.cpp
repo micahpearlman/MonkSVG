@@ -11,10 +11,8 @@
 #include "tinyxml.h"
 #include <map>
 #include <iterator>
-#include <boost/foreach.hpp>
-#include <boost/tokenizer.hpp>
-#include <boost/regex.hpp>
-using namespace boost;
+#include <regex>
+#include <cstring>
 
 namespace MonkSVG {
 	
@@ -513,17 +511,35 @@ namespace MonkSVG {
 	// semicolon-separated property declarations of the form "name : value" within the ‘style’ attribute
 	void SVG::parse_path_style( string& ps ) {
 		map< string, string > style_key_values;
-		char_separator<char> values_seperator(";");
-		char_separator<char> key_value_seperator(":");
-		tokenizer<char_separator<char> > values_tokens( ps, values_seperator );
-		BOOST_FOREACH( string values, values_tokens ) {
-			tokenizer<char_separator<char> > key_value_tokens( values, key_value_seperator );
-			tokenizer<char_separator<char> >::iterator k = key_value_tokens.begin();
-			tokenizer<char_separator<char> >::iterator v = k;
-			v++;
-			//cout << *k << ":" << *v << endl;
-			style_key_values[*k] = *v;
-		}
+
+        char *initial_str = new char[ps.length() + 1];
+        char *str = initial_str;
+        strcpy(str, ps.c_str());
+        char *values = strchr(str, ';');
+        
+        char separator[] = ":";
+        
+        while (values != NULL) {
+            char *key = NULL;
+            char *value = NULL;
+            *values++ = '\0';
+            
+            char *key_value = strtok(str, separator);
+            while (key_value != NULL) {
+                if (key == NULL) {
+                    key = key_value;
+                } else {
+                    value = key_value;
+                }
+                key_value = strtok(NULL, separator);
+            }
+            str = values;
+            style_key_values[string(key)] = string(value);
+            
+            values = strchr(str, ';');
+        }
+        
+        delete [] initial_str;
 		
 		map<string, string>::iterator kv = style_key_values.find( string("fill") );
 		if ( kv != style_key_values.end() ) {
@@ -572,24 +588,29 @@ namespace MonkSVG {
 	}
 
 	void SVG::parse_points( string& points ) {
-		char_separator<char> sep(", \t");
-		tokenizer<char_separator<char>> tokens(points,sep);
-		float xy[2];
-		int xy_offset = 0;  // 0:x, 1:y
-		bool first = true;
-		_handler->setRelative(false);
-		BOOST_FOREACH( string p, tokens ) {
-			xy[xy_offset++] = (float)atof(p.c_str());
-
-			if (xy_offset == 2) {
-				xy_offset = 0;
-				if (first) {
-					_handler->onPathMoveTo( xy[0], xy[1] );
-					first = false;
-				} else
-					_handler->onPathLineTo( xy[0], xy[1] );
-			}
-		}
-		_handler->onPathClose();
+        float xy[2];
+        int xy_offset = 0;  // 0:x, 1:y
+        bool first = true;
+        _handler->setRelative(false);
+        char *str = new char[points.length() + 1];
+        strcpy(str, points.c_str());
+        char *p = strtok(str, ", \t");
+        while (p != NULL) {
+            xy[xy_offset++] = (float)atof(p);
+            
+            if (xy_offset == 2) {
+                xy_offset = 0;
+                if (first) {
+                    _handler->onPathMoveTo( xy[0], xy[1] );
+                    first = false;
+                } else
+                    _handler->onPathLineTo( xy[0], xy[1] );
+            }
+            
+            p = strtok(NULL, ", \t");
+        }
+        
+        delete [] str;
+        _handler->onPathClose();
 	}
 };

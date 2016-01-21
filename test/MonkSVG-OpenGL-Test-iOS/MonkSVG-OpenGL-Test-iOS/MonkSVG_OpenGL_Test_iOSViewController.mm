@@ -140,7 +140,7 @@ enum {
 	// load an example
 	
 	MonkSVG::ISVGHandler::SmartPtr handler =  MonkSVG::OpenVG_SVGHandler::create();
-	vgSVGRenderer = boost::static_pointer_cast<MonkSVG::OpenVG_SVGHandler>( handler );
+	vgSVGRenderer = std::static_pointer_cast<MonkSVG::OpenVG_SVGHandler>( handler );
 	std::string resourcePath( [[[NSBundle mainBundle] resourcePath] UTF8String] );
 	std::string svgFilePath = resourcePath + "/tiger.svg";
 	std::fstream is( svgFilePath.c_str(), std::fstream::in );

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		AA747D9F0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
-		FA169A10184D60FD007EFBF0 /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA169A0F184D60FD007EFBF0 /* boost.framework */; };
 		FA5FD9511399F18B00863CBC /* mkTransform2d.h in Headers */ = {isa = PBXBuildFile; fileRef = FA5FD9501399F18B00863CBC /* mkTransform2d.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAC06DF6139445BD0075231C /* mkOpenVG_SVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */; };
 		FAC06DF7139445BD0075231C /* mkOpenVG_SVG.h in Headers */ = {isa = PBXBuildFile; fileRef = FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -27,7 +26,6 @@
 		AA747D9E0F9514B9006C5449 /* MonkSVG_iOS_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkSVG_iOS_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2AAC07E0554694100DB518D /* libMonkSVG_iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkSVG_iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA169A0F184D60FD007EFBF0 /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = "../../thirdparty/boost-ios/boost.framework"; sourceTree = "<group>"; };
 		FA5FD9501399F18B00863CBC /* mkTransform2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkTransform2d.h; path = ../../src/mkTransform2d.h; sourceTree = "<group>"; };
 		FAC06DF4139445BD0075231C /* mkOpenVG_SVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkOpenVG_SVG.cpp; sourceTree = "<group>"; };
 		FAC06DF5139445BD0075231C /* mkOpenVG_SVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkOpenVG_SVG.h; sourceTree = "<group>"; };
@@ -46,7 +44,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA169A10184D60FD007EFBF0 /* boost.framework in Frameworks */,
 				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -76,7 +73,6 @@
 		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FA169A0F184D60FD007EFBF0 /* boost.framework */,
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -216,10 +212,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/MonkSVG_iOS.dst;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../thirdparty/boost-ios\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -248,10 +241,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/MonkSVG_iOS.dst;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../../thirdparty/boost-ios\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
