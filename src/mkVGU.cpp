@@ -39,8 +39,8 @@
   * \brief	Implementation of the VGU utility library for OpenVG
   *//*-------------------------------------------------------------------*/
 
-#include "MonkVG/vgu.h"
-#include "MonkVG/openvg.h"
+#include <VG/vgu.h>
+#include <VG/openvg.h>
 #include "mkCommon.h"
 #include "mkMath.h"
 
@@ -48,12 +48,6 @@
 
 //using namespace OpenVGRI;
 
-/*-------------------------------------------------------------------*//*!
- * \brief	
- * \param	
- * \return	
- * \note		
- *//*-------------------------------------------------------------------*/
 
 static void append(VGPath path, int numSegments, const VGubyte* segments, int numCoordinates, const VGfloat* coordinates)
 {
@@ -106,12 +100,6 @@ static void append(VGPath path, int numSegments, const VGubyte* segments, int nu
 	}
 }
 
-/*-------------------------------------------------------------------*//*!
- * \brief	
- * \param	
- * \return	
- * \note		
- *//*-------------------------------------------------------------------*/
 
 VGUErrorCode vguLine(VGPath path, VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1)
 {
@@ -128,12 +116,6 @@ VGUErrorCode vguLine(VGPath path, VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1
 	return VGU_NO_ERROR;
 }
 
-/*-------------------------------------------------------------------*//*!
- * \brief	
- * \param	
- * \return	
- * \note		
- *//*-------------------------------------------------------------------*/
 
 VGUErrorCode vguPolygon(VGPath path, const VGfloat * points, VGint count, VGboolean closed)
 {
@@ -165,12 +147,6 @@ VGUErrorCode vguPolygon(VGPath path, const VGfloat * points, VGint count, VGbool
 	return VGU_NO_ERROR;
 }
 
-/*-------------------------------------------------------------------*//*!
- * \brief	
- * \param	
- * \return	
- * \note		
- *//*-------------------------------------------------------------------*/
 
 VGUErrorCode vguRect(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfloat height)
 {
@@ -219,12 +195,6 @@ VGUErrorCode vguEllipse(VGPath path, VGfloat cx, VGfloat cy, VGfloat width, VGfl
 	return VGU_NO_ERROR;
 }
 
-/*-------------------------------------------------------------------*//*!
- * \brief	
- * \param	
- * \return	
- * \note		
- *//*-------------------------------------------------------------------*/
 
 VGUErrorCode vguRoundRect(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfloat height, VGfloat arcWidth, VGfloat arcHeight)
 {
@@ -264,13 +234,6 @@ VGUErrorCode vguRoundRect(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfl
 	return VGU_NO_ERROR;
 }
 
-
-/*-------------------------------------------------------------------*//*!
- * \brief	
- * \param	
- * \return	
- * \note		
- *//*-------------------------------------------------------------------*/
 
 VGUErrorCode vguArc(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfloat height, VGfloat startAngle, VGfloat angleExtent, VGUArcType arcType)
 {

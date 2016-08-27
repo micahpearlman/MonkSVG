@@ -92,12 +92,12 @@ namespace MonkVG {	// Internal Implementation
 					_colorRampStops.push_back( stop );
 				}
 				break;
-			case VG_PAINT_2x3_GRADIENT:
+/*			case VG_PAINT_2x3_GRADIENT:
 				for ( int i = 0; i < 6; i++ ) {
 					_paint2x3Gradient[i] = fv[i];
 				}
 				break;
-			
+*/
 			default:
 				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;

@@ -638,11 +638,11 @@ namespace MonkVG {
 			buildLinearGradientImage( pathWidth, pathHeight );
 		} else if ( getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT ) {
 			buildRadialGradientImage( pathWidth, pathHeight );
-		} else if ( getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT ) {
+		} /* else if ( getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT ) {
 			buildLinear2x3GradientImage( pathWidth, pathHeight );
 		}  else if ( getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ) {
 			buildRadial2x3GradientImage( pathWidth, pathHeight );
-		}
+		} */
 	}
 
 }

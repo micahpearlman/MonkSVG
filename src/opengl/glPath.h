@@ -17,6 +17,7 @@
 #include "glPaint.h"
 #include "vec.hpp"
 #include "math.hpp"
+#include <Tess2/tesselator.h>
 
 namespace MonkVG {
 	
@@ -53,7 +54,7 @@ namespace MonkVG {
 		
 	private:
 		
-		GLUtesselator*		_fillTesseleator;
+		TESStesselator*		_fillTesseleator;
 		vector<GLfloat>		_vertices;
 		vector<v2_t>		_strokeVertices;
 		list<v3_t>			_tessVertices;
@@ -67,13 +68,6 @@ namespace MonkVG {
 		
 		
 	private:		// tesseleator callbacks
-		static void tessBegin( GLenum type, GLvoid* user );
-		static void tessEnd( GLvoid* user );
-		static void tessVertex( GLvoid *vertex, GLvoid* user );
-		static void tessCombine( GLdouble coords[3], void *data[4],
-								GLfloat weight[4], void **outData,
-								void *polygonData );
-		static void tessError( GLenum errorCode );
 		void endOfTesselation( VGbitfield paintModes );
 		
 	private:	// utility methods
