@@ -1,0 +1,9 @@
+[submodule "thirdparty/OpenVG"]
+	path = thirdparty/OpenVG
+	url = https://github.com/sakamura/OpenVG.git
+[submodule "thirdparty/StyleSheet"]
+	path = thirdparty/StyleSheet
+	url = https://github.com/sakamura/StyleSheet.git
+[submodule "thirdparty/tinyxml2"]
+	path = thirdparty/tinyxml2
+	url = https://github.com/sakamura/tinyxml2
