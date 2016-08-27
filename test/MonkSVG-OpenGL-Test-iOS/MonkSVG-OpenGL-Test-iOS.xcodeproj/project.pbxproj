@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FA169A12184D615A007EFBF0 /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA169A11184D6159007EFBF0 /* boost.framework */; };
 		FA22100613B2706700305221 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100513B2706700305221 /* UIKit.framework */; };
 		FA22100813B2706700305221 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100713B2706700305221 /* Foundation.framework */; };
 		FA22100A13B2706700305221 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22100913B2706700305221 /* CoreGraphics.framework */; };
@@ -100,10 +99,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF612BDE1B5D9F3E005DE348 /* GLKit.framework in Frameworks */,
-				FF6536E91B5A0176002AE54F /* libMonkSVG_iOS.a in Frameworks */,
-				FF6536EA1B5A0176002AE54F /* libMonkVG_iOS_OpenGL.a in Frameworks */,
-				FA169A12184D615A007EFBF0 /* boost.framework in Frameworks */,
+				FA739B8813B2737500B186A7 /* libMonkSVG_iOS.a in Frameworks */,
+				FA739B8913B2737500B186A7 /* libMonkVG_iOS_OpenGL.a in Frameworks */,
 				FA22100613B2706700305221 /* UIKit.framework in Frameworks */,
 				FA22100813B2706700305221 /* Foundation.framework in Frameworks */,
 				FA22100A13B2706700305221 /* CoreGraphics.framework in Frameworks */,

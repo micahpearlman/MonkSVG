@@ -15,7 +15,6 @@
 #include <vector>
 #include <map>
 #include <cmath>
-#include <boost/shared_ptr.hpp>
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -31,7 +30,7 @@ namespace MonkSVG {
     class ISVGHandler {
 	public:
 		
-		typedef boost::shared_ptr<ISVGHandler> SmartPtr;
+		typedef std::shared_ptr<ISVGHandler> SmartPtr;
 		
 		// transforms 
 		virtual void onTransformTranslate( float x, float y ) {}
