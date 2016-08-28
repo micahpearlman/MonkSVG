@@ -8,7 +8,8 @@
  */
 
 #include "mkSVG.h"
-#include "tinyxml.h"
+#include <tinyxml2/tinyxml2.h>
+#include <StyleSheet/Document.h>
 #include <map>
 #include <iterator>
 #include <regex>
@@ -16,7 +17,7 @@
 
 namespace MonkSVG {
 	
-    CssDocument _styleDocument;
+    StyleSheet::CssDocument _styleDocument;
 	
 	bool SVG::initialize( ISVGHandler::SmartPtr handler ) {
 		_handler = handler;
@@ -26,23 +27,25 @@ namespace MonkSVG {
 	
 	bool SVG::read( const char* data ) {
         
-		TiXmlDocument doc;
+		XMLDocument doc;
 		doc.Parse( data );
         
         if (doc.Error()) {
             return false;
         }
 		
-		TiXmlElement* root = doc.FirstChild( "svg" )->ToElement();
+		XMLElement* root = doc.FirstChildElement( "svg" )->ToElement();
 		recursive_parse( root );        
         
         // get bounds information from the svg file, ignoring non-pixel values
         
+        const char* inCString;
         string numberWithUnitString;
         regex numberWithUnitPattern( "^(-?\\d+)(px)?$" );
         
         _handler->_minX = 0.0f;
-        if ( root->QueryStringAttribute( "x", &numberWithUnitString ) == TIXML_SUCCESS ) {
+        if ( root->QueryStringAttribute( "x", &inCString ) == XML_SUCCESS ) {
+            numberWithUnitString = inCString;
             match_results<string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_minX = ::atof( matches[1].str().c_str() );
@@ -50,7 +53,8 @@ namespace MonkSVG {
         }
         
         _handler->_minY = 0.0f;
-        if ( root->QueryStringAttribute( "y", &numberWithUnitString ) == TIXML_SUCCESS ) {
+        if ( root->QueryStringAttribute( "y", &inCString ) == XML_SUCCESS ) {
+            numberWithUnitString = inCString;
             match_results<string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_minY = ::atof( matches[1].str().c_str() );
@@ -58,7 +62,8 @@ namespace MonkSVG {
         }
         
         _handler->_width = 0.0f;
-        if ( root->QueryStringAttribute( "width", &numberWithUnitString ) == TIXML_SUCCESS ) {
+        if ( root->QueryStringAttribute( "width", &inCString ) == XML_SUCCESS ) {
+            numberWithUnitString = inCString;
             match_results<string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_width = ::atof( matches[1].str().c_str() );
@@ -66,7 +71,8 @@ namespace MonkSVG {
         }
         
         _handler->_height = 0.0f;
-        if ( root->QueryStringAttribute( "height", &numberWithUnitString ) == TIXML_SUCCESS ) {
+        if ( root->QueryStringAttribute( "height", &inCString ) == XML_SUCCESS ) {
+            numberWithUnitString = inCString;
             match_results<string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_height = ::atof( matches[1].str().c_str() );
@@ -75,7 +81,8 @@ namespace MonkSVG {
         
         
         if (_handler->_width == 0.0f && _handler->_height == 0.0f) {
-            if ( root->QueryStringAttribute( "viewBox", &numberWithUnitString) == TIXML_SUCCESS ) {
+            if ( root->QueryStringAttribute( "viewBox", &inCString) == XML_SUCCESS ) {
+                numberWithUnitString = inCString;
                 match_results<string::const_iterator> matches;
                 regex numberWithUnitPatternVBox( "(\\d+)[ ](\\d+)[ ](\\d+)[ ](\\d+)" );
                 if ( regex_search( numberWithUnitString, matches, numberWithUnitPatternVBox ) ) {
@@ -98,16 +105,16 @@ namespace MonkSVG {
 	
 	
 	
-	void SVG::recursive_parse( TiXmlElement* element ) {
+	void SVG::recursive_parse( XMLElement* element ) {
 		
 		if ( element ) {
-			for ( TiXmlElement* sibbling = element; sibbling != 0; sibbling = sibbling->NextSiblingElement() ) {
+			for ( XMLElement* sibbling = element; sibbling != 0; sibbling = sibbling->NextSiblingElement() ) {
 				handle_xml_element( sibbling );
 			}
 		}
 		
 		if ( element ) {
-			TiXmlElement* child = element->FirstChildElement();
+			XMLElement* child = element->FirstChildElement();
 			// if we don't handle the element recursively go into it
 			if( handle_xml_element( child ) == false ) {
 				recursive_parse( child );
@@ -116,7 +123,7 @@ namespace MonkSVG {
 
 	}
 	
-	bool SVG::handle_xml_element( TiXmlElement* element ) {
+	bool SVG::handle_xml_element( XMLElement* element ) {
 		if( !element )
 			return false;
 		
@@ -144,15 +151,15 @@ namespace MonkSVG {
 			handle_polygon ( element );
 			return true;
 		} else if( type == "symbol" ) {
-			string id;
-			if ( element->QueryStringAttribute( "id", &id ) == TIXML_SUCCESS ) {
-				_symbols[id] = (TiXmlElement*)element->Clone();
+			const char* id;
+			if ( element->QueryStringAttribute( "id", &id ) == XML_SUCCESS ) {
+				_symbols[id] = (XMLElement*)element->ShallowClone(nullptr);
 			}
 			return true;
 		} else if ( type == "use" ) {
-			string href;
-			if ( element->QueryStringAttribute( "xlink:href", &href ) == TIXML_SUCCESS ) {
-				string id = href.substr( 1 );	// skip the # 
+			const char* href;
+			if ( element->QueryStringAttribute( "xlink:href", &href ) == XML_SUCCESS ) {
+				string id = href+1;	// skip the #
 				_handler->onUseBegin();
 				// handle transform and other parameters
 				handle_general_parameter( element );
@@ -166,13 +173,13 @@ namespace MonkSVG {
 
 	}
     
-	void SVG::handle_stylesheet( TiXmlElement* pathElement ) {
+	void SVG::handle_stylesheet( XMLElement* pathElement ) {
         if (pathElement->GetText()) {
-            _styleDocument = CssDocument::parse(pathElement->GetText());
+            _styleDocument = StyleSheet::CssDocument::parse(pathElement->GetText());
         }
     }
     
-	void SVG::handle_group( TiXmlElement* pathElement ) {
+	void SVG::handle_group( XMLElement* pathElement ) {
 		string id_;
 //		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
 //			//_handler->onId( id_ );
@@ -185,15 +192,15 @@ namespace MonkSVG {
 		handle_general_parameter( pathElement );
 		
 		// go through all the children
-		TiXmlElement* children = pathElement->FirstChildElement();
-		for ( TiXmlElement* child = children; child != 0; child = child->NextSiblingElement() ) {
+		XMLElement* children = pathElement->FirstChildElement();
+		for ( XMLElement* child = children; child != 0; child = child->NextSiblingElement() ) {
 			string type = child->Value();
 			handle_xml_element( child );
 		}
 		
 		_handler->onGroupEnd();
 		
-//		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+//		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
 //			//_handler->onId( id_ );
 //			cout << "group end: " << id_ << endl;
 //		}
@@ -201,17 +208,17 @@ namespace MonkSVG {
 
 	}
 	
-	void SVG::handle_path( TiXmlElement* pathElement ) {
+	void SVG::handle_path( XMLElement* pathElement ) {
 		
 //		string id_;
-//		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+//		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
 //			//_handler->onId( id_ );
 //			cout << "path: " << id_ << endl;
 //		}
 
 		_handler->onPathBegin();
-		string d;
-		if ( pathElement->QueryStringAttribute( "d", &d ) == TIXML_SUCCESS ) {
+		const char* d;
+		if ( pathElement->QueryStringAttribute( "d", &d ) == XML_SUCCESS ) {
 			parse_path_d( d );
 		}
 		
@@ -220,17 +227,17 @@ namespace MonkSVG {
 		_handler->onPathEnd();		
 	}
 	
-    void SVG::handle_line( TiXmlElement* pathElement ) {
+    void SVG::handle_line( XMLElement* pathElement ) {
         _handler->onPathBegin();
         
         double pos [4];
-        if ( pathElement->QueryDoubleAttribute( "x1", &pos[0]) == TIXML_SUCCESS) {
+        if ( pathElement->QueryDoubleAttribute( "x1", &pos[0]) == XML_SUCCESS) {
         }
-        if ( pathElement->QueryDoubleAttribute( "y1", &pos[1]) == TIXML_SUCCESS) {
+        if ( pathElement->QueryDoubleAttribute( "y1", &pos[1]) == XML_SUCCESS) {
         }
-        if ( pathElement->QueryDoubleAttribute( "x2", &pos[2]) == TIXML_SUCCESS) {
+        if ( pathElement->QueryDoubleAttribute( "x2", &pos[2]) == XML_SUCCESS) {
         }
-        if ( pathElement->QueryDoubleAttribute( "y2", &pos[3]) == TIXML_SUCCESS) {
+        if ( pathElement->QueryDoubleAttribute( "y2", &pos[3]) == XML_SUCCESS) {
         }
         _handler->setRelative(false);
         _handler->onPathMoveTo(pos[0], pos[1]);
@@ -241,10 +248,10 @@ namespace MonkSVG {
         _handler->onPathEnd();
     }
     
-    void SVG::handle_polyline( TiXmlElement* pathElement ) {
+    void SVG::handle_polyline( XMLElement* pathElement ) {
         _handler->onPathBegin();
-        string points;
-        if ( pathElement->QueryStringAttribute( "points", &points ) == TIXML_SUCCESS ) {
+        const char* points;
+        if ( pathElement->QueryStringAttribute( "points", &points ) == XML_SUCCESS ) {
             parse_polyline_points( points );
         }
         
@@ -254,22 +261,22 @@ namespace MonkSVG {
 
     }
     
-	void SVG::handle_rect( TiXmlElement* pathElement ) {
+	void SVG::handle_rect( XMLElement* pathElement ) {
 		_handler->onPathBegin();
 		
 		
 		float pos[2] = { 0, 0 };
-		if ( pathElement->QueryFloatAttribute( "x", &pos[0] ) == TIXML_SUCCESS ) {
+		if ( pathElement->QueryFloatAttribute( "x", &pos[0] ) == XML_SUCCESS ) {
 			//parse_path_d( d );
 		}
-		if ( pathElement->QueryFloatAttribute( "y", &pos[1] ) == TIXML_SUCCESS ) {
+		if ( pathElement->QueryFloatAttribute( "y", &pos[1] ) == XML_SUCCESS ) {
 			//parse_path_d( d );
 		}
 		float sz[2] = { 0, 0 };
-		if ( pathElement->QueryFloatAttribute( "width", &sz[0] ) == TIXML_SUCCESS ) {
+		if ( pathElement->QueryFloatAttribute( "width", &sz[0] ) == XML_SUCCESS ) {
 			//parse_path_d( d );
 		}
-		if ( pathElement->QueryFloatAttribute( "height", &sz[1] ) == TIXML_SUCCESS ) {
+		if ( pathElement->QueryFloatAttribute( "height", &sz[1] ) == XML_SUCCESS ) {
 			//parse_path_d( d );
 		}
 		_handler->onPathRect( pos[0], pos[1], sz[0], sz[1] );
@@ -282,10 +289,10 @@ namespace MonkSVG {
 		
 	}
 
-	void SVG::handle_polygon( TiXmlElement* pathElement ) {
+	void SVG::handle_polygon( XMLElement* pathElement ) {
 		_handler->onPathBegin();
-		string points;
-		if ( pathElement->QueryStringAttribute( "points", &points ) == TIXML_SUCCESS ) {
+		const char* points;
+		if ( pathElement->QueryStringAttribute( "points", &points ) == XML_SUCCESS ) {
 			parse_points( points );
 		}
 
@@ -294,56 +301,56 @@ namespace MonkSVG {
 		_handler->onPathEnd();
 	}
 	
-	void SVG::handle_general_parameter( TiXmlElement* pathElement ) {
-		string fill; 
-		if ( pathElement->QueryStringAttribute( "fill", &fill ) == TIXML_SUCCESS ) {
+	void SVG::handle_general_parameter( XMLElement* pathElement ) {
+		const char* fill;
+		if ( pathElement->QueryStringAttribute( "fill", &fill ) == XML_SUCCESS ) {
 			_handler->onPathFillColor( string_hex_color_to_uint( fill ) );
 		}
 		
 		
-		string stroke;
-		if ( pathElement->QueryStringAttribute( "stroke", &stroke) == TIXML_SUCCESS ) {
+		const char* stroke;
+		if ( pathElement->QueryStringAttribute( "stroke", &stroke) == XML_SUCCESS ) {
 			_handler->onPathStrokeColor( string_hex_color_to_uint( stroke ) );
 		}
 		
-		string stroke_width;
-		if ( pathElement->QueryStringAttribute( "stroke-width", &stroke_width) == TIXML_SUCCESS ) {
-			float width = atof( stroke_width.c_str() );
+		const char* stroke_width;
+		if ( pathElement->QueryStringAttribute( "stroke-width", &stroke_width) == XML_SUCCESS ) {
+			float width = atof( stroke_width );
 			_handler->onPathStrokeWidth( width );
 		}
 		
-		string style;
-		if ( pathElement->QueryStringAttribute( "style", &style) == TIXML_SUCCESS ) {
+		const char* style;
+		if ( pathElement->QueryStringAttribute( "style", &style) == XML_SUCCESS ) {
 			parse_path_style( style );
 		}
 		
-        string class_;
-        if ( pathElement->QueryStringAttribute( "class", &class_) == TIXML_SUCCESS) {
+        const char* class_;
+        if ( pathElement->QueryStringAttribute( "class", &class_) == XML_SUCCESS) {
             parse_path_stylesheet(class_);
         }
         
-		string transform;
-		if ( pathElement->QueryStringAttribute( "transform", &transform) == TIXML_SUCCESS ) {
+		const char* transform;
+		if ( pathElement->QueryStringAttribute( "transform", &transform) == XML_SUCCESS ) {
 			parse_path_transform( transform );
 		}
-		string id_;
-		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
+		const char* id_;
+		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
 			_handler->onId( id_ );
 		}
 		
-		string opacity;
-		if ( pathElement->QueryStringAttribute( "opacity", &opacity) == TIXML_SUCCESS ) {
-			float o = atof( opacity.c_str() );
+		const char* opacity;
+		if ( pathElement->QueryStringAttribute( "opacity", &opacity) == XML_SUCCESS ) {
+			float o = atof( opacity );
 			_handler->onPathFillOpacity( o );
 			// TODO: ??? stroke opacity???
 		}
-		if ( pathElement->QueryStringAttribute( "fill-opacity", &opacity) == TIXML_SUCCESS ) {
-			float o = atof( opacity.c_str() );
+		if ( pathElement->QueryStringAttribute( "fill-opacity", &opacity) == XML_SUCCESS ) {
+			float o = atof( opacity );
 			_handler->onPathFillOpacity( o );
 		}
 
-		string fillrule;
-		if ( pathElement->QueryStringAttribute( "fill-rule", &fillrule) == TIXML_SUCCESS ) {
+		const char* fillrule;
+		if ( pathElement->QueryStringAttribute( "fill-rule", &fillrule) == XML_SUCCESS ) {
 			_handler->onPathFillRule( fillrule );		
 		}
 
@@ -378,7 +385,7 @@ namespace MonkSVG {
 		
 	}
 	
-	uint32_t SVG::string_hex_color_to_uint( string& hexstring ) {
+	uint32_t SVG::string_hex_color_to_uint( const string& hexstring ) {
 		uint32_t color = (uint32_t)strtol( hexstring.c_str() + 1, 0, 16 );
         
 		if ( hexstring.length() == 7 ) {	// fix up to rgba if the color is only rgb
@@ -421,7 +428,7 @@ namespace MonkSVG {
 		//cout << "state: " << *state << endl;
 	}
 	
-	void SVG::parse_path_transform( string& tr )	{
+	void SVG::parse_path_transform( const string& tr )	{
 		size_t p = tr.find( "translate" );
 		if ( p != string::npos ) {
 			size_t left = tr.find( "(" );
@@ -453,7 +460,7 @@ namespace MonkSVG {
 		}
 	}
 	
-	void SVG::parse_path_d( string& d ) {
+	void SVG::parse_path_d( const string& d ) {
 		char* c = const_cast<char*>( d.c_str() );
 		char state = *c;
 		nextState( &c, &state );
@@ -582,11 +589,11 @@ namespace MonkSVG {
 
         if (_styleDocument.getElementCount()) {
 
-            CssElement theElement = _styleDocument.getElement(CssSelector::CssClassSelector(ps));
+            StyleSheet::CssElement theElement = _styleDocument.getElement(StyleSheet::CssSelector::CssClassSelector(ps));
             
             if (theElement.getPropertyCount()) {
                 
-                CssProperty property = theElement.getProperties().getProperty("fill");
+                StyleSheet::CssProperty property = theElement.getProperties().getProperty("fill");
                 std::string value = property.getValue();
                 
                 if ( !value.empty() ) {
@@ -637,14 +644,11 @@ namespace MonkSVG {
                 property = theElement.getProperties().getProperty( "stroke-dasharray" );
                 value = property.getValue();
                 if ( value != "none" && !value.empty() ) {
-                    char_separator<char> sep(", \t");
-                    tokenizer<char_separator<char> > tokens(value,sep);
                     vector<int> dasharray;
-                    
-                    BOOST_FOREACH( string p, tokens ) {
-                        dasharray.push_back(atoi(p.c_str()));
-                        
-                    }
+                    StyleSheet::tokenizer(value, ", \t", [&dasharray](const string& token)
+                    {
+                        dasharray.push_back(atoi(token.c_str()));
+                    });
                     _handler->onPathStrokDashPattern((int *)dasharray.data());
                 }
                 
@@ -676,7 +680,7 @@ namespace MonkSVG {
     }
     
 	// semicolon-separated property declarations of the form "name : value" within the ‘style’ attribute
-	void SVG::parse_path_style( string& ps ) {
+	void SVG::parse_path_style( const string& ps ) {
 		map< string, string > style_key_values;
 
         char *initial_str = new char[ps.length() + 1];
@@ -755,14 +759,11 @@ namespace MonkSVG {
         kv = style_key_values.find( "stroke-dasharray" );
         if ( kv != style_key_values.end() ) {
             if ( kv->second != "none" ) {
-                char_separator<char> sep(", \t");
-                tokenizer<char_separator<char> > tokens(kv->second,sep);
                 vector<int> dasharray;
-                
-                BOOST_FOREACH( string p, tokens ) {
-                    dasharray.push_back(atoi(p.c_str()));
-                    
-                }
+                StyleSheet::tokenizer(kv->second, ", \t", [&dasharray](const string& token)
+                                      {
+                                          dasharray.push_back(atoi(token.c_str()));
+                                      });
                 _handler->onPathStrokDashPattern((int *)dasharray.data());
             }
         }
@@ -790,29 +791,28 @@ namespace MonkSVG {
 		
 	}
 
-    void SVG::parse_polyline_points( string& points ) {
-        char_separator<char> sep(", \t");
-        tokenizer<char_separator<char> > tokens(points,sep);
+    void SVG::parse_polyline_points( const string& points ) {
         float xy[2];
         int xy_offset = 0;  // 0:x, 1:y
         bool first = true;
         _handler->setRelative(false);
-        BOOST_FOREACH( string p, tokens ) {
-            xy[xy_offset++] = (float)atof(p.c_str());
-            
-            if (xy_offset == 2) {
-                xy_offset = 0;
-                if (first) {
-                    _handler->onPathMoveTo( xy[0], xy[1] );
-                    first = false;
-                } else
-                    _handler->onPathLineTo( xy[0], xy[1] );
-            }
-        }
+        StyleSheet::tokenizer(points, ", \t", [&xy, &xy_offset, &first, this](const string& token)
+                              {
+                                  xy[xy_offset++] = (float)atof(token.c_str());
+
+                                  if (xy_offset == 2) {
+                                      xy_offset = 0;
+                                      if (first) {
+                                          _handler->onPathMoveTo( xy[0], xy[1] );
+                                          first = false;
+                                      } else
+                                          _handler->onPathLineTo( xy[0], xy[1] );
+                                  }
+                              });
         //_handler->onPathClose();
     }
     
-	void SVG::parse_points( string& points ) {
+	void SVG::parse_points( const string& points ) {
         float xy[2];
         int xy_offset = 0;  // 0:x, 1:y
         bool first = true;

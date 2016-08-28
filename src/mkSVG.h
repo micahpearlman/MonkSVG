@@ -15,15 +15,19 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <memory>
 
-class TiXmlDocument;
-class TiXmlElement;
-
+namespace tinyxml2
+{
+    class XMLDocument;
+    class XMLElement;
+}
 
 
 namespace MonkSVG {
 
     using namespace std;
+    using namespace tinyxml2;
     
     class SVG;
 
@@ -129,26 +133,26 @@ namespace MonkSVG {
 		ISVGHandler::SmartPtr		_handler;
 		
 		// holds svg <symbols>
-		map<string, TiXmlElement*>	_symbols;
+		map<string, XMLElement*>	_symbols;
 		
 	private:
-		void recursive_parse( TiXmlElement* element );
-		bool handle_xml_element( TiXmlElement* element );
-		void handle_group( TiXmlElement* pathElement );
-   		void handle_stylesheet( TiXmlElement* pathElement );
-		void handle_line( TiXmlElement* pathElement );
-        void handle_polyline( TiXmlElement* pathElement );
-        void handle_path( TiXmlElement* pathElement );
-		void handle_rect( TiXmlElement* pathElement );
-		void handle_polygon( TiXmlElement* pathElement );
-		void handle_general_parameter( TiXmlElement* pathElement );
-		void parse_path_d( string& ps );
-		void parse_path_style( string& ps );
+		void recursive_parse( XMLElement* element );
+		bool handle_xml_element( XMLElement* element );
+		void handle_group( XMLElement* pathElement );
+   		void handle_stylesheet( XMLElement* pathElement );
+		void handle_line( XMLElement* pathElement );
+        void handle_polyline( XMLElement* pathElement );
+        void handle_path( XMLElement* pathElement );
+		void handle_rect( XMLElement* pathElement );
+		void handle_polygon( XMLElement* pathElement );
+		void handle_general_parameter( XMLElement* pathElement );
+		void parse_path_d( const string& ps );
+		void parse_path_style( const string& ps );
 		void parse_path_stylesheet( string ps );
-        void parse_path_transform( string& tr );
-		void parse_points( string& points );
-        void parse_polyline_points( string& points );
-		uint32_t string_hex_color_to_uint( string& hexstring );
+        void parse_path_transform( const string& tr );
+		void parse_points( const string& points );
+        void parse_polyline_points( const string& points );
+		uint32_t string_hex_color_to_uint( const string& hexstring );
 		float d_string_to_float( char *c, char **str );
 		int d_string_to_int( char *c, char **str );
 		void nextState( char** c, char* state );
