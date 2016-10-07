@@ -554,12 +554,11 @@ namespace MonkVG {
 
         const int nvp = 6;
         const int nve = 2;
-        assert(tessTesselate(_fillTesseleator, winding, TESS_POLYGONS, nvp, nve, NULL) == 0);
+        assert(tessTesselate(_fillTesseleator, winding, TESS_POLYGONS, nvp, nve, NULL) == 1);
 
         GLdouble startVertex_[2];
         GLdouble lastVertex_[2];
         GLdouble v[2];
-        int vertexCount_ = 0;
 
         const float* verts = tessGetVertices(_fillTesseleator);
         //const int* vinds = tessGetVertexIndices(_fillTesseleator);
@@ -569,13 +568,12 @@ namespace MonkVG {
 
         for (int i = 0; i < nelems; ++i)
         {
-            vertexCount_ = 0;
             const int* p = &elems[i*nvp];
             for (int j = 0; j < nvp && p[j] != TESS_UNDEF; ++j)
             {
                 v[0] = verts[p[j]*2];
                 v[1] = verts[p[j]*2+1];
-                switch ( vertexCount_ ) {
+                switch ( j ) {
                     case 0:
                         startVertex_[0] = v[0];
                         startVertex_[1] = v[1];

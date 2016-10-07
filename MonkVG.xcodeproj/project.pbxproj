@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9668A76F1DA5D39900F10F62 /* libgles2bc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BC6381D71514500FA4C53 /* libgles2bc.a */; };
+		9668A7701DA5D39900F10F62 /* libOpenVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BC6441D71515C00FA4C53 /* libOpenVG.a */; };
+		9668A7711DA5D39900F10F62 /* libTess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BC63E1D71515300FA4C53 /* libTess2.a */; };
 		96FF99C01D65F44A00404BDA /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99221D65F44900404BDA /* mkBaseObject.cpp */; };
 		96FF99C11D65F44A00404BDA /* mkBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99241D65F44900404BDA /* mkBatch.cpp */; };
 		96FF99C21D65F44A00404BDA /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99271D65F44900404BDA /* mkContext.cpp */; };
@@ -26,6 +29,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		9668A76D1DA5D37D00F10F62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 969BC6331D71514400FA4C53 /* gles2bc.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 9668A74D1DA5D20200F10F62;
+			remoteInfo = gles2bc;
+		};
 		969BC6371D71514500FA4C53 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 969BC6331D71514400FA4C53 /* gles2bc.xcodeproj */;
@@ -60,13 +70,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 96FF98991D65E54800404BDA;
 			remoteInfo = Tess2;
-		};
-		969BC6491D71516C00FA4C53 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 969BC6331D71514400FA4C53 /* gles2bc.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 9644C2361D66166A00EF4ACD;
-			remoteInfo = gles2bc;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -130,6 +133,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9668A76F1DA5D39900F10F62 /* libgles2bc.a in Frameworks */,
+				9668A7701DA5D39900F10F62 /* libOpenVG.a in Frameworks */,
+				9668A7711DA5D39900F10F62 /* libTess2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,7 +155,7 @@
 		969BC6341D71514400FA4C53 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				969BC6381D71514500FA4C53 /* gles2bc.framework */,
+				969BC6381D71514500FA4C53 /* libgles2bc.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -260,9 +266,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				9668A76E1DA5D37D00F10F62 /* PBXTargetDependency */,
 				969BC6461D71516C00FA4C53 /* PBXTargetDependency */,
 				969BC6481D71516C00FA4C53 /* PBXTargetDependency */,
-				969BC64A1D71516C00FA4C53 /* PBXTargetDependency */,
 			);
 			name = MonkVG;
 			productName = MonkVG;
@@ -318,10 +324,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		969BC6381D71514500FA4C53 /* gles2bc.framework */ = {
+		969BC6381D71514500FA4C53 /* libgles2bc.a */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = gles2bc.framework;
+			fileType = archive.ar;
+			path = libgles2bc.a;
 			remoteRef = 969BC6371D71514500FA4C53 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -368,6 +374,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		9668A76E1DA5D37D00F10F62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = gles2bc;
+			targetProxy = 9668A76D1DA5D37D00F10F62 /* PBXContainerItemProxy */;
+		};
 		969BC6461D71516C00FA4C53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = OpenVG;
@@ -377,11 +388,6 @@
 			isa = PBXTargetDependency;
 			name = Tess2;
 			targetProxy = 969BC6471D71516C00FA4C53 /* PBXContainerItemProxy */;
-		};
-		969BC64A1D71516C00FA4C53 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = gles2bc;
-			targetProxy = 969BC6491D71516C00FA4C53 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

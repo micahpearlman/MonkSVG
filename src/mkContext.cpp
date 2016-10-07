@@ -14,6 +14,8 @@ using namespace MonkVG;
 
 //static VGContext *g_context = NULL;
 
+extern "C"
+{
 VG_API_CALL VGboolean vgCreateContextMNK( VGint width, VGint height, VGRenderingBackendTypeMNK backend )
 {
 	MK_LOG("Creating context %d, %d, %d", width, height, (int)backend);
@@ -40,43 +42,43 @@ VG_API_CALL void vgDestroyContextMNK()
     IContext::instance().Terminate();
 }
 
-VG_API_CALL void VG_API_ENTRY vgSetf (VGuint type, VGfloat value) VG_API_EXIT {
+VG_API_CALL void VG_API_ENTRY vgSetf (VGParamType type, VGfloat value) VG_API_EXIT {
 	IContext::instance().set( type, value );
 }
 
-VG_API_CALL void VG_API_ENTRY vgSeti (VGuint type, VGint value) VG_API_EXIT {
+VG_API_CALL void VG_API_ENTRY vgSeti (VGParamType type, VGint value) VG_API_EXIT {
 	IContext::instance().set( type, value );
 }
 
-VG_API_CALL void VG_API_ENTRY vgSetfv(VGuint type, VGint count,
+VG_API_CALL void VG_API_ENTRY vgSetfv(VGParamType type, VGint count,
 									  const VGfloat * values) VG_API_EXIT {
 	IContext::instance().set( type, values );
 }
-VG_API_CALL void VG_API_ENTRY vgSetiv(VGuint type, VGint count,
+VG_API_CALL void VG_API_ENTRY vgSetiv(VGParamType type, VGint count,
 									  const VGint * values) VG_API_EXIT {
 }
 
-VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGuint type) VG_API_EXIT {
+VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGParamType type) VG_API_EXIT {
     VGfloat ret = -1;
     IContext::instance().get( type, ret );
     return ret;
 }
 
-VG_API_CALL VGint VG_API_ENTRY vgGeti(VGuint type) VG_API_EXIT {
+VG_API_CALL VGint VG_API_ENTRY vgGeti(VGParamType type) VG_API_EXIT {
     VGint ret = -1;
     IContext::instance().get( type, ret );
     return ret;
 }
 
-VG_API_CALL VGint VG_API_ENTRY vgGetVectorSize(VGuint type) VG_API_EXIT {
+VG_API_CALL VGint VG_API_ENTRY vgGetVectorSize(VGParamType type) VG_API_EXIT {
 	return -1;
 }
 
-VG_API_CALL void VG_API_ENTRY vgGetfv(VGuint type, VGint count, VGfloat * values) VG_API_EXIT {
+VG_API_CALL void VG_API_ENTRY vgGetfv(VGParamType type, VGint count, VGfloat * values) VG_API_EXIT {
 	
 }
 
-VG_API_CALL void VG_API_ENTRY vgGetiv(VGuint type, VGint count, VGint * values) VG_API_EXIT {
+VG_API_CALL void VG_API_ENTRY vgGetiv(VGParamType type, VGint count, VGint * values) VG_API_EXIT {
 	
 }
 
@@ -107,6 +109,8 @@ VG_API_CALL void VG_API_ENTRY vgFlush(void) VG_API_EXIT {
 VG_API_CALL VGErrorCode vgGetError(void)
 {
 	return IContext::instance().getError();
+}
+    
 }
 
 
