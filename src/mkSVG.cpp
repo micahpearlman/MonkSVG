@@ -686,28 +686,20 @@ namespace MonkSVG {
         char *initial_str = new char[ps.length() + 1];
         char *str = initial_str;
         strcpy(str, ps.c_str());
-        char *values = strchr(str, ';');
-        
-        char separator[] = ":";
+        const char* const style_separator = ";";
+        const char keyval_separator = ':';
+        char *values = strtok(str, style_separator);
         
         while (values != NULL) {
-            char *key = NULL;
-            char *value = NULL;
-            *values++ = '\0';
-            
-            char *key_value = strtok(str, separator);
-            while (key_value != NULL) {
-                if (key == NULL) {
-                    key = key_value;
-                } else {
-                    value = key_value;
-                }
-                key_value = strtok(NULL, separator);
+            char *value = strchr(values, keyval_separator);
+            char *key = values;
+            if (value != NULL) {
+                *value = '\0';
+                ++value;
+                style_key_values[string(key)] = string(value);
             }
-            str = values;
-            style_key_values[string(key)] = string(value);
             
-            values = strchr(str, ';');
+            values = strtok(NULL, style_separator);
         }
         
         delete [] initial_str;
@@ -787,9 +779,7 @@ namespace MonkSVG {
 			_handler->onPathFillOpacity( o );
 			// ?? TODO: stroke Opacity???
 		}
-        
-		
-	}
+    }
 
     void SVG::parse_polyline_points( const string& points ) {
         float xy[2];
