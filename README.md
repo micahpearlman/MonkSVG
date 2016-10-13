@@ -3,7 +3,7 @@ MonkSVG -- A SVG parser and renderer.
 
 ## Warning
 
-__This branch was heavily modified to only support iOS and use the latest version of the tools as individual projects. This is probably not the fork you wish to use! Please go to https://github.com/micahpearlman/MonkSVG for the official version!
+__This branch was heavily modified to only support iOS and use the latest version of the tools as individual projects. This is probably not the fork you wish to use! Please go to https://github.com/micahpearlman/MonkSVG for the official version!__
 
 Created by Micah Pearlman Copyright 2010.
 
