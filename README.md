@@ -58,10 +58,10 @@ MonkVG was originally created for games, so speed has usually been prefered over
 
 ## Contributors
 
-Paul Holden (Initial Android Port)  
-Vincent Richomme (Windows Port)  
-Gav Wood (Android and Linux Port) 
-Michel Donais (iOS updated version), includes multiple pull requests (See graphs)
+- Paul Holden (Initial Android Port)  
+- Vincent Richomme (Windows Port)  
+- Gav Wood (Android and Linux Port) 
+- Michel Donais (iOS updated version), includes multiple pull requests (See graphs)
 
 Also Luke contributed a great article on how to integrate MonkVG + MonkSWF with Cocos2D: http://blog.zincroe.com/2011/11/displaying-a-swf-on-the-iphone-with-cocos2d-and-monkswf/
 
@@ -71,7 +71,6 @@ NOTE:  MonkVG will not create a OpenGL context, it is the applications responsib
 Also, if your application does any other OpenGL rendering it should save off the GL state and then restore before calling any MonkVG methods.
 
 <tt>
-	
 	VGPaint _paint;
 	VGPath _path;
 	void init() {
