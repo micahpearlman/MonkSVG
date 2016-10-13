@@ -1,6 +1,10 @@
 MonkVG -- An OpenVG implementation
 ==================================
 
+## Warning
+
+__This version is a special version containing only the iOS Branch, was modified to split into its component projects and optimized to use the latest tool versions (as well as the latest work pulls from other branches)! Please go to http://github.com/micahpearlman/MonkVG for the much safer official version!__
+
 ## Overview
 
 MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an OpenGL ES (1.1 or 2.0) backend that should be compatible with any HW that supports OpenGL ES 1.1 which includes most iOS and Android devices as well as OSX and Windows platforms. 
@@ -9,22 +13,16 @@ This is an open source BSD licensed project that is in active development. Contr
 
 It can be found at GitHub http://github.com/micahpearlman/MonkVG
 
-Projects using MonkVG include:
-
-- MonkSVG: A SVG parser and renderer.  https://github.com/micahpearlman/MonkSVG
-- CCSVG: A SVG renderer for Cocos2D. https://github.com/lukelutman/CCSVG
-
 ## Whats New
 
+- (10/13/2016) iOS only. Projects are now split up and updated to their latest version.
 - (1/22/2012) Now supports OpenGL ES 1.1 *AND* 2.0
 
 ## Installation
 
-Use git to clone:  
-
-<tt>$ git clone git@github.com:micahpearlman/MonkVG.git</tt>
-
-There are currently iOS and OSX XCode 4 projects as well as contributed Android projects (thanks Paul Holden)and Windows project (thanks Vincent Richomme).
+Use git to clone:
+- Official version: <tt>$ git clone git@github.com:micahpearlman/MonkVG.git</tt>
+- Special iOS only version: <tt>$ git clone git@github.com:sakamura/OpenVG.git</tt>
 
 ## What is implemented
 
@@ -43,10 +41,16 @@ There are currently iOS and OSX XCode 4 projects as well as contributed Android 
 - Various blending modes (somewhat working already).
 - Scissoring and masking.
 - Improve stroking geometry generation.
+- Batch optimization seems to be broken.
+- Remove OpenGL ES 1 support.
+- Support OgenGL ES 2 & 3 natively.
+- Major cleanup to optimize usage for OpenGL only.
+- Triangle occlusion culling & other runtime optimizations.
 
 ## Probably never support
 - Image filters.
 - Anti-aliasing. (Though this can be supported outside OpenVG.  For example iOS fullscreen AA glRenderbufferStorageMultisampleAPPLE method)
+- Metal optimization.
 
 ## Extensions
 
@@ -57,6 +61,7 @@ MonkVG was originally created for games, so speed has usually been prefered over
 Paul Holden (Initial Android Port)  
 Vincent Richomme (Windows Port)  
 Gav Wood (Android and Linux Port) 
+Michel Donais (iOS updated version), includes multiple pull requests (See graphs)
 
 Also Luke contributed a great article on how to integrate MonkVG + MonkSWF with Cocos2D: http://blog.zincroe.com/2011/11/displaying-a-swf-on-the-iphone-with-cocos2d-and-monkswf/
 
@@ -107,35 +112,6 @@ Also, if your application does any other OpenGL rendering it should save off the
 	}
 </tt>
 
-
-##Android Build instructions
-
-###Overview
-
-Tested with ndk r9d on ubuntu.
-
-There are 2 projects needed to build the example app: 
-
-1. MonkVG-Android builds the needed MonkVG libraries
-
-2. MonkVG-Test-Android wraps them and makes them accessible from an activity.
-
 ###Build steps
 
-```bash
-ndk-build V=1
-```
-The `V=1` makes the output verbose.
-I used android-17 but any of the available targets should do.
-If ndk-build fails it may be helpful to import the projects in Eclipse and add the Native Tools (Right click on project name->**Android Tools-> Add Native Support**)
-make sure to `rm -rf obj/local/armeabi` on both projects for rebuilding, in order not to use old builds of the static libraries.
-
-###Deploy on device
-```bash
-android list targets
-android update project -p . --target android-17
-ant debug 
-ant debug install
-ant release install
-```
-If you imported the projects in Eclipse right click->Run As-> Android App will do.
+Open XCode library project. Profit.
