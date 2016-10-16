@@ -128,15 +128,11 @@ namespace MonkVG {
 		,	_tessellationIterations( 16 )
 		,	_matrixMode( VG_MATRIX_PATH_USER_TO_SURFACE )
 		,	_currentBatch( 0 )
-		,	_imageMode( VG_DRAW_IMAGE_NORMAL )
 	{
 		_path_user_to_surface.setIdentity();
 		_glyph_user_to_surface.setIdentity();
 		_image_user_to_surface.setIdentity();
 		_active_matrix->setIdentity();
-		_glyph_origin[0] = _glyph_origin[1] = 0;
-		
-		setImageMode( _imageMode );
 	}
 	
 	//// parameters ////
@@ -156,10 +152,6 @@ namespace MonkVG {
 			case VG_CLEAR_COLOR:
 				setClearColor( fv );
 				break;
-			case VG_GLYPH_ORIGIN:
-				setGlyphOrigin( fv );
-				break;
-	
 			default:
 				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
@@ -177,9 +169,6 @@ namespace MonkVG {
 				break;
 			case VG_TESSELLATION_ITERATIONS_MNK:
 				setTessellationIterations( i );
-				break;
-			case VG_IMAGE_MODE:
-				setImageMode( (VGImageMode)i );
 				break;
 			default:
 				break;
@@ -203,9 +192,6 @@ namespace MonkVG {
 			case VG_CLEAR_COLOR:
 				getClearColor( fv );
 				break;
-			case VG_GLYPH_ORIGIN:
-				getGlyphOrigin( fv );
-				break;
 				
 			default:
 				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
@@ -225,9 +211,6 @@ namespace MonkVG {
 				break;
 			case VG_TESSELLATION_ITERATIONS_MNK:
 				i = getTessellationIterations( );
-				break;
-			case VG_IMAGE_MODE:
-				i = getImageMode( );
 				break;
             case VG_SURFACE_WIDTH_MNK:
                 i = getWidth();

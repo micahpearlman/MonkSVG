@@ -26,7 +26,7 @@ namespace MonkVG {
 	
 	class IPath : public BaseObject {
 	public:
-		virtual void clear( VGbitfield caps );
+        void clear( VGbitfield caps );
 
 		inline BaseObject::Type getType() const {
 			return BaseObject::kPathType;
@@ -140,11 +140,11 @@ namespace MonkVG {
 		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
 		
 		//// internal data manipulators ////
-        virtual bool draw( VGbitfield paintModes );
+        bool draw( VGbitfield paintModes );
 		void appendData( const VGint numSegments, const VGubyte * pathSegments, const void * pathData ) ;
 		int32_t segmentToNumCoordinates(VGPathSegment segment);
 		void copy( const IPath& src, const Matrix33& transform );
-		virtual void buildFillIfDirty();
+		void buildFillIfDirty();
 		
 
 		IPath( VGint f, VGPathDatatype dt, VGfloat s, VGfloat b, VGint ns, VGint nc, VGbitfield cap )
@@ -176,7 +176,7 @@ namespace MonkVG {
 			
 		}
 		
-        virtual ~IPath();
+        ~IPath();
 		
 	protected:
 

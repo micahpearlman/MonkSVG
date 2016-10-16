@@ -359,21 +359,12 @@ namespace MonkVG {
         
         GL->glEnableClientState( GL_VERTEX_ARRAY );
         GL->glDisableClientState( GL_COLOR_ARRAY );
-        VGImageMode oldImageMode = glContext.getImageMode();
         
         // configure based on paint type
         if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
             GL->glDisable(GL_TEXTURE_2D);
             GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-        } else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT /* || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT */) ) {
-            GL->glEnable( GL_TEXTURE_2D );
-            GL->glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-            //GL->glColor4f(1, 1, 1, 1);  // HACKHACK: need to fix when drawing texture with GL_REPLACE we don't use the current glColor
-            
-            glContext.setImageMode( VG_DRAW_IMAGE_NORMAL );
-            
         }
-        
         
         if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 && _fillPaintForPath) {
             // draw
@@ -383,14 +374,6 @@ namespace MonkVG {
                 GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
             }
             GL->glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
-            
-            // unbind any textures being used
-            if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT /* || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT */) ) {
-                glContext.setImageMode( oldImageMode );
-                
-                GL->glDisable(GL_TEXTURE_2D);
-                GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-            }
             
             // this is important to unbind the vbo when done
             GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );

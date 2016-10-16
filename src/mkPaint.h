@@ -38,10 +38,10 @@ namespace MonkVG {
 		}
 		
 		VGPaintType getPaintType() { return _paintType; }
-		virtual void setPaintType( VGPaintType t ) { _paintType = t; }
+		void setPaintType( VGPaintType t ) { _paintType = t; }
 		
-		virtual bool isDirty() { return _isDirty; }
-		virtual void setIsDirty( bool b ) { _isDirty = b; }
+		bool isDirty() { return _isDirty; }
+		void setIsDirty( bool b ) { _isDirty = b; }
 		
         void setGLState();
         

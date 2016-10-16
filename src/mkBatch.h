@@ -21,7 +21,7 @@ namespace MonkVG {
 	class IBatch : public BaseObject {
 	public:
         IBatch();
-        virtual ~IBatch();
+        ~IBatch();
         
 		inline BaseObject::Type getType() const {
 			return BaseObject::kBatchType;
@@ -35,9 +35,9 @@ namespace MonkVG {
 		virtual void setParameter( const VGint p, const VGint i );
 		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
 		
-        virtual void draw();
-        virtual void dump( void **vertices, size_t *size );
-        virtual void finalize();
+        void draw();
+        void dump( void **vertices, size_t *size );
+        void finalize();
         
         void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, VGbitfield paintModes );
         

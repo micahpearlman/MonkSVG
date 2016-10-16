@@ -32,11 +32,11 @@ namespace MonkVG {
 		static IContext& instance();
 				
         //// Paints ////
-        virtual void setStrokePaint( IPaint* paint );
+        void setStrokePaint( IPaint* paint );
         inline IPaint* getStrokePaint() const {
             return _stroke_paint;
         }
-        virtual void setFillPaint( IPaint* paint );
+        void setFillPaint( IPaint* paint );
         inline IPaint* getFillPaint() {
             return _fill_paint;
         }
@@ -95,7 +95,7 @@ namespace MonkVG {
 		inline void setPathUserToSurface( const Matrix33& m ) {
 			_path_user_to_surface = m;
 		}
-		virtual void setMatrixMode( VGMatrixMode mode ) {
+		void setMatrixMode( VGMatrixMode mode ) {
 			//			VG_MATRIX_PATH_USER_TO_SURFACE              = 0x1400,
 			//			VG_MATRIX_IMAGE_USER_TO_SURFACE             = 0x1401,
 			//			VG_MATRIX_FILL_PAINT_TO_USER                = 0x1402,
@@ -140,17 +140,9 @@ namespace MonkVG {
 		
 		IBatch* currentBatch() { return _currentBatch; }
 		
-		/// font
-		void setGlyphOrigin( const VGfloat o[2] ) { _glyph_origin[0] = o[0]; _glyph_origin[1] = o[1]; }
-		void getGlyphOrigin( VGfloat o[2] ) const { o[0] = _glyph_origin[0]; o[1] = _glyph_origin[1]; }
-		
-		/// image
-		virtual VGImageMode getImageMode() const { return _imageMode; }
-		virtual void setImageMode( VGImageMode im ) { _imageMode = im; }
-        
         /// renderer
-        virtual VGRenderingBackendTypeMNK getRenderingBackendType() const { return _backendRenderer; }
-        virtual void setRenderingBackendType( VGRenderingBackendTypeMNK backendRenderer ) { _backendRenderer = backendRenderer; }
+        VGRenderingBackendTypeMNK getRenderingBackendType() const { return _backendRenderer; }
+        void setRenderingBackendType( VGRenderingBackendTypeMNK backendRenderer ) { _backendRenderer = backendRenderer; }
 	
 	protected:
 	
@@ -177,65 +169,58 @@ namespace MonkVG {
         IPaint*				_fill_paint;
         VGFillRule			_fill_rule;
         
-		// font
-		VGfloat				_glyph_origin[2];
-		
 		// batch
 		IBatch*				_currentBatch;
 		
-		// imFW
-		VGImageMode			_imageMode;
-
-		// error 
+		// error
 		VGErrorCode			_error;
         
         // renderer
         VGRenderingBackendTypeMNK   _backendRenderer;
         
     public:
-        virtual bool Initialize();
-        virtual bool Terminate();
+        bool Initialize();
+        bool Terminate();
         
         //// factories ////
-        virtual IPaint* createPaint();
-        virtual void destroyPaint( IPaint* paint );
-        virtual IPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities );
-        virtual void destroyPath( IPath* path );
-        virtual IBatch* createBatch();
-        virtual void destroyBatch( IBatch* batch );
+        IPaint* createPaint();
+        void destroyPaint( IPaint* paint );
+        IPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities );
+        void destroyPath( IPath* path );
+        IBatch* createBatch();
+        void destroyBatch( IBatch* batch );
         
         //// platform specific execution of stroke and fill ////
-        virtual void stroke();
-        virtual void fill();
+        void stroke();
+        void fill();
         
         //// platform specific execution of Masking and Clearing ////
-        virtual void clear(VGint x, VGint y, VGint width, VGint height);
+        void clear(VGint x, VGint y, VGint width, VGint height);
         
         //// platform specific implementation of transform ////
-        virtual void setIdentity();
-        virtual void transform( VGfloat* t );
-        virtual void scale( VGfloat sx, VGfloat sy );
-        virtual void translate( VGfloat x, VGfloat y );
-        virtual float angle ();
-        virtual void rotate( VGfloat angle );
-        virtual void rotate( VGfloat angle , VGfloat x, VGfloat y, VGfloat z);
-        virtual void setTransform( const VGfloat* t ) ;
-        virtual void multiply( const VGfloat* t );
+        void setIdentity();
+        void transform( VGfloat* t );
+        void scale( VGfloat sx, VGfloat sy );
+        void translate( VGfloat x, VGfloat y );
+        float angle ();
+        void rotate( VGfloat angle );
+        void rotate( VGfloat angle , VGfloat x, VGfloat y, VGfloat z);
+        void setTransform( const VGfloat* t ) ;
+        void multiply( const VGfloat* t );
         void loadGLMatrix();
         
         void beginRender();
         void endRender();
         
-        
-        virtual void resize();
+        void resize();
         
         
         static void checkGLError();
         
         /// batch drawing
-        virtual void startBatch( IBatch* batch );
-        virtual void dumpBatch( IBatch* batch, void **vertices, size_t *size );
-        virtual void endBatch( IBatch* batch );
+        void startBatch( IBatch* batch );
+        void dumpBatch( IBatch* batch, void **vertices, size_t *size );
+        void endBatch( IBatch* batch );
         
         OpenGLES::OpenGLESContext* getGLESBackendContext() { return _gl; }
         OpenGLES::OpenGLESContext* gl() { return getGLESBackendContext(); }
