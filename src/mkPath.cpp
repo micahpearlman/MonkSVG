@@ -278,19 +278,15 @@ VG_API_CALL void VG_API_ENTRY vgPathTransformedBounds(VGPath path,
 
 	const Matrix33 & m = IContext::instance().getPathUserToSurface();
 
-	float t0[2];
-	affineTransform(t0, m, p0);
-	float t1[2];
-	affineTransform(t1, m, p1);
-	float t2[2];
-	affineTransform(t2, m, p2);
-	float t3[2];
-	affineTransform(t3, m, p3);
+	affineTransform(m, p0);
+	affineTransform(m, p1);
+	affineTransform(m, p2);
+	affineTransform(m, p3);
 
-	*minX = std::min(std::min(std::min(t0[0], t1[0]), t2[0]), t3[0]);
-	*width = std::max(std::max(std::max(t0[0], t1[0]), t2[0]), t3[0]) - *minX;
-	*minY = std::min(std::min(std::min(t0[1], t1[1]), t2[1]), t3[1]);
-	*height = std::max(std::max(std::max(t0[1], t1[1]), t2[1]), t3[1]) - *minY;
+	*minX = std::min(std::min(std::min(p0[0], p1[0]), p2[0]), p3[0]);
+	*width = std::max(std::max(std::max(p0[0], p1[0]), p2[0]), p3[0]) - *minX;
+	*minY = std::min(std::min(std::min(p0[1], p1[1]), p2[1]), p3[1]);
+	*height = std::max(std::max(std::max(p0[1], p1[1]), p2[1]), p3[1]) - *minY;
 }
 
 

@@ -161,10 +161,14 @@ namespace MonkVG {
 		
 	};
 	
-	inline void affineTransform( float result[2], const Matrix33& m, const float v[2] )	{ 
-		result[0] = v[0] * m.get(0,0) + v[1] * m.get(0,1) + m.get(0,2);
-		result[1] = v[0] * m.get(1,0) + v[1] * m.get(1,1) + m.get(1,2); 
+	inline void affineTransform( float out[2], const Matrix33& m, const float v[2] )	{
+		out[0] = v[0] * m.get(0,0) + v[1] * m.get(0,1) + m.get(0,2);
+		out[1] = v[0] * m.get(1,0) + v[1] * m.get(1,1) + m.get(1,2);
 	}
+    inline void affineTransform( const Matrix33& m, float v[2] )	{
+        const float in[2] = {v[0],v[1]};
+        affineTransform(v, m, in);
+    }
 	
 }
 

@@ -12,7 +12,8 @@
 
 #include "glPlatform.h"
 
-#include <vector>
+#include <map>
+#include <sqlite3.h>
 
 namespace MonkVG {
 	class OpenGLBatch : public IBatch {
@@ -34,11 +35,16 @@ namespace MonkVG {
 		};
 	private:
 		
-		std::vector<vertex_t>	_vertices;
+        std::map<GLuint, int>   _colorMap;
 		size_t					_vertexCount;
 		GLuint					_vbo;
 
-		
+        sqlite3*                _verticesdb;
+        sqlite3_stmt*           _getPotentialTriangles;
+        sqlite3_stmt*           _insertTriangle;
+        sqlite3_stmt*           _deleteTriangle;
+        sqlite3_stmt*           _getNumTriangles;
+        sqlite3_stmt*           _getAllTriangles;
 	};
 }
 

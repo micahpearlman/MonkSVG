@@ -86,6 +86,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		96529C2F1DB051D100F633C2 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		969BC6331D71514400FA4C53 /* gles2bc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = gles2bc.xcodeproj; path = "thirdparty/gles2-bc-nacl/gles2bc.xcodeproj"; sourceTree = "<group>"; };
 		969BC6391D71515300FA4C53 /* Tess2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess2.xcodeproj; path = thirdparty/libtess2/Tess2.xcodeproj; sourceTree = "<group>"; };
 		969BC63F1D71515C00FA4C53 /* OpenVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpenVG.xcodeproj; path = thirdparty/OpenVG/OpenVG.xcodeproj; sourceTree = "<group>"; };
@@ -142,6 +143,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		96529C2E1DB051D100F633C2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				96529C2F1DB051D100F633C2 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		969BC6321D71512900FA4C53 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
@@ -192,6 +201,7 @@
 				969BC6321D71512900FA4C53 /* ThirdParty */,
 				96E5959E1D714AA20022B80A /* MonkVG */,
 				96FF98E91D65F3CD00404BDA /* Products */,
+				96529C2E1DB051D100F633C2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
