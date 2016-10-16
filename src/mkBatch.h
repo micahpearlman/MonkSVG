@@ -18,10 +18,10 @@
 
 namespace MonkVG {
 	
-	class IBatch : public BaseObject {
+	class MKBatch : public BaseObject {
 	public:
-        IBatch();
-        ~IBatch();
+        MKBatch();
+        ~MKBatch();
         
 		inline BaseObject::Type getType() const {
 			return BaseObject::kBatchType;

@@ -98,19 +98,6 @@ struct vec3 {
     }
 };
 
-template <typename T = double>
-struct vec4 {
-    T x, y, z, w;
-
-    inline vec4() {}
-    inline vec4(const vec4& o) : x(o.x), y(o.y), z(o.z), w(o.w) {}
-    inline vec4(T x_, T y_, T z_, T w_) : x(x_), y(y_), z(z_), w(w_) {}
-    inline bool operator==(const vec4& rhs) const {
-        return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w;
-    }
-};
-
-
 typedef vec2<int16_t> Coordinate;
 
 }

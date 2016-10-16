@@ -21,23 +21,23 @@
 
 namespace MonkVG {
 
-#define GL (((IContext*)&IContext::instance())->gl())
+#define GL (((MKContext*)&MKContext::instance())->gl())
 
-	class IContext {
+	class MKContext {
 	public:
 	
-		IContext();
+		MKContext();
 		
 		// singleton instance
-		static IContext& instance();
+		static MKContext& instance();
 				
         //// Paints ////
-        void setStrokePaint( IPaint* paint );
-        inline IPaint* getStrokePaint() const {
+        void setStrokePaint( MKPaint* paint );
+        inline MKPaint* getStrokePaint() const {
             return _stroke_paint;
         }
-        void setFillPaint( IPaint* paint );
-        inline IPaint* getFillPaint() {
+        void setFillPaint( MKPaint* paint );
+        inline MKPaint* getFillPaint() {
             return _fill_paint;
         }
         inline VGFillRule getFillRule() const {
@@ -138,7 +138,7 @@ namespace MonkVG {
 		inline int32_t getTessellationIterations() const { return _tessellationIterations; }
 		inline void setTessellationIterations( int32_t i ) { _tessellationIterations = i; }
 		
-		IBatch* currentBatch() { return _currentBatch; }
+		MKBatch* currentBatch() { return _currentBatch; }
 		
         /// renderer
         VGRenderingBackendTypeMNK getRenderingBackendType() const { return _backendRenderer; }
@@ -165,12 +165,12 @@ namespace MonkVG {
 		int32_t				_tessellationIterations;
 
         // paints
-        IPaint*				_stroke_paint;
-        IPaint*				_fill_paint;
+        MKPaint*				_stroke_paint;
+        MKPaint*				_fill_paint;
         VGFillRule			_fill_rule;
         
 		// batch
-		IBatch*				_currentBatch;
+		MKBatch*				_currentBatch;
 		
 		// error
 		VGErrorCode			_error;
@@ -183,12 +183,12 @@ namespace MonkVG {
         bool Terminate();
         
         //// factories ////
-        IPaint* createPaint();
-        void destroyPaint( IPaint* paint );
-        IPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities );
-        void destroyPath( IPath* path );
-        IBatch* createBatch();
-        void destroyBatch( IBatch* batch );
+        MKPaint* createPaint();
+        void destroyPaint( MKPaint* paint );
+        MKPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities );
+        void destroyPath( MKPath* path );
+        MKBatch* createBatch();
+        void destroyBatch( MKBatch* batch );
         
         //// platform specific execution of stroke and fill ////
         void stroke();
@@ -218,9 +218,9 @@ namespace MonkVG {
         static void checkGLError();
         
         /// batch drawing
-        void startBatch( IBatch* batch );
-        void dumpBatch( IBatch* batch, void **vertices, size_t *size );
-        void endBatch( IBatch* batch );
+        void startBatch( MKBatch* batch );
+        void dumpBatch( MKBatch* batch, void **vertices, size_t *size );
+        void endBatch( MKBatch* batch );
         
         OpenGLES::OpenGLESContext* getGLESBackendContext() { return _gl; }
         OpenGLES::OpenGLESContext* gl() { return getGLESBackendContext(); }

@@ -15,11 +15,11 @@
 
 namespace MonkVG {
 	
-	class IPaint : public BaseObject {
+	class MKPaint : public BaseObject {
 	public:
 	
-        IPaint();
-        ~IPaint();
+        MKPaint();
+        ~MKPaint();
 	
 		inline BaseObject::Type getType() const {
 			return BaseObject::kPaintType;

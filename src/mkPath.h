@@ -24,7 +24,7 @@
 
 namespace MonkVG {
 	
-	class IPath : public BaseObject {
+	class MKPath : public BaseObject {
 	public:
         void clear( VGbitfield caps );
 
@@ -143,11 +143,11 @@ namespace MonkVG {
         bool draw( VGbitfield paintModes );
 		void appendData( const VGint numSegments, const VGubyte * pathSegments, const void * pathData ) ;
 		int32_t segmentToNumCoordinates(VGPathSegment segment);
-		void copy( const IPath& src, const Matrix33& transform );
+		void copy( const MKPath& src, const Matrix33& transform );
 		void buildFillIfDirty();
 		
 
-		IPath( VGint f, VGPathDatatype dt, VGfloat s, VGfloat b, VGint ns, VGint nc, VGbitfield cap )
+		MKPath( VGint f, VGPathDatatype dt, VGfloat s, VGfloat b, VGint ns, VGint nc, VGbitfield cap )
 		:	_format( f )
 		,	_datatype( dt )
 		,	_scale( s )
@@ -176,7 +176,7 @@ namespace MonkVG {
 			
 		}
 		
-        ~IPath();
+        ~MKPath();
 		
 	protected:
 
@@ -226,8 +226,8 @@ namespace MonkVG {
         GLuint				_strokeVBO;
         int					_numberFillVertices;
         int					_numberStrokeVertices;
-        IPaint*		_fillPaintForPath;
-        IPaint*		_strokePaintForPath;
+        MKPaint*		_fillPaintForPath;
+        MKPaint*		_strokePaintForPath;
 
         
     private:		// tesseleator callbacks

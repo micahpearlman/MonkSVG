@@ -19,39 +19,39 @@ VG_API_CALL VGboolean vgCreateContextMNK( VGint width, VGint height, VGRendering
 {
 	MK_LOG("Creating context %d, %d, %d", width, height, (int)backend);
 
-    IContext::instance().setRenderingBackendType( backend );
+    MKContext::instance().setRenderingBackendType( backend );
 
-	IContext::instance().setWidth( width );
-	IContext::instance().setHeight( height );
-	IContext::instance().Initialize();
+	MKContext::instance().setWidth( width );
+	MKContext::instance().setHeight( height );
+	MKContext::instance().Initialize();
 	
 	return VG_TRUE;
 }
 
 VG_API_CALL void vgResizeSurfaceMNK(VGint width, VGint height)
 {
-	IContext::instance().setWidth( width );
-	IContext::instance().setHeight( height );
-	IContext::instance().resize();
+	MKContext::instance().setWidth( width );
+	MKContext::instance().setHeight( height );
+	MKContext::instance().resize();
 
 }
 
 VG_API_CALL void vgDestroyContextMNK()
 {
-    IContext::instance().Terminate();
+    MKContext::instance().Terminate();
 }
 
 VG_API_CALL void VG_API_ENTRY vgSetf (VGParamType type, VGfloat value) VG_API_EXIT {
-	IContext::instance().set( type, value );
+	MKContext::instance().set( type, value );
 }
 
 VG_API_CALL void VG_API_ENTRY vgSeti (VGParamType type, VGint value) VG_API_EXIT {
-	IContext::instance().set( type, value );
+	MKContext::instance().set( type, value );
 }
 
 VG_API_CALL void VG_API_ENTRY vgSetfv(VGParamType type, VGint count,
 									  const VGfloat * values) VG_API_EXIT {
-	IContext::instance().set( type, values );
+	MKContext::instance().set( type, values );
 }
 VG_API_CALL void VG_API_ENTRY vgSetiv(VGParamType type, VGint count,
 									  const VGint * values) VG_API_EXIT {
@@ -59,13 +59,13 @@ VG_API_CALL void VG_API_ENTRY vgSetiv(VGParamType type, VGint count,
 
 VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGParamType type) VG_API_EXIT {
     VGfloat ret = -1;
-    IContext::instance().get( type, ret );
+    MKContext::instance().get( type, ret );
     return ret;
 }
 
 VG_API_CALL VGint VG_API_ENTRY vgGeti(VGParamType type) VG_API_EXIT {
     VGint ret = -1;
-    IContext::instance().get( type, ret );
+    MKContext::instance().get( type, ret );
     return ret;
 }
 
@@ -83,7 +83,7 @@ VG_API_CALL void VG_API_ENTRY vgGetiv(VGParamType type, VGint count, VGint * val
 
 /* Masking and Clearing */
 VG_API_CALL void VG_API_ENTRY vgClear(VGint x, VGint y, VGint width, VGint height) VG_API_EXIT {
-	IContext::instance().clear( x, y, width, height );
+	MKContext::instance().clear( x, y, width, height );
 }
 
 VG_API_CALL void VG_API_ENTRY vgMask(VGHandle mask, VGMaskOperation operation,VGint x, VGint y,
@@ -107,7 +107,7 @@ VG_API_CALL void VG_API_ENTRY vgFlush(void) VG_API_EXIT {
 
 VG_API_CALL VGErrorCode vgGetError(void)
 {
-	return IContext::instance().getError();
+	return MKContext::instance().getError();
 }
     
 }
@@ -115,7 +115,7 @@ VG_API_CALL VGErrorCode vgGetError(void)
 
 namespace MonkVG {
 	
-	IContext::IContext() 
+	MKContext::MKContext() 
 		:	_error( VG_NO_ERROR )
 		,	_width( 0 )
 		,	_height( 0 )
@@ -136,7 +136,7 @@ namespace MonkVG {
 	}
 	
 	//// parameters ////
-	void IContext::set( VGuint type, VGfloat f ) {
+	void MKContext::set( VGuint type, VGfloat f ) {
 		switch ( type ) {
 			case VG_STROKE_LINE_WIDTH:
 				setStrokeLineWidth( f );
@@ -147,7 +147,7 @@ namespace MonkVG {
 		}
 	}
 	
-	void IContext::set( VGuint type, const VGfloat * fv ) {
+	void MKContext::set( VGuint type, const VGfloat * fv ) {
 		switch ( type ) {
 			case VG_CLEAR_COLOR:
 				setClearColor( fv );
@@ -158,7 +158,7 @@ namespace MonkVG {
 		}
 	}
 	
-	void IContext::set( VGuint type, VGint i ) {
+	void MKContext::set( VGuint type, VGint i ) {
 		
 		switch ( type ) {
 			case VG_MATRIX_MODE:
@@ -175,7 +175,7 @@ namespace MonkVG {
 		}
 		
 	}
-	void IContext::get( VGuint type, VGfloat &f ) const {
+	void MKContext::get( VGuint type, VGfloat &f ) const {
 		switch ( type ) {
 			case VG_STROKE_LINE_WIDTH:
 				f = getStrokeLineWidth();
@@ -187,7 +187,7 @@ namespace MonkVG {
 		
 	}
 	
-	void IContext::get( VGuint type, VGfloat *fv ) const {
+	void MKContext::get( VGuint type, VGfloat *fv ) const {
 		switch ( type ) {
 			case VG_CLEAR_COLOR:
 				getClearColor( fv );
@@ -199,7 +199,7 @@ namespace MonkVG {
 		}
 		
 	}
-	void IContext::get( VGuint type, VGint& i ) const {
+	void MKContext::get( VGuint type, VGint& i ) const {
 		i = -1;
 
 		switch ( type ) {
@@ -227,7 +227,7 @@ namespace MonkVG {
 	}
 
 	void SetError( const VGErrorCode e ) {
-		IContext::instance().setError( e );
+		MKContext::instance().setError( e );
 	}
 }
 
@@ -240,14 +240,14 @@ namespace MonkVG {
 namespace MonkVG {
     
     //// singleton implementation ////
-    IContext& IContext::instance()
+    MKContext& MKContext::instance()
     {
-        static IContext g_context;
+        static MKContext g_context;
         return g_context;
     }
     
     
-    void IContext::checkGLError() {
+    void MKContext::checkGLError() {
         
         int err = glGetError();
         
@@ -287,7 +287,7 @@ namespace MonkVG {
         }
     }
     
-    bool IContext::Initialize() {
+    bool MKContext::Initialize() {
         // create the gl backend context dependent on user selected backend
         if ( getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGLES11 ) {
             _gl = new OpenGLES::OpenGLES1::OpenGLES11Context();
@@ -328,7 +328,7 @@ namespace MonkVG {
         return true;
     }
     
-    void IContext::resize() {
+    void MKContext::resize() {
         // setup GL projection
         gl()->glViewport(0,0, _width, _height);
         
@@ -343,7 +343,7 @@ namespace MonkVG {
     }
     
     
-    bool IContext::Terminate() {
+    bool MKContext::Terminate() {
         if (_gl) {
             delete _gl;
             _gl = NULL;
@@ -354,99 +354,46 @@ namespace MonkVG {
     }
     
     
-    void IContext::beginRender() {
-        //		glDisable(GL_TEXTURE_2D);
-        //		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-        //		glDisableClientState( GL_COLOR_ARRAY );
-        //		glEnableClientState( GL_VERTEX_ARRAY );
-        
-        //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        
-        
-        //		CHECK_GL_ERROR;
-        //
-        //		// get viewport to restore back when we are done
-        //		glGetIntegerv( GL_VIEWPORT, _viewport );
-        //		glGetFloatv( GL_PROJECTION_MATRIX, _projection );
-        //		glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
-        //
-        //		// get the color to back up when we are done
-        //		glGetFloatv( GL_CURRENT_COLOR, _color );
-        //
-        //		// setup GL projection
-        //		glViewport(0,0, _width, _height);
-        //
-        //		glMatrixMode(GL_PROJECTION);
-        //		glLoadIdentity();
-        //		glOrthof(0, _width,		// left, right
-        //				 0, _height,	// top, botton
-        //				 -1, 1);		// near value, far value (depth)
-        //
-        //		glMatrixMode(GL_MODELVIEW);
-        //		glLoadIdentity();
-        //
-        //		glDisable( GL_CULL_FACE );
-        //
-        //		// turn on blending
-        //		glEnable(GL_BLEND);
-        //		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        //
-        //		CHECK_GL_ERROR;
-        
+    void MKContext::beginRender() {
     }
-    void IContext::endRender() {
-        //
-        //		CHECK_GL_ERROR;
-        //
-        //		// todo: restore state to be nice to other apps
-        //		// restore the old viewport
-        //		glMatrixMode( GL_PROJECTION );
-        //		glLoadMatrixf( _projection );
-        //		glViewport( _viewport[0], _viewport[1], _viewport[2], _viewport[3] );
-        //		glMatrixMode( GL_MODELVIEW );
-        //		glLoadMatrixf( _modelview );
-        //
-        //		// restore color
-        //		glColor4f( _color[0], _color[1], _color[2], _color[3] );
-        //
-        //		CHECK_GL_ERROR;
+    void MKContext::endRender() {
     }
     
     
     /// factories
     
-    IPath* IContext::createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {
+    MKPath* MKContext::createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {
         
-        IPath *path = new IPath(pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL);
+        MKPath *path = new MKPath(pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL);
         if( path == 0 )
             SetError( VG_OUT_OF_MEMORY_ERROR );
         
-        return (IPath*)path;
+        return (MKPath*)path;
     }
     
-    void IContext::destroyPath( IPath* path ) {
-        delete (IPath*)path;
+    void MKContext::destroyPath( MKPath* path ) {
+        delete (MKPath*)path;
     }
     
-    void IContext::destroyPaint( IPaint* paint ) {
-        delete (IPaint*)paint;
+    void MKContext::destroyPaint( MKPaint* paint ) {
+        delete (MKPaint*)paint;
     }
     
-    IPaint* IContext::createPaint() {
-        IPaint *paint = new IPaint();
+    MKPaint* MKContext::createPaint() {
+        MKPaint *paint = new MKPaint();
         if( paint == 0 )
             SetError( VG_OUT_OF_MEMORY_ERROR );
-        return (IPaint*)paint;
+        return (MKPaint*)paint;
     }
     
-    IBatch* IContext::createBatch() {
-        IBatch *batch = new IBatch();
+    MKBatch* MKContext::createBatch() {
+        MKBatch *batch = new MKBatch();
         if( batch == 0 )
             SetError( VG_OUT_OF_MEMORY_ERROR );
-        return (IBatch*)batch;
+        return (MKBatch*)batch;
     }
     
-    void IContext::destroyBatch( IBatch* batch ) {
+    void MKContext::destroyBatch( MKBatch* batch ) {
         if ( batch ) {
             delete batch;
         }
@@ -454,20 +401,20 @@ namespace MonkVG {
     
     
     /// state
-    void IContext::setStrokePaint( IPaint* paint ) {
+    void MKContext::setStrokePaint( MKPaint* paint ) {
         if ( paint != _stroke_paint ) {
             _stroke_paint = paint;
-            IPaint* glPaint = (IPaint*)_stroke_paint;
+            MKPaint* glPaint = (MKPaint*)_stroke_paint;
             //glPaint->setGLState();
             if (glPaint)
                 glPaint->setIsDirty( true );
         }
     }
     
-    void IContext::setFillPaint( IPaint* paint ) {
+    void MKContext::setFillPaint( MKPaint* paint ) {
         if ( paint != _fill_paint ) {
             _fill_paint = paint;
-            IPaint* glPaint = (IPaint*)_fill_paint;
+            MKPaint* glPaint = (MKPaint*)_fill_paint;
             //glPaint->setGLState();
             if (glPaint)
                 glPaint->setIsDirty( true );
@@ -476,57 +423,51 @@ namespace MonkVG {
     }
     
     
-    void IContext::stroke() {
+    void MKContext::stroke() {
         if ( _stroke_paint ) {
-            IPaint* glPaint = (IPaint*)_stroke_paint;
+            MKPaint* glPaint = (MKPaint*)_stroke_paint;
             glPaint->setGLState();
             glPaint->setIsDirty( false );
             // set the fill paint to dirty
             if ( _fill_paint ) {
-                glPaint = (IPaint*)_fill_paint;
+                glPaint = (MKPaint*)_fill_paint;
                 glPaint->setIsDirty( true );
             }
         }
     }
     
-    void IContext::fill() {
+    void MKContext::fill() {
         
         if ( _fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-            IPaint* glPaint = (IPaint*)_fill_paint;
+            MKPaint* glPaint = (MKPaint*)_fill_paint;
             glPaint->setGLState();
             glPaint->setIsDirty( false );
             // set the stroke paint to dirty
             if ( _stroke_paint ) {
-                glPaint = (IPaint*)_stroke_paint;
+                glPaint = (MKPaint*)_stroke_paint;
                 glPaint->setIsDirty( true );
             }
         }
-        
-        //		if ( _fill_paint ) {
-        //			const VGfloat* c = _fill_paint->getPaintColor();
-        //			glColor4f(c[0], c[1], c[2], c[3] );
-        //		}
-        
-    }
+   }
     
-    void IContext::startBatch( IBatch* batch ) {
+    void MKContext::startBatch( MKBatch* batch ) {
         assert( _currentBatch == 0 );	// can't have multiple batches going on at once
         _currentBatch = batch;
     }
-    void IContext::dumpBatch( IBatch *batch, void **vertices, size_t *size ) {
+    void MKContext::dumpBatch( MKBatch *batch, void **vertices, size_t *size ) {
         _currentBatch->dump( vertices, size );
     }
-    void IContext::endBatch( IBatch* batch ) {
+    void MKContext::endBatch( MKBatch* batch ) {
         _currentBatch->finalize();
         _currentBatch = 0;
     }
     
     
-    void IContext::clear(VGint x, VGint y, VGint width, VGint height) {
+    void MKContext::clear(VGint x, VGint y, VGint width, VGint height) {
         // TODO:
     }
     
-    void IContext::loadGLMatrix() {
+    void MKContext::loadGLMatrix() {
         Matrix33& active = *getActiveMatrix();
         GLfloat mat44[4][4];
         for( int x = 0; x < 4; x++ )
@@ -551,13 +492,13 @@ namespace MonkVG {
     
     
     
-    void IContext::setIdentity() {
+    void MKContext::setIdentity() {
         Matrix33* active = getActiveMatrix();
         active->setIdentity();
         loadGLMatrix();
     }
     
-    void IContext::transform( VGfloat* t ) {
+    void MKContext::transform( VGfloat* t ) {
         // a	b	0
         // c	d	0
         // tx	ty	1
@@ -567,7 +508,7 @@ namespace MonkVG {
         
     }
     
-    void IContext::setTransform( const VGfloat* t )  {
+    void MKContext::setTransform( const VGfloat* t )  {
         //	OpenVG:
         //	sh	shx	tx
         //	shy	sy	ty
@@ -585,7 +526,7 @@ namespace MonkVG {
     }
     
     
-    void IContext::multiply( const VGfloat* t ) {
+    void MKContext::multiply( const VGfloat* t ) {
         Matrix33 m;
         for ( int x = 0; x < 3; x++ ) {
             for ( int y = 0; y < 3; y++ ) {
@@ -597,7 +538,7 @@ namespace MonkVG {
         loadGLMatrix();
     }
     
-    void IContext::scale( VGfloat sx, VGfloat sy ) {
+    void MKContext::scale( VGfloat sx, VGfloat sy ) {
         Matrix33* active = getActiveMatrix();
         Matrix33 scale;
         scale.setIdentity();
@@ -607,7 +548,7 @@ namespace MonkVG {
         active->copy( tmp );
         loadGLMatrix();
     }
-    void IContext::translate( VGfloat x, VGfloat y ) {
+    void MKContext::translate( VGfloat x, VGfloat y ) {
         
         Matrix33* active = getActiveMatrix();
         Matrix33 translate;
@@ -618,14 +559,14 @@ namespace MonkVG {
         active->copy( tmp );
         loadGLMatrix();
     }
-    float IContext::angle()
+    float MKContext::angle()
     {
         Matrix33* active = getActiveMatrix();
         
         return active->angle();
     }
     
-    void IContext::rotate( VGfloat angle ) {
+    void MKContext::rotate( VGfloat angle ) {
         Matrix33* active = getActiveMatrix();
         Matrix33 rotate;
         rotate.setRotation( radians( angle ) );
@@ -636,7 +577,7 @@ namespace MonkVG {
         loadGLMatrix();
     }
     
-    void IContext::rotate(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) {
+    void MKContext::rotate(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) {
         
         translate(x, y);
         rotate(angle);

@@ -10,7 +10,7 @@
 #include "mkContext.h"
 
 namespace MonkVG {	// Internal Implementation
-	VGint IBatch::getParameteri( const VGint p ) const {
+	VGint MKBatch::getParameteri( const VGint p ) const {
 		switch (p) {
 			default:
 				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
@@ -19,7 +19,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	VGfloat IBatch::getParameterf( const VGint p ) const {
+	VGfloat MKBatch::getParameterf( const VGint p ) const {
 		switch (p) {
 			default:
 				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
@@ -28,7 +28,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IBatch::getParameterfv( const VGint p, VGfloat *fv ) const {
+	void MKBatch::getParameterfv( const VGint p, VGfloat *fv ) const {
 		switch (p) {
 				
 			default:
@@ -38,7 +38,7 @@ namespace MonkVG {	// Internal Implementation
 		
 	}
 	
-	void IBatch::setParameter( const VGint p, const VGint v ) {
+	void MKBatch::setParameter( const VGint p, const VGint v ) {
 		switch (p) {
 			default:
 				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
@@ -46,7 +46,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IBatch::setParameter( const VGint p, const VGfloat v ) 
+	void MKBatch::setParameter( const VGint p, const VGfloat v ) 
 	{
 		switch (p) {
 			default:
@@ -55,7 +55,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IBatch::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
+	void MKBatch::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
 		switch (p) {
 				
 			default:
@@ -74,23 +74,23 @@ namespace MonkVG {	// Internal Implementation
 using namespace MonkVG;
 
 VG_API_CALL VGBatchMNK VG_API_ENTRY vgCreateBatchMNK() VG_API_EXIT {
-	return (VGBatchMNK)IContext::instance().createBatch();
+	return (VGBatchMNK)MKContext::instance().createBatch();
 }
 
 VG_API_CALL void VG_API_ENTRY vgDestroyBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
-	IContext::instance().destroyBatch( (IBatch*)batch );
+	MKContext::instance().destroyBatch( (MKBatch*)batch );
 }
 VG_API_CALL void VG_API_ENTRY vgBeginBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
-	IContext::instance().startBatch( (IBatch*)batch );	
+	MKContext::instance().startBatch( (MKBatch*)batch );	
 }
 VG_API_CALL void VG_API_ENTRY vgEndBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
-	IContext::instance().endBatch( (IBatch*)batch );	
+	MKContext::instance().endBatch( (MKBatch*)batch );	
 }
 VG_API_CALL void VG_API_ENTRY vgDrawBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
-	((IBatch*)batch)->draw();
+	((MKBatch*)batch)->draw();
 }
 VG_API_CALL void VG_API_ENTRY vgDumpBatchMNK( VGBatchMNK batch, void **vertices, size_t * size ) VG_API_EXIT {
-    IContext::instance().dumpBatch( (IBatch *)batch, vertices, size );
+    MKContext::instance().dumpBatch( (MKBatch *)batch, vertices, size );
 }
 
 
@@ -100,7 +100,7 @@ VG_API_CALL void VG_API_ENTRY vgDumpBatchMNK( VGBatchMNK batch, void **vertices,
 
 namespace MonkVG {
     
-    IBatch::IBatch() :
+    MKBatch::MKBatch() :
         BaseObject()
     ,	_vbo(-1)
     ,	_vertexCount(0)
@@ -158,7 +158,7 @@ namespace MonkVG {
         rc = sqlite3_prepare_v2(_verticesdb, getAllTriangles, -1, &_getAllTriangles, nullptr);
         assert(!rc);
     }
-    IBatch::~IBatch() {
+    MKBatch::~MKBatch() {
         if ( _vbo != -1 ) {
             GL->glDeleteBuffers( 1, &_vbo );
             _vbo = -1;
@@ -187,10 +187,10 @@ namespace MonkVG {
                 else if (orientation(p1,q2,q1) > 0) return false;
                 else if (orientation(r2,q2,r1) <= 0) return false;
                 else return (orientation(q1,r1,q2) >= 0) ? 3 : false;
-                else if (orientation(r2,p2,r1) < 0) return false;
-                else if (orientation(q1,r1,r2) >= 0) return (orientation(p1,p2,r1) >= 0) ? 4 : false;
-                else if (orientation(q1,r1,q2) < 0) return false;
-                else return (orientation(r2,r1,q2) >= 0) ? 5 : false;
+            else if (orientation(r2,p2,r1) < 0) return false;
+            else if (orientation(q1,r1,r2) >= 0) return (orientation(p1,p2,r1) >= 0) ? 4 : false;
+            else if (orientation(q1,r1,q2) < 0) return false;
+        else return (orientation(r2,r1,q2) >= 0) ? 5 : false;
     }
     static inline int intersectionTestEdge(const int32_t* p1, const int32_t* q1, const int32_t* r1, const int32_t* p2, const int32_t* q2, const int32_t* r2)
     {
@@ -198,10 +198,10 @@ namespace MonkVG {
             if (orientation(p1,p2,q1) >= 0) return (orientation(p1,q1,r2) >= 0) ? 1 : false;
             else if (orientation(q1,r1,p2) < 0) return false;
             else return (orientation(r1,p1,p2) >= 0) ? 2 : false;
-            else if (orientation(r2,p2,r1) < 0) return false;
-            else if (orientation(p1,p2,r1) < 0) return false;
-            else if (orientation(p1,r1,r2) >= 0) return 3;
-            else return (orientation(q1,r1,r2) >= 0) ? 4 : false;
+        else if (orientation(r2,p2,r1) < 0) return false;
+        else if (orientation(p1,p2,r1) < 0) return false;
+        else if (orientation(p1,r1,r2) >= 0) return 3;
+        else return (orientation(q1,r1,r2) >= 0) ? 4 : false;
     }
     static inline int intersection(const int32_t* p1, const int32_t* q1, const int32_t* r1, const int32_t* p2, const int32_t* q2, const int32_t* r2)
     {
@@ -209,23 +209,23 @@ namespace MonkVG {
             if ( orientation(q2,r2,p1) >= 0 )
                 if ( orientation(r2,p2,p1) >= 0 ) return 1;
                 else return intersectionTestEdge(p1,q1,r1,p2,q2,r2) << 1;
-                else if ( orientation(r2,p2,p1) >= 0 ) return intersectionTestEdge(p1,q1,r1,r2,p2,q2) << 4;
-                else return intersectionTestVertex(p1,q1,r1,p2,q2,r2) << 7;
-                else if (orientation(q2,r2,p1) < 0) return intersectionTestVertex(p1,q1,r1,r2,p2,q2) << 10;
-                else if (orientation(r2,p2,p1) >= 0) return intersectionTestEdge(p1,q1,r1,q2,r2,p2) << 13;
-                else return intersectionTestVertex(p1,q1,r1,q2,r2,p2) << 16;
+            else if ( orientation(r2,p2,p1) >= 0 ) return intersectionTestEdge(p1,q1,r1,r2,p2,q2) << 4;
+            else return intersectionTestVertex(p1,q1,r1,p2,q2,r2) << 7;
+        else if (orientation(q2,r2,p1) < 0) return intersectionTestVertex(p1,q1,r1,r2,p2,q2) << 10;
+        else if (orientation(r2,p2,p1) >= 0) return intersectionTestEdge(p1,q1,r1,q2,r2,p2) << 13;
+        else return intersectionTestVertex(p1,q1,r1,q2,r2,p2) << 16;
     };
     
     static const GLfloat precision = 0.01f;
     static const GLfloat precisionMult = 1.f/precision;
-    void IBatch::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, VGbitfield paintModes ) {
+    void MKBatch::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, VGbitfield paintModes ) {
         
         // get the current transform
-        Matrix33& transform = *IContext::instance().getActiveMatrix();
+        Matrix33& transform = *MKContext::instance().getActiveMatrix();
         
         if ( paintModes & VG_FILL_PATH) {
             // get the paint color
-            IPaint* paint = IContext::instance().getFillPaint();
+            MKPaint* paint = MKContext::instance().getFillPaint();
             const VGfloat* fc = paint->getPaintColor();
             
             const auto colorId =
@@ -352,7 +352,7 @@ namespace MonkVG {
          vertex_t vert, startVertex, lastVertex;
          
          // get the paint color
-         IPaint* paint = IContext::instance().getStrokePaint();
+         MKPaint* paint = MKContext::instance().getStrokePaint();
          const VGfloat* fc = paint->getPaintColor();
          
          vert.color =	( uint32_t(fc[3] * 255.0f) << 24 )	// a
@@ -397,7 +397,7 @@ namespace MonkVG {
         
     }
     
-    void IBatch::finalize() {
+    void MKBatch::finalize() {
         // build the vbo
         if ( _vbo != -1 ) {
             glDeleteBuffers( 1, &_vbo );
@@ -438,7 +438,7 @@ namespace MonkVG {
         }
     }
     
-    void IBatch::dump( void **vertices, size_t *size ) {
+    void MKBatch::dump( void **vertices, size_t *size ) {
         
         //*size = _vertices.size() * sizeof( vertex_t );
         //*vertices = malloc( *size );
@@ -447,9 +447,9 @@ namespace MonkVG {
         
     }
     
-    void IBatch::draw() {
+    void MKBatch::draw() {
         // get the native OpenGL context
-        IContext& glContext = (MonkVG::IContext&)IContext::instance();
+        MKContext& glContext = (MonkVG::MKContext&)MKContext::instance();
         glContext.beginRender();
         
         GL->glDisable( GL_TEXTURE_2D );

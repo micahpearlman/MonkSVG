@@ -11,7 +11,7 @@
 #include "mkContext.h"
 
 namespace MonkVG {	// Internal Implementation
-	VGint IPaint::getParameteri( const VGint p ) const {
+	VGint MKPaint::getParameteri( const VGint p ) const {
 		switch (p) {
 			default:
 				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
@@ -20,7 +20,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	VGfloat IPaint::getParameterf( const VGint p ) const {
+	VGfloat MKPaint::getParameterf( const VGint p ) const {
 		switch (p) {
 			default:
 				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
@@ -29,7 +29,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IPaint::getParameterfv( const VGint p, VGfloat *fv ) const {
+	void MKPaint::getParameterfv( const VGint p, VGfloat *fv ) const {
 		switch (p) {
 			case VG_PAINT_COLOR:
 				for( int i = 0; i < 4; i++ )
@@ -43,7 +43,7 @@ namespace MonkVG {	// Internal Implementation
 		
 	}
 
-	void IPaint::setParameter( const VGint p, const VGint v ) {
+	void MKPaint::setParameter( const VGint p, const VGint v ) {
 		switch (p) {
 			case VG_PAINT_TYPE:
 				setPaintType( (VGPaintType)v );
@@ -57,7 +57,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IPaint::setParameter( const VGint p, const VGfloat v ) 
+	void MKPaint::setParameter( const VGint p, const VGfloat v ) 
 	{
 		switch (p) {
 			default:
@@ -66,7 +66,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IPaint::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
+	void MKPaint::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
 		switch (p) {
 			case VG_PAINT_COLOR:
 				for( int i = 0; i < 4; i++ )
@@ -114,15 +114,15 @@ namespace MonkVG {	// Internal Implementation
 using namespace MonkVG;
 
 VG_API_CALL VGPaint vgCreatePaint(void) {
-	return (VGPaint)IContext::instance().createPaint();
+	return (VGPaint)MKContext::instance().createPaint();
 }
 
 VG_API_CALL void vgDestroyPaint(VGPaint paint) {
-	IContext::instance().destroyPaint( (IPaint*)paint );
+	MKContext::instance().destroyPaint( (MKPaint*)paint );
 }
 
 VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes) {
-	if ( paint != VG_INVALID_HANDLE && ((IPaint*)paint)->getType() != BaseObject::kPaintType ) {
+	if ( paint != VG_INVALID_HANDLE && ((MKPaint*)paint)->getType() != BaseObject::kPaintType ) {
 		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
@@ -133,16 +133,16 @@ VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes) {
 	
 	// Set stroke / fill 
 	if (paintModes & VG_STROKE_PATH)
-		IContext::instance().setStrokePaint( (IPaint*)paint );
+		MKContext::instance().setStrokePaint( (MKPaint*)paint );
 	if (paintModes & VG_FILL_PATH)
-		IContext::instance().setFillPaint( (IPaint*)paint );
+		MKContext::instance().setFillPaint( (MKPaint*)paint );
 }
 
 VG_API_CALL VGPaint vgGetPaint(VGPaintMode paintModes) {
 	if (paintModes & VG_STROKE_PATH)
-		return (VGPaint)IContext::instance().getStrokePaint();
+		return (VGPaint)MKContext::instance().getStrokePaint();
 	if (paintModes & VG_FILL_PATH)
-		return (VGPaint)IContext::instance().getFillPaint();
+		return (VGPaint)MKContext::instance().getFillPaint();
 	SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 	return VG_INVALID_HANDLE;
 }
@@ -155,7 +155,7 @@ VG_API_CALL void vgPaintPattern(VGPaint paint, VGImage pattern)
 
 namespace MonkVG {	// Internal Implementation
 
-    IPaint::IPaint()
+    MKPaint::MKPaint()
     :	BaseObject()
     ,	_paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
     ,	_isDirty( true )
@@ -163,23 +163,23 @@ namespace MonkVG {	// Internal Implementation
         
     }
 
-    IPaint::~IPaint() {
+    MKPaint::~MKPaint() {
     }
 
-    void IPaint::setGLState() {
+    void MKPaint::setGLState() {
         if ( isDirty() ) {
             const VGfloat* c = getPaintColor();
             GL->glColor4f( c[0], c[1], c[2], c[3] );
         }
     }
 
-    void IPaint::lerpColor(float * dst, float * stop0, float * stop1, float g) {
+    void MKPaint::lerpColor(float * dst, float * stop0, float * stop1, float g) {
         float den = std::max(0.00001f, stop1 != stop0? stop1[0] - stop0[0] : 1 - stop0[0]);
         for ( int i = 0; i < 4; i++ )
             dst[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/den;
     }
 
-    void IPaint::calcStops(float ** stop0, float ** stop1, float g) {
+    void MKPaint::calcStops(float ** stop0, float ** stop1, float g) {
         assert(g >= 0);
         assert(g <= 1);
         size_t stopCnt = _colorRampStops.size();

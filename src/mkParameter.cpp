@@ -49,6 +49,7 @@ VG_API_CALL void vgSetParameteri(VGHandle object, VGint paramType, VGint value)
 VG_API_CALL VGint VG_API_ENTRY vgGetParameterVectorSize(VGHandle object,
 														VGint paramType) VG_API_EXIT 
 {
+    assert(false);
 	return -1;
 }
 
@@ -64,5 +65,5 @@ VG_API_CALL void VG_API_ENTRY vgGetParameteriv(VGHandle object,
 											   VGint paramType,
 											   VGint count, VGint * values) VG_API_EXIT 
 {
-	
+    assert(false);
 }
