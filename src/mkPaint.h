@@ -18,11 +18,8 @@ namespace MonkVG {
 	class IPaint : public BaseObject {
 	public:
 	
-		IPaint()
-		:	BaseObject()
-		,	_paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
-		,	_isDirty( true )
-		{}
+        IPaint();
+        ~IPaint();
 	
 		inline BaseObject::Type getType() const {
 			return BaseObject::kPaintType;
@@ -46,12 +43,17 @@ namespace MonkVG {
 		virtual bool isDirty() { return _isDirty; }
 		virtual void setIsDirty( bool b ) { _isDirty = b; }
 		
+        void setGLState();
+        
+    private:
+        bool		_isDirty;
+        
+        void calcStops(float ** stop0, float ** stop1, float g);
+        void lerpColor(float * dst, float * stop0, float * stop1, float g);
+
 		
 	protected:
 		
-		bool					_isDirty;
-
-	
 		VGPaintType				_paintType;
 		VGfloat					_paintColor[4];
 		VGColorRampSpreadMode	_colorRampSpreadMode;

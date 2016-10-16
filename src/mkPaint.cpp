@@ -152,3 +152,59 @@ VG_API_CALL void vgPaintPattern(VGPaint paint, VGImage pattern)
 {
 // todo	((SHPaint*)paint)->pattern = pattern;
 }
+
+namespace MonkVG {	// Internal Implementation
+
+    IPaint::IPaint()
+    :	BaseObject()
+    ,	_paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
+    ,	_isDirty( true )
+    {
+        
+    }
+
+    IPaint::~IPaint() {
+    }
+
+    void IPaint::setGLState() {
+        if ( isDirty() ) {
+            const VGfloat* c = getPaintColor();
+            GL->glColor4f( c[0], c[1], c[2], c[3] );
+        }
+    }
+
+    void IPaint::lerpColor(float * dst, float * stop0, float * stop1, float g) {
+        float den = std::max(0.00001f, stop1 != stop0? stop1[0] - stop0[0] : 1 - stop0[0]);
+        for ( int i = 0; i < 4; i++ )
+            dst[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/den;
+    }
+
+    void IPaint::calcStops(float ** stop0, float ** stop1, float g) {
+        assert(g >= 0);
+        assert(g <= 1);
+        size_t stopCnt = _colorRampStops.size();
+        float * s0 = 0;
+        float * s1 = 0;
+        for ( size_t i = 0; i < stopCnt && !s1; i++ ) {
+            float * curr = _colorRampStops[i].a;
+            if ( g >= curr[0] )
+                s0 = curr;
+            else if ( s0 && g <= curr[0] )
+                s1 = curr;
+        }
+        if ( stopCnt == 0 ) {
+            static float implicit0[] = {0,0,0,1};
+            static float implicit1[] = {1,1,1,1};
+            s0 = implicit0;
+            s1 = implicit1;
+        } else {
+            if ( !s0 )
+                s0 = _colorRampStops[0].a;
+            if ( !s1 )
+                s1 = _colorRampStops[stopCnt - 1].a;
+        }
+        assert(s0[0] <= g && (g <= s1[0] || s1 == _colorRampStops[stopCnt-1].a));
+        *stop0 = s0;
+        *stop1 = s1;
+    }
+}

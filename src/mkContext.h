@@ -13,14 +13,16 @@
 #include <VG/openvg.h>
 #include <VG/vgext.h>
 #include "mkPath.h"
-#include "mkPaint.h"
-#include "mkImage.h"
 #include "mkBatch.h"
-#include "mkFont.h"
 #include "mkMath.h"
+#include "mkPaint.h"
+#include <gles2bc/OpenGLES11/OpenGLES11Context.h>
+#include <gles2bc/OpenGLES20/OpenGLES20Context.h>
 
 namespace MonkVG {
-	
+
+#define GL (((IContext*)&IContext::instance())->gl())
+
 	class IContext {
 	public:
 	
@@ -28,50 +30,23 @@ namespace MonkVG {
 		
 		// singleton instance
 		static IContext& instance();
-		virtual bool Initialize() = 0;
-		virtual bool Terminate() = 0;
-		
-		//// factories ////
-		virtual IPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) = 0;
-		virtual void destroyPath( IPath* path ) = 0;
-		virtual IPaint* createPaint() = 0;
-		virtual void destroyPaint( IPaint* paint ) = 0;
-		virtual IImage* createImage( VGImageFormat format,
-									VGint width, VGint height,
-									VGbitfield allowedQuality ) = 0;
-		virtual void destroyImage( IImage* image ) = 0;
-		virtual IBatch* createBatch() = 0;
-		virtual void destroyBatch( IBatch* batch ) = 0;
-		virtual IFont* createFont() = 0;
-		virtual void destroyFont( IFont* font ) = 0;
-		
-		//// platform specific execution of stroke and fill ////
-		virtual void stroke() = 0;
-		virtual void fill() = 0;
-		
-		//// platform specific execution of Masking and Clearing ////
-		virtual void clear(VGint x, VGint y, VGint width, VGint height) = 0;
-		
-		//// Paints ////
-		virtual void setStrokePaint( IPaint* paint ) {
-			_stroke_paint = paint;
-		}
-		inline IPaint* getStrokePaint() const {
-			return _stroke_paint;
-		}
-		virtual void setFillPaint( IPaint* paint ) {
-			_fill_paint = paint;
-		}
-		inline IPaint* getFillPaint() {
-			return _fill_paint;
-		}
-		inline VGFillRule getFillRule() const {
-			return _fill_rule;
-		}
-		inline void setFillRule( VGFillRule r ) {
-			_fill_rule = r;
-		}
-		
+				
+        //// Paints ////
+        virtual void setStrokePaint( IPaint* paint );
+        inline IPaint* getStrokePaint() const {
+            return _stroke_paint;
+        }
+        virtual void setFillPaint( IPaint* paint );
+        inline IPaint* getFillPaint() {
+            return _fill_paint;
+        }
+        inline VGFillRule getFillRule() const {
+            return _fill_rule;
+        }
+        inline void setFillRule( VGFillRule r ) {
+            _fill_rule = r;
+        }
+        
 		//// drawing context ////
 		inline VGint getWidth() const {
 			return _width;
@@ -86,8 +61,6 @@ namespace MonkVG {
 		inline void setHeight( VGint h ) {
 			_height = h;
 		}
-		
-		virtual void resize() = 0;
 		
 		//// parameters ////
 		void set( VGuint type, VGfloat f );
@@ -143,21 +116,12 @@ namespace MonkVG {
 					SetError(VG_ILLEGAL_ARGUMENT_ERROR);
 					break;
 			}
+            loadGLMatrix();
 		}
 		inline VGMatrixMode getMatrixMode() const { return _matrixMode; }
 		inline Matrix33* getActiveMatrix() {
 			return _active_matrix;
 		}
-		
-		virtual void setIdentity() = 0;
-		virtual void transform( VGfloat* t ) = 0; 
-		virtual void scale( VGfloat sx, VGfloat sy ) = 0;
-		virtual void translate( VGfloat x, VGfloat y ) = 0;
-		virtual void rotate( VGfloat angle ) = 0;
-        virtual float angle () = 0;
-		virtual void rotate( VGfloat angle , VGfloat x, VGfloat y, VGfloat z) = 0;
-        virtual void setTransform( const VGfloat* t ) = 0;
-		virtual void multiply( const VGfloat* t ) = 0;
 		
 		//// error handling ////
 		inline VGErrorCode getError() const { 
@@ -174,10 +138,6 @@ namespace MonkVG {
 		inline int32_t getTessellationIterations() const { return _tessellationIterations; }
 		inline void setTessellationIterations( int32_t i ) { _tessellationIterations = i; }
 		
-		/// batch drawing
-		virtual void startBatch( IBatch* batch ) = 0;
-        virtual void dumpBatch( IBatch* batch, void **vertices, size_t *size ) = 0;
-		virtual void endBatch( IBatch* batch ) = 0;
 		IBatch* currentBatch() { return _currentBatch; }
 		
 		/// font
@@ -212,11 +172,11 @@ namespace MonkVG {
 		VGRenderingQuality	_renderingQuality;
 		int32_t				_tessellationIterations;
 
-		// paints
-		IPaint*				_stroke_paint;
-		IPaint*				_fill_paint;
-		VGFillRule			_fill_rule;
-		
+        // paints
+        IPaint*				_stroke_paint;
+        IPaint*				_fill_paint;
+        VGFillRule			_fill_rule;
+        
 		// font
 		VGfloat				_glyph_origin[2];
 		
@@ -231,6 +191,66 @@ namespace MonkVG {
         
         // renderer
         VGRenderingBackendTypeMNK   _backendRenderer;
+        
+    public:
+        virtual bool Initialize();
+        virtual bool Terminate();
+        
+        //// factories ////
+        virtual IPaint* createPaint();
+        virtual void destroyPaint( IPaint* paint );
+        virtual IPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities );
+        virtual void destroyPath( IPath* path );
+        virtual IBatch* createBatch();
+        virtual void destroyBatch( IBatch* batch );
+        
+        //// platform specific execution of stroke and fill ////
+        virtual void stroke();
+        virtual void fill();
+        
+        //// platform specific execution of Masking and Clearing ////
+        virtual void clear(VGint x, VGint y, VGint width, VGint height);
+        
+        //// platform specific implementation of transform ////
+        virtual void setIdentity();
+        virtual void transform( VGfloat* t );
+        virtual void scale( VGfloat sx, VGfloat sy );
+        virtual void translate( VGfloat x, VGfloat y );
+        virtual float angle ();
+        virtual void rotate( VGfloat angle );
+        virtual void rotate( VGfloat angle , VGfloat x, VGfloat y, VGfloat z);
+        virtual void setTransform( const VGfloat* t ) ;
+        virtual void multiply( const VGfloat* t );
+        void loadGLMatrix();
+        
+        void beginRender();
+        void endRender();
+        
+        
+        virtual void resize();
+        
+        
+        static void checkGLError();
+        
+        /// batch drawing
+        virtual void startBatch( IBatch* batch );
+        virtual void dumpBatch( IBatch* batch, void **vertices, size_t *size );
+        virtual void endBatch( IBatch* batch );
+        
+        OpenGLES::OpenGLESContext* getGLESBackendContext() { return _gl; }
+        OpenGLES::OpenGLESContext* gl() { return getGLESBackendContext(); }
+        
+    private:
+        
+        // restore values to play nice with other apps
+        int		_viewport[4];
+        float	_projection[16];
+        float	_modelview[16];
+        float	_color[4];
+        
+        // the gl context
+        OpenGLES::OpenGLESContext*  _gl;
+
 	};
 }
 

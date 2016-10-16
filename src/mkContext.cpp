@@ -7,8 +7,7 @@
  *
  */
 #include "mkContext.h"
-#include "glPath.h"
-#include "glContext.h"
+#include "mkPath.h"
 
 using namespace MonkVG;
 
@@ -247,5 +246,418 @@ namespace MonkVG {
 	void SetError( const VGErrorCode e ) {
 		IContext::instance().setError( e );
 	}
+}
+
+#include "mkPath.h"
+#include "mkPaint.h"
+#include "mkBatch.h"
+#include "mkCommon.h"
+
+
+namespace MonkVG {
+    
+    //// singleton implementation ////
+    IContext& IContext::instance()
+    {
+        static IContext g_context;
+        return g_context;
+    }
+    
+    
+    void IContext::checkGLError() {
+        
+        int err = glGetError();
+        
+        
+        const char* RVAL = "GL_UNKNOWN_ERROR";
+        
+        switch( err )
+        {
+            case GL_NO_ERROR:
+                RVAL =  "GL_NO_ERROR";
+                break;
+            case GL_INVALID_ENUM:
+                RVAL =  "GL_INVALID_ENUM";
+                break;
+            case GL_INVALID_VALUE:
+                RVAL =  "GL_INVALID_VALUE";
+                break;
+            case GL_INVALID_OPERATION:
+                RVAL = "GL_INVALID_OPERATION";
+                break;
+            case GL_STACK_OVERFLOW:
+                RVAL =  "GL_STACK_OVERFLOW";
+                break;
+            case GL_STACK_UNDERFLOW:
+                RVAL =  "GL_STACK_UNDERFLOW";
+                break;
+            case GL_OUT_OF_MEMORY:
+                RVAL =  "GL_OUT_OF_MEMORY";
+                break;
+            default:
+                break;
+        }
+        
+        if( err != GL_NO_ERROR ) {
+            printf("GL_ERROR: %s\n", RVAL );
+            MK_ASSERT(0);
+        }
+    }
+    
+    bool IContext::Initialize() {
+        // create the gl backend context dependent on user selected backend
+        if ( getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGLES11 ) {
+            _gl = new OpenGLES::OpenGLES1::OpenGLES11Context();
+        } else if ( getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGLES20 ) {
+            _gl = new OpenGLES::OpenGLES2::OpenGLES20Context();
+        } else {    // error
+            MK_ASSERT( !"ERROR: No OpenGL rendering backend selected" );
+        }
+        
+        // get viewport to restore back when we are done
+        gl()->glGetIntegerv( GL_VIEWPORT, _viewport );
+        //fixme?		gl()->glGetFloatv( GL_PROJECTION_MATRIX, _projection );
+        //fixme?		gl()->glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
+        
+        // get the color to back up when we are done
+        gl()->glGetFloatv( GL_CURRENT_COLOR, _color );
+        
+        resize();
+        
+        gl()->glDisable(GL_CULL_FACE);
+        gl()->glDisable(GL_TEXTURE_2D);
+        
+        // turn on blending
+        gl()->glEnable(GL_BLEND);
+        gl()->glEnable(GL_POINT_SMOOTH);
+        gl()->glEnable(GL_LINE_SMOOTH);
+        gl()->glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        gl()->glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+        
+        gl()->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        gl()->glEnable(GL_MULTISAMPLE);
+        gl()->glEnable(GL_DEPTH_TEST);
+        
+        gl()->glDisable(GL_TEXTURE_2D);
+        gl()->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+        gl()->glDisableClientState( GL_COLOR_ARRAY );
+        gl()->glEnableClientState( GL_VERTEX_ARRAY );
+        return true;
+    }
+    
+    void IContext::resize() {
+        // setup GL projection
+        gl()->glViewport(0,0, _width, _height);
+        
+        gl()->glMatrixMode(GL_PROJECTION);
+        gl()->glLoadIdentity();
+        gl()->glOrthof(0, _width,		// left, right
+                       0, _height,	// top, botton
+                       -1, 1);		// near value, far value (depth)
+        
+        gl()->glMatrixMode(GL_MODELVIEW);
+        gl()->glLoadIdentity();
+    }
+    
+    
+    bool IContext::Terminate() {
+        if (_gl) {
+            delete _gl;
+            _gl = NULL;
+        }
+        _stroke_paint = NULL;
+        _fill_paint = NULL;
+        return true;
+    }
+    
+    
+    void IContext::beginRender() {
+        //		glDisable(GL_TEXTURE_2D);
+        //		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+        //		glDisableClientState( GL_COLOR_ARRAY );
+        //		glEnableClientState( GL_VERTEX_ARRAY );
+        
+        //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        
+        
+        //		CHECK_GL_ERROR;
+        //
+        //		// get viewport to restore back when we are done
+        //		glGetIntegerv( GL_VIEWPORT, _viewport );
+        //		glGetFloatv( GL_PROJECTION_MATRIX, _projection );
+        //		glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
+        //
+        //		// get the color to back up when we are done
+        //		glGetFloatv( GL_CURRENT_COLOR, _color );
+        //
+        //		// setup GL projection
+        //		glViewport(0,0, _width, _height);
+        //
+        //		glMatrixMode(GL_PROJECTION);
+        //		glLoadIdentity();
+        //		glOrthof(0, _width,		// left, right
+        //				 0, _height,	// top, botton
+        //				 -1, 1);		// near value, far value (depth)
+        //
+        //		glMatrixMode(GL_MODELVIEW);
+        //		glLoadIdentity();
+        //
+        //		glDisable( GL_CULL_FACE );
+        //
+        //		// turn on blending
+        //		glEnable(GL_BLEND);
+        //		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //
+        //		CHECK_GL_ERROR;
+        
+    }
+    void IContext::endRender() {
+        //
+        //		CHECK_GL_ERROR;
+        //
+        //		// todo: restore state to be nice to other apps
+        //		// restore the old viewport
+        //		glMatrixMode( GL_PROJECTION );
+        //		glLoadMatrixf( _projection );
+        //		glViewport( _viewport[0], _viewport[1], _viewport[2], _viewport[3] );
+        //		glMatrixMode( GL_MODELVIEW );
+        //		glLoadMatrixf( _modelview );
+        //
+        //		// restore color
+        //		glColor4f( _color[0], _color[1], _color[2], _color[3] );
+        //
+        //		CHECK_GL_ERROR;
+    }
+    
+    
+    /// factories
+    
+    IPath* IContext::createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {
+        
+        IPath *path = new IPath(pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL);
+        if( path == 0 )
+            SetError( VG_OUT_OF_MEMORY_ERROR );
+        
+        return (IPath*)path;
+    }
+    
+    void IContext::destroyPath( IPath* path ) {
+        delete (IPath*)path;
+    }
+    
+    void IContext::destroyPaint( IPaint* paint ) {
+        delete (IPaint*)paint;
+    }
+    
+    IPaint* IContext::createPaint() {
+        IPaint *paint = new IPaint();
+        if( paint == 0 )
+            SetError( VG_OUT_OF_MEMORY_ERROR );
+        return (IPaint*)paint;
+    }
+    
+    IBatch* IContext::createBatch() {
+        IBatch *batch = new IBatch();
+        if( batch == 0 )
+            SetError( VG_OUT_OF_MEMORY_ERROR );
+        return (IBatch*)batch;
+    }
+    
+    void IContext::destroyBatch( IBatch* batch ) {
+        if ( batch ) {
+            delete batch;
+        }
+    }
+    
+    
+    /// state
+    void IContext::setStrokePaint( IPaint* paint ) {
+        if ( paint != _stroke_paint ) {
+            _stroke_paint = paint;
+            IPaint* glPaint = (IPaint*)_stroke_paint;
+            //glPaint->setGLState();
+            if (glPaint)
+                glPaint->setIsDirty( true );
+        }
+    }
+    
+    void IContext::setFillPaint( IPaint* paint ) {
+        if ( paint != _fill_paint ) {
+            _fill_paint = paint;
+            IPaint* glPaint = (IPaint*)_fill_paint;
+            //glPaint->setGLState();
+            if (glPaint)
+                glPaint->setIsDirty( true );
+        }
+        
+    }
+    
+    
+    void IContext::stroke() {
+        if ( _stroke_paint ) {
+            IPaint* glPaint = (IPaint*)_stroke_paint;
+            glPaint->setGLState();
+            glPaint->setIsDirty( false );
+            // set the fill paint to dirty
+            if ( _fill_paint ) {
+                glPaint = (IPaint*)_fill_paint;
+                glPaint->setIsDirty( true );
+            }
+        }
+    }
+    
+    void IContext::fill() {
+        
+        if ( _fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR ) {
+            IPaint* glPaint = (IPaint*)_fill_paint;
+            glPaint->setGLState();
+            glPaint->setIsDirty( false );
+            // set the stroke paint to dirty
+            if ( _stroke_paint ) {
+                glPaint = (IPaint*)_stroke_paint;
+                glPaint->setIsDirty( true );
+            }
+        }
+        
+        //		if ( _fill_paint ) {
+        //			const VGfloat* c = _fill_paint->getPaintColor();
+        //			glColor4f(c[0], c[1], c[2], c[3] );
+        //		}
+        
+    }
+    
+    void IContext::startBatch( IBatch* batch ) {
+        assert( _currentBatch == 0 );	// can't have multiple batches going on at once
+        _currentBatch = batch;
+    }
+    void IContext::dumpBatch( IBatch *batch, void **vertices, size_t *size ) {
+        _currentBatch->dump( vertices, size );
+    }
+    void IContext::endBatch( IBatch* batch ) {
+        _currentBatch->finalize();
+        _currentBatch = 0;
+    }
+    
+    
+    void IContext::clear(VGint x, VGint y, VGint width, VGint height) {
+        // TODO:
+    }
+    
+    void IContext::loadGLMatrix() {
+        Matrix33& active = *getActiveMatrix();
+        GLfloat mat44[4][4];
+        for( int x = 0; x < 4; x++ )
+            for( int y = 0; y < 4; y++ )
+                mat44[x][y] = 0;
+        mat44[0][0] = 1.0f;
+        mat44[1][1] = 1.0f;
+        mat44[2][2] = 1.0f;
+        mat44[3][3]	= 1.0f;
+        
+        
+        //		a, c, e,			// cos(a) -sin(a) tx
+        //		b, d, f,			// sin(a) cos(a)  ty
+        //		ff0, ff1, ff2;		// 0      0       1
+        
+        mat44[0][0] = active.a;	mat44[0][1] = active.b;
+        mat44[1][0] = active.c;	mat44[1][1] = active.d;
+        mat44[3][0] = active.e;	mat44[3][1] = active.f;
+        gl()->glLoadMatrixf( &mat44[0][0] );
+        
+    }
+    
+    
+    
+    void IContext::setIdentity() {
+        Matrix33* active = getActiveMatrix();
+        active->setIdentity();
+        loadGLMatrix();
+    }
+    
+    void IContext::transform( VGfloat* t ) {
+        // a	b	0
+        // c	d	0
+        // tx	ty	1
+        Matrix33* active = getActiveMatrix();
+        for( int i = 0; i < 9; i++ )
+            t[i] = active->m[i];
+        
+    }
+    
+    void IContext::setTransform( const VGfloat* t )  {
+        //	OpenVG:
+        //	sh	shx	tx
+        //	shy	sy	ty
+        //	0	0	1
+        //
+        // OpenGL
+        // a	b	0
+        // c	d	0
+        // tx	ty	1
+        
+        Matrix33* active = getActiveMatrix();
+        for( int i = 0; i < 9; i++ )
+            active->m[i] = t[i];
+        loadGLMatrix();
+    }
+    
+    
+    void IContext::multiply( const VGfloat* t ) {
+        Matrix33 m;
+        for ( int x = 0; x < 3; x++ ) {
+            for ( int y = 0; y < 3; y++ ) {
+                m.set( y, x, t[(y*3)+x] );
+            }
+        }
+        Matrix33* active = getActiveMatrix();
+        active->postMultiply( m );
+        loadGLMatrix();
+    }
+    
+    void IContext::scale( VGfloat sx, VGfloat sy ) {
+        Matrix33* active = getActiveMatrix();
+        Matrix33 scale;
+        scale.setIdentity();
+        scale.setScale( sx, sy );
+        Matrix33 tmp;
+        Matrix33::multiply( tmp, scale, *active );
+        active->copy( tmp );
+        loadGLMatrix();
+    }
+    void IContext::translate( VGfloat x, VGfloat y ) {
+        
+        Matrix33* active = getActiveMatrix();
+        Matrix33 translate;
+        translate.setTranslate( x, y );
+        Matrix33 tmp;
+        tmp.setIdentity();
+        Matrix33::multiply( tmp, translate, *active );
+        active->copy( tmp );
+        loadGLMatrix();
+    }
+    float IContext::angle()
+    {
+        Matrix33* active = getActiveMatrix();
+        
+        return active->angle();
+    }
+    
+    void IContext::rotate( VGfloat angle ) {
+        Matrix33* active = getActiveMatrix();
+        Matrix33 rotate;
+        rotate.setRotation( radians( angle ) );
+        Matrix33 tmp;
+        tmp.setIdentity();
+        Matrix33::multiply( tmp, rotate, *active );
+        active->copy( tmp );
+        loadGLMatrix();
+    }
+    
+    void IContext::rotate(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) {
+        
+        translate(x, y);
+        rotate(angle);
+        
+    }
 }
 
