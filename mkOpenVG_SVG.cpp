@@ -470,8 +470,6 @@ namespace MonkSVG {
 			_current_group->transform.setTranslate( x, y );
 		} else if( kPathParseMode ) {	// 
 			_current_group->current_path->transform.setTranslate( x, y );
-		} else if( kUseParseMode ) {
-			_use_transform.setTranslate( x, y );
 		}
 	}
 	void OpenVG_SVGHandler::onTransformScale( float s ) {
