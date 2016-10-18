@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		96161FA01DB5CECB005A2034 /* libcpp_btree.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96161F8D1DB5CCD6005A2034 /* libcpp_btree.a */; };
 		96529C351DB30E1B00F633C2 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96529C331DB30E1B00F633C2 /* mkPaint.cpp */; };
 		9668A76F1DA5D39900F10F62 /* libgles2bc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BC6381D71514500FA4C53 /* libgles2bc.a */; };
 		9668A7701DA5D39900F10F62 /* libOpenVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BC6441D71515C00FA4C53 /* libOpenVG.a */; };
@@ -21,6 +22,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		96161F8C1DB5CCD6005A2034 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96161F761DB5CB9D005A2034;
+			remoteInfo = cpp_btree;
+		};
+		96161F9E1DB5CEC7005A2034 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96161F751DB5CB9D005A2034;
+			remoteInfo = cpp_btree;
+		};
 		9668A76D1DA5D37D00F10F62 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 969BC6331D71514400FA4C53 /* gles2bc.xcodeproj */;
@@ -78,6 +93,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "thirdparty/cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
 		96529C2F1DB051D100F633C2 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		96529C331DB30E1B00F633C2 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkPaint.cpp; sourceTree = "<group>"; };
 		96529C341DB30E1B00F633C2 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkPaint.h; sourceTree = "<group>"; };
@@ -110,6 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96161FA01DB5CECB005A2034 /* libcpp_btree.a in Frameworks */,
 				9668A76F1DA5D39900F10F62 /* libgles2bc.a in Frameworks */,
 				9668A7701DA5D39900F10F62 /* libOpenVG.a in Frameworks */,
 				9668A7711DA5D39900F10F62 /* libTess2.a in Frameworks */,
@@ -119,6 +136,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		96161F891DB5CCD5005A2034 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96161F8D1DB5CCD6005A2034 /* libcpp_btree.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		96529C2E1DB051D100F633C2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +155,7 @@
 		969BC6321D71512900FA4C53 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */,
 				969BC63F1D71515C00FA4C53 /* OpenVG.xcodeproj */,
 				969BC6391D71515300FA4C53 /* Tess2.xcodeproj */,
 				969BC6331D71514400FA4C53 /* gles2bc.xcodeproj */,
@@ -228,6 +254,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				96161F9F1DB5CEC7005A2034 /* PBXTargetDependency */,
 				9668A76E1DA5D37D00F10F62 /* PBXTargetDependency */,
 				969BC6461D71516C00FA4C53 /* PBXTargetDependency */,
 				969BC6481D71516C00FA4C53 /* PBXTargetDependency */,
@@ -266,6 +293,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 96161F891DB5CCD5005A2034 /* Products */;
+					ProjectRef = 96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */;
+				},
+				{
 					ProductGroup = 969BC6341D71514400FA4C53 /* Products */;
 					ProjectRef = 969BC6331D71514400FA4C53 /* gles2bc.xcodeproj */;
 				},
@@ -286,6 +317,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		96161F8D1DB5CCD6005A2034 /* libcpp_btree.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libcpp_btree.a;
+			remoteRef = 96161F8C1DB5CCD6005A2034 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		969BC6381D71514500FA4C53 /* libgles2bc.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -328,6 +366,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		96161F9F1DB5CEC7005A2034 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = cpp_btree;
+			targetProxy = 96161F9E1DB5CEC7005A2034 /* PBXContainerItemProxy */;
+		};
 		9668A76E1DA5D37D00F10F62 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = gles2bc;

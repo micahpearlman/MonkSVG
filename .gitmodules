@@ -7,3 +7,6 @@
 [submodule "thirdparty/OpenVG"]
 	path = thirdparty/OpenVG
 	url = https://github.com/sakamura/OpenVG.git
+[submodule "thirdparty/cpp-btree"]
+	path = thirdparty/cpp-btree
+	url = https://github.com/sakamura/cpp-btree
