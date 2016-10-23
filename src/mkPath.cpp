@@ -300,12 +300,12 @@ namespace MonkVG {
         
         // delete vbo buffers
         if ( _strokeVBO != -1 ) {
-            GL->glDeleteBuffers( 1, &_strokeVBO );
+            glDeleteBuffers( 1, &_strokeVBO );
             _strokeVBO = -1;
         }
         
         if ( _fillVBO != -1 ) {
-            GL->glDeleteBuffers( 1, &_fillVBO );
+            glDeleteBuffers( 1, &_fillVBO );
             _fillVBO = -1;
         }
     }
@@ -357,35 +357,35 @@ namespace MonkVG {
         
         glContext.beginRender();
         
-        GL->glEnableClientState( GL_VERTEX_ARRAY );
-        GL->glDisableClientState( GL_COLOR_ARRAY );
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glDisableClientState( GL_COLOR_ARRAY );
         
         // configure based on paint type
         if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-            GL->glDisable(GL_TEXTURE_2D);
-            GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+            glDisable(GL_TEXTURE_2D);
+            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
         }
         
         if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 && _fillPaintForPath) {
             // draw
             MKContext::instance().fill();
-            GL->glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
+            glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
             if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-                GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
+                glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
             }
-            GL->glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
+            glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
             
             // this is important to unbind the vbo when done
-            GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
+            glBindBuffer( GL_ARRAY_BUFFER, 0 );
         }
         
         if ( (paintModes & VG_STROKE_PATH) && _strokeVBO != -1 ) {
             // draw
             MKContext::instance().stroke();
-            GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-            GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-            GL->glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
-            GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
+            glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
+            glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
+            glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
+            glBindBuffer( GL_ARRAY_BUFFER, 0 );
         }
         
         glContext.endRender();
@@ -796,7 +796,8 @@ namespace MonkVG {
         
         const int nvp = 6;
         const int nve = 2;
-        assert(tessTesselate(_fillTesseleator, winding, TESS_POLYGONS, nvp, nve, NULL) == 1);
+        int result = tessTesselate(_fillTesseleator, winding, TESS_POLYGONS, nvp, nve, NULL);
+        assert(result == 1);
         
         GLdouble startVertex_[2];
         GLdouble lastVertex_[2];
@@ -1504,42 +1505,8 @@ namespace MonkVG {
     }
     
     void MKPath::endOfTesselation( VGbitfield paintModes ) {
-        
-        /// build fill vbo
-        // TODO: BUGBUG: if in batch mode don't build the VBO!
-        if ( _vertices.size() > 0 ) {
-            if ( _fillVBO != -1 ) {
-                GL->glDeleteBuffers( 1, &_fillVBO );
-                _fillVBO = -1;
-            }
-            
-            GL->glGenBuffers( 1, &_fillVBO );
-            GL->glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-            if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-                GL->glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
-            }
-            
-            _numberFillVertices = (int)_vertices.size()/2;
-            _tessVertices.clear();
-        } 
-        
-        /// build stroke vbo 
-        if ( _strokeVertices.size() > 0 ) {
-            // build the vertex buffer object VBO
-            if ( _strokeVBO != -1 ) {
-                GL->glDeleteBuffers( 1, &_strokeVBO );
-                _strokeVBO = -1;
-            }
-            
-            GL->glGenBuffers( 1, &_strokeVBO );
-            GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-            GL->glBufferData( GL_ARRAY_BUFFER, _strokeVertices.size() * sizeof(float) * 2, &_strokeVertices[0], GL_STATIC_DRAW );
-            _numberStrokeVertices = (int)_strokeVertices.size();
-            
-        }
-        
         MKBatch* glBatch = (MKBatch*)MKContext::instance().currentBatch();
-        if( glBatch ) {	// if in batch mode update the current batch
+        if( glBatch && (_vertices.size() > 0 || _strokeVertices.size() > 0) ) {	// if in batch mode update the current batch
             glBatch->addPathVertexData( &_vertices[0], _vertices.size()/2, 
                                        (float*)&_strokeVertices[0], _strokeVertices.size(), 
                                        paintModes );
@@ -1568,7 +1535,7 @@ namespace MonkVG {
             _fillTesseleator = 0;
         }
         
-        GL->glDeleteBuffers( 1, &_fillVBO );
+        glDeleteBuffers( 1, &_fillVBO );
     }
     
 }

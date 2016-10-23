@@ -1,6 +1,3 @@
-[submodule "thirdparty/gles2-bc-nacl"]
-	path = thirdparty/gles2-bc-nacl
-	url = https://github.com/sakamura/gles2-bc-nacl.git
 [submodule "thirdparty/libtess2"]
 	path = thirdparty/libtess2
 	url = https://github.com/sakamura/libtess2.git

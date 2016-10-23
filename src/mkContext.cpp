@@ -8,6 +8,7 @@
  */
 #include "mkContext.h"
 #include "mkPath.h"
+#include <Tess2/tesselator.h>
 
 using namespace MonkVG;
 
@@ -15,12 +16,9 @@ using namespace MonkVG;
 
 extern "C"
 {
-VG_API_CALL VGboolean vgCreateContextMNK( VGint width, VGint height, VGRenderingBackendTypeMNK backend )
+VG_API_CALL VGboolean vgCreateContextMNK( VGint width, VGint height )
 {
-	MK_LOG("Creating context %d, %d, %d", width, height, (int)backend);
-
-    MKContext::instance().setRenderingBackendType( backend );
-
+	MK_LOG("Creating context %d, %d\n", width, height);
 	MKContext::instance().setWidth( width );
 	MKContext::instance().setHeight( height );
 	MKContext::instance().Initialize();
@@ -133,6 +131,8 @@ namespace MonkVG {
 		_glyph_user_to_surface.setIdentity();
 		_image_user_to_surface.setIdentity();
 		_active_matrix->setIdentity();
+        
+        disableAutomaticCleanup();
 	}
 	
 	//// parameters ////
@@ -288,66 +288,24 @@ namespace MonkVG {
     }
     
     bool MKContext::Initialize() {
-        // create the gl backend context dependent on user selected backend
-        if ( getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGLES11 ) {
-            _gl = new OpenGLES::OpenGLES1::OpenGLES11Context();
-        } else if ( getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGLES20 ) {
-            _gl = new OpenGLES::OpenGLES2::OpenGLES20Context();
-        } else {    // error
-            MK_ASSERT( !"ERROR: No OpenGL rendering backend selected" );
-        }
-        
-        // get viewport to restore back when we are done
-        gl()->glGetIntegerv( GL_VIEWPORT, _viewport );
-        //fixme?		gl()->glGetFloatv( GL_PROJECTION_MATRIX, _projection );
-        //fixme?		gl()->glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
-        
-        // get the color to back up when we are done
-        gl()->glGetFloatv( GL_CURRENT_COLOR, _color );
-        
+        glGetIntegerv(GL_VIEWPORT, _viewport);
         resize();
+        glDisable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
         
-        gl()->glDisable(GL_CULL_FACE);
-        gl()->glDisable(GL_TEXTURE_2D);
-        
-        // turn on blending
-        gl()->glEnable(GL_BLEND);
-        gl()->glEnable(GL_POINT_SMOOTH);
-        gl()->glEnable(GL_LINE_SMOOTH);
-        gl()->glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-        gl()->glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-        
-        gl()->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        gl()->glEnable(GL_MULTISAMPLE);
-        gl()->glEnable(GL_DEPTH_TEST);
-        
-        gl()->glDisable(GL_TEXTURE_2D);
-        gl()->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-        gl()->glDisableClientState( GL_COLOR_ARRAY );
-        gl()->glEnableClientState( GL_VERTEX_ARRAY );
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_DEPTH_TEST);
+
         return true;
     }
     
     void MKContext::resize() {
         // setup GL projection
-        gl()->glViewport(0,0, _width, _height);
-        
-        gl()->glMatrixMode(GL_PROJECTION);
-        gl()->glLoadIdentity();
-        gl()->glOrthof(0, _width,		// left, right
-                       0, _height,	// top, botton
-                       -1, 1);		// near value, far value (depth)
-        
-        gl()->glMatrixMode(GL_MODELVIEW);
-        gl()->glLoadIdentity();
+        glViewport(0,0, _width, _height);
     }
     
     
     bool MKContext::Terminate() {
-        if (_gl) {
-            delete _gl;
-            _gl = NULL;
-        }
         _stroke_paint = NULL;
         _fill_paint = NULL;
         return true;
@@ -454,9 +412,6 @@ namespace MonkVG {
         assert( _currentBatch == 0 );	// can't have multiple batches going on at once
         _currentBatch = batch;
     }
-    void MKContext::dumpBatch( MKBatch *batch, void **vertices, size_t *size ) {
-        _currentBatch->dump( vertices, size );
-    }
     void MKContext::endBatch( MKBatch* batch ) {
         _currentBatch->finalize();
         _currentBatch = 0;
@@ -468,7 +423,7 @@ namespace MonkVG {
     }
     
     void MKContext::loadGLMatrix() {
-        Matrix33& active = *getActiveMatrix();
+/*        Matrix33& active = *getActiveMatrix();
         GLfloat mat44[4][4];
         for( int x = 0; x < 4; x++ )
             for( int y = 0; y < 4; y++ )
@@ -486,8 +441,8 @@ namespace MonkVG {
         mat44[0][0] = active.a;	mat44[0][1] = active.b;
         mat44[1][0] = active.c;	mat44[1][1] = active.d;
         mat44[3][0] = active.e;	mat44[3][1] = active.f;
-        gl()->glLoadMatrixf( &mat44[0][0] );
-        
+        glLoadMatrixf( &mat44[0][0] );
+*/        
     }
     
     

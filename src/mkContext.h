@@ -16,8 +16,6 @@
 #include "mkBatch.h"
 #include "mkMath.h"
 #include "mkPaint.h"
-#include <gles2bc/OpenGLES11/OpenGLES11Context.h>
-#include <gles2bc/OpenGLES20/OpenGLES20Context.h>
 
 namespace MonkVG {
 
@@ -25,7 +23,6 @@ namespace MonkVG {
 
 	class MKContext {
 	public:
-	
 		MKContext();
 		
 		// singleton instance
@@ -140,10 +137,6 @@ namespace MonkVG {
 		
 		MKBatch* currentBatch() { return _currentBatch; }
 		
-        /// renderer
-        VGRenderingBackendTypeMNK getRenderingBackendType() const { return _backendRenderer; }
-        void setRenderingBackendType( VGRenderingBackendTypeMNK backendRenderer ) { _backendRenderer = backendRenderer; }
-	
 	protected:
 	
 		// surface properties
@@ -174,9 +167,6 @@ namespace MonkVG {
 		
 		// error
 		VGErrorCode			_error;
-        
-        // renderer
-        VGRenderingBackendTypeMNK   _backendRenderer;
         
     public:
         bool Initialize();
@@ -219,11 +209,7 @@ namespace MonkVG {
         
         /// batch drawing
         void startBatch( MKBatch* batch );
-        void dumpBatch( MKBatch* batch, void **vertices, size_t *size );
         void endBatch( MKBatch* batch );
-        
-        OpenGLES::OpenGLESContext* getGLESBackendContext() { return _gl; }
-        OpenGLES::OpenGLESContext* gl() { return getGLESBackendContext(); }
         
     private:
         
@@ -231,11 +217,6 @@ namespace MonkVG {
         int		_viewport[4];
         float	_projection[16];
         float	_modelview[16];
-        float	_color[4];
-        
-        // the gl context
-        OpenGLES::OpenGLESContext*  _gl;
-
 	};
 }
 
