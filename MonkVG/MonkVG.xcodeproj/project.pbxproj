@@ -1,0 +1,475 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		96161FA01DB5CECB005A2034 /* libcpp_btree.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96161F8D1DB5CCD6005A2034 /* libcpp_btree.a */; };
+		96529C351DB30E1B00F633C2 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96529C331DB30E1B00F633C2 /* mkPaint.cpp */; };
+		9668A7701DA5D39900F10F62 /* libOpenVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BC6441D71515C00FA4C53 /* libOpenVG.a */; };
+		9668A7711DA5D39900F10F62 /* libTess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BC63E1D71515300FA4C53 /* libTess2.a */; };
+		96FF99C01D65F44A00404BDA /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99221D65F44900404BDA /* mkBaseObject.cpp */; };
+		96FF99C11D65F44A00404BDA /* mkBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99241D65F44900404BDA /* mkBatch.cpp */; };
+		96FF99C21D65F44A00404BDA /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99271D65F44900404BDA /* mkContext.cpp */; };
+		96FF99C51D65F44A00404BDA /* mkMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF992D1D65F44900404BDA /* mkMath.cpp */; };
+		96FF99C71D65F44A00404BDA /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99311D65F44900404BDA /* mkParameter.cpp */; };
+		96FF99C81D65F44A00404BDA /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99321D65F44900404BDA /* mkPath.cpp */; };
+		96FF99C91D65F44A00404BDA /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96FF99341D65F44900404BDA /* mkVGU.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		96161F8C1DB5CCD6005A2034 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96161F761DB5CB9D005A2034;
+			remoteInfo = cpp_btree;
+		};
+		96161F9E1DB5CEC7005A2034 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96161F751DB5CB9D005A2034;
+			remoteInfo = cpp_btree;
+		};
+		969BC63D1D71515300FA4C53 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 969BC6391D71515300FA4C53 /* Tess2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96FF989A1D65E54800404BDA;
+			remoteInfo = Tess2;
+		};
+		969BC6431D71515C00FA4C53 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 969BC63F1D71515C00FA4C53 /* OpenVG.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96199CFF1D65F97C00AAAAF1;
+			remoteInfo = OpenVG;
+		};
+		969BC6451D71516C00FA4C53 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 969BC63F1D71515C00FA4C53 /* OpenVG.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96199CFE1D65F97C00AAAAF1;
+			remoteInfo = OpenVG;
+		};
+		969BC6471D71516C00FA4C53 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 969BC6391D71515300FA4C53 /* Tess2.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96FF98991D65E54800404BDA;
+			remoteInfo = Tess2;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		96FF98E61D65F3CD00404BDA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = include/VG;
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "thirdparty/cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
+		96529C2F1DB051D100F633C2 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		96529C331DB30E1B00F633C2 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkPaint.cpp; sourceTree = "<group>"; };
+		96529C341DB30E1B00F633C2 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkPaint.h; sourceTree = "<group>"; };
+		969BC6391D71515300FA4C53 /* Tess2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess2.xcodeproj; path = thirdparty/libtess2/Tess2.xcodeproj; sourceTree = "<group>"; };
+		969BC63F1D71515C00FA4C53 /* OpenVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpenVG.xcodeproj; path = thirdparty/OpenVG/OpenVG.xcodeproj; sourceTree = "<group>"; };
+		96FF98E81D65F3CD00404BDA /* libMonkVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		96FF991F1D65F44900404BDA /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		96FF99201D65F44900404BDA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		96FF99221D65F44900404BDA /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkBaseObject.cpp; sourceTree = "<group>"; };
+		96FF99231D65F44900404BDA /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkBaseObject.h; sourceTree = "<group>"; };
+		96FF99241D65F44900404BDA /* mkBatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkBatch.cpp; sourceTree = "<group>"; };
+		96FF99251D65F44900404BDA /* mkBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkBatch.h; sourceTree = "<group>"; };
+		96FF99261D65F44900404BDA /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkCommon.h; sourceTree = "<group>"; };
+		96FF99271D65F44900404BDA /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkContext.cpp; sourceTree = "<group>"; };
+		96FF99281D65F44900404BDA /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkContext.h; sourceTree = "<group>"; };
+		96FF992D1D65F44900404BDA /* mkMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkMath.cpp; sourceTree = "<group>"; };
+		96FF992E1D65F44900404BDA /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkMath.h; sourceTree = "<group>"; };
+		96FF99311D65F44900404BDA /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkParameter.cpp; sourceTree = "<group>"; };
+		96FF99321D65F44900404BDA /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkPath.cpp; sourceTree = "<group>"; };
+		96FF99331D65F44900404BDA /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkPath.h; sourceTree = "<group>"; };
+		96FF99341D65F44900404BDA /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkVGU.cpp; sourceTree = "<group>"; };
+		96FF99421D65F44900404BDA /* glPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPlatform.h; sourceTree = "<group>"; };
+		96FF99431D65F44900404BDA /* math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = math.hpp; sourceTree = "<group>"; };
+		96FF99441D65F44900404BDA /* vec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = vec.hpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		96FF98E51D65F3CD00404BDA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96161FA01DB5CECB005A2034 /* libcpp_btree.a in Frameworks */,
+				9668A7701DA5D39900F10F62 /* libOpenVG.a in Frameworks */,
+				9668A7711DA5D39900F10F62 /* libTess2.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		96161F891DB5CCD5005A2034 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96161F8D1DB5CCD6005A2034 /* libcpp_btree.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96529C2E1DB051D100F633C2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				96529C2F1DB051D100F633C2 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		969BC6321D71512900FA4C53 /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */,
+				969BC63F1D71515C00FA4C53 /* OpenVG.xcodeproj */,
+				969BC6391D71515300FA4C53 /* Tess2.xcodeproj */,
+			);
+			name = ThirdParty;
+			sourceTree = "<group>";
+		};
+		969BC63A1D71515300FA4C53 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				969BC63E1D71515300FA4C53 /* libTess2.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		969BC6401D71515C00FA4C53 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				969BC6441D71515C00FA4C53 /* libOpenVG.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96E5959E1D714AA20022B80A /* MonkVG */ = {
+			isa = PBXGroup;
+			children = (
+				96FF991F1D65F44900404BDA /* LICENSE */,
+				96FF99201D65F44900404BDA /* README.md */,
+				96FF99211D65F44900404BDA /* src */,
+			);
+			name = MonkVG;
+			sourceTree = "<group>";
+		};
+		96FF98DF1D65F3CD00404BDA = {
+			isa = PBXGroup;
+			children = (
+				969BC6321D71512900FA4C53 /* ThirdParty */,
+				96E5959E1D714AA20022B80A /* MonkVG */,
+				96FF98E91D65F3CD00404BDA /* Products */,
+				96529C2E1DB051D100F633C2 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		96FF98E91D65F3CD00404BDA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96FF98E81D65F3CD00404BDA /* libMonkVG.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96FF99211D65F44900404BDA /* src */ = {
+			isa = PBXGroup;
+			children = (
+				96FF99421D65F44900404BDA /* glPlatform.h */,
+				96FF99431D65F44900404BDA /* math.hpp */,
+				96FF99441D65F44900404BDA /* vec.hpp */,
+				96FF99221D65F44900404BDA /* mkBaseObject.cpp */,
+				96FF99231D65F44900404BDA /* mkBaseObject.h */,
+				96FF99241D65F44900404BDA /* mkBatch.cpp */,
+				96FF99251D65F44900404BDA /* mkBatch.h */,
+				96FF99261D65F44900404BDA /* mkCommon.h */,
+				96FF99271D65F44900404BDA /* mkContext.cpp */,
+				96FF99281D65F44900404BDA /* mkContext.h */,
+				96FF992D1D65F44900404BDA /* mkMath.cpp */,
+				96FF992E1D65F44900404BDA /* mkMath.h */,
+				96FF99311D65F44900404BDA /* mkParameter.cpp */,
+				96529C331DB30E1B00F633C2 /* mkPaint.cpp */,
+				96529C341DB30E1B00F633C2 /* mkPaint.h */,
+				96FF99321D65F44900404BDA /* mkPath.cpp */,
+				96FF99331D65F44900404BDA /* mkPath.h */,
+				96FF99341D65F44900404BDA /* mkVGU.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		96FF98E71D65F3CD00404BDA /* MonkVG */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96FF98F11D65F3CE00404BDA /* Build configuration list for PBXNativeTarget "MonkVG" */;
+			buildPhases = (
+				96FF98E41D65F3CD00404BDA /* Sources */,
+				96FF98E51D65F3CD00404BDA /* Frameworks */,
+				96FF98E61D65F3CD00404BDA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96161F9F1DB5CEC7005A2034 /* PBXTargetDependency */,
+				969BC6461D71516C00FA4C53 /* PBXTargetDependency */,
+				969BC6481D71516C00FA4C53 /* PBXTargetDependency */,
+			);
+			name = MonkVG;
+			productName = MonkVG;
+			productReference = 96FF98E81D65F3CD00404BDA /* libMonkVG.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		96FF98E01D65F3CD00404BDA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "Michel Donais";
+				TargetAttributes = {
+					96FF98E71D65F3CD00404BDA = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = 6UA46ZJEU9;
+						DevelopmentTeamName = "Michel Donais";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 96FF98E31D65F3CD00404BDA /* Build configuration list for PBXProject "MonkVG" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 96FF98DF1D65F3CD00404BDA;
+			productRefGroup = 96FF98E91D65F3CD00404BDA /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 96161F891DB5CCD5005A2034 /* Products */;
+					ProjectRef = 96161F881DB5CCD5005A2034 /* cpp_btree.xcodeproj */;
+				},
+				{
+					ProductGroup = 969BC6401D71515C00FA4C53 /* Products */;
+					ProjectRef = 969BC63F1D71515C00FA4C53 /* OpenVG.xcodeproj */;
+				},
+				{
+					ProductGroup = 969BC63A1D71515300FA4C53 /* Products */;
+					ProjectRef = 969BC6391D71515300FA4C53 /* Tess2.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				96FF98E71D65F3CD00404BDA /* MonkVG */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		96161F8D1DB5CCD6005A2034 /* libcpp_btree.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libcpp_btree.a;
+			remoteRef = 96161F8C1DB5CCD6005A2034 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		969BC63E1D71515300FA4C53 /* libTess2.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libTess2.a;
+			remoteRef = 969BC63D1D71515300FA4C53 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		969BC6441D71515C00FA4C53 /* libOpenVG.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libOpenVG.a;
+			remoteRef = 969BC6431D71515C00FA4C53 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		96FF98E41D65F3CD00404BDA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96529C351DB30E1B00F633C2 /* mkPaint.cpp in Sources */,
+				96FF99C91D65F44A00404BDA /* mkVGU.cpp in Sources */,
+				96FF99C11D65F44A00404BDA /* mkBatch.cpp in Sources */,
+				96FF99C01D65F44A00404BDA /* mkBaseObject.cpp in Sources */,
+				96FF99C81D65F44A00404BDA /* mkPath.cpp in Sources */,
+				96FF99C51D65F44A00404BDA /* mkMath.cpp in Sources */,
+				96FF99C21D65F44A00404BDA /* mkContext.cpp in Sources */,
+				96FF99C71D65F44A00404BDA /* mkParameter.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		96161F9F1DB5CEC7005A2034 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = cpp_btree;
+			targetProxy = 96161F9E1DB5CEC7005A2034 /* PBXContainerItemProxy */;
+		};
+		969BC6461D71516C00FA4C53 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OpenVG;
+			targetProxy = 969BC6451D71516C00FA4C53 /* PBXContainerItemProxy */;
+		};
+		969BC6481D71516C00FA4C53 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Tess2;
+			targetProxy = 969BC6471D71516C00FA4C53 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		96FF98EF1D65F3CE00404BDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		96FF98F01D65F3CE00404BDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		96FF98F21D65F3CE00404BDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		96FF98F31D65F3CE00404BDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		96FF98E31D65F3CD00404BDA /* Build configuration list for PBXProject "MonkVG" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96FF98EF1D65F3CE00404BDA /* Debug */,
+				96FF98F01D65F3CE00404BDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		96FF98F11D65F3CE00404BDA /* Build configuration list for PBXNativeTarget "MonkVG" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96FF98F21D65F3CE00404BDA /* Debug */,
+				96FF98F31D65F3CE00404BDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 96FF98E01D65F3CD00404BDA /* Project object */;
+}
