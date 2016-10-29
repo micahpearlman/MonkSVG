@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9649536B1DC2E0E700838988 /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9649535B1DC2E0E700838988 /* mkBaseObject.cpp */; };
+		9649536C1DC2E0E700838988 /* mkBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9649535D1DC2E0E700838988 /* mkBatch.cpp */; };
+		9649536D1DC2E0E700838988 /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953601DC2E0E700838988 /* mkContext.cpp */; };
+		9649536E1DC2E0E700838988 /* mkMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953621DC2E0E700838988 /* mkMath.cpp */; };
+		9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953641DC2E0E700838988 /* mkPaint.cpp */; };
+		964953701DC2E0E700838988 /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953661DC2E0E700838988 /* mkParameter.cpp */; };
+		964953711DC2E0E700838988 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953671DC2E0E700838988 /* mkPath.cpp */; };
+		964953721DC2E0E700838988 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953691DC2E0E700838988 /* mkVGU.cpp */; };
 		96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043C1D6A11F20081408C /* mkSVG.h */; };
 		96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043D1D6A11F20081408C /* mkTransform2d.h */; };
 		96DD69D31DA3415200AD0E22 /* mkOpenVG_SVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96DD69D11DA3415200AD0E22 /* mkOpenVG_SVG.cpp */; };
@@ -15,6 +23,34 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		96BB2E031DC4FB41003079AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96161F761DB5CB9D005A2034;
+			remoteInfo = cpp_btree;
+		};
+		96BB2E091DC4FB57003079AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96FF989A1D65E54800404BDA;
+			remoteInfo = Tess2;
+		};
+		96BB2E0B1DC4FE3F003079AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96FF98991D65E54800404BDA;
+			remoteInfo = Tess2;
+		};
+		96BB2E0D1DC4FE3F003079AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96161F751DB5CB9D005A2034;
+			remoteInfo = cpp_btree;
+		};
 		96FA87D41D71CE87006528A1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */;
@@ -75,9 +111,29 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		964953591DC2E0E700838988 /* glPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glPlatform.h; path = src/glPlatform.h; sourceTree = "<group>"; };
+		9649535A1DC2E0E700838988 /* math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = math.hpp; path = src/math.hpp; sourceTree = "<group>"; };
+		9649535B1DC2E0E700838988 /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBaseObject.cpp; path = src/mkBaseObject.cpp; sourceTree = "<group>"; };
+		9649535C1DC2E0E700838988 /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBaseObject.h; path = src/mkBaseObject.h; sourceTree = "<group>"; };
+		9649535D1DC2E0E700838988 /* mkBatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBatch.cpp; path = src/mkBatch.cpp; sourceTree = "<group>"; };
+		9649535E1DC2E0E700838988 /* mkBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBatch.h; path = src/mkBatch.h; sourceTree = "<group>"; };
+		9649535F1DC2E0E700838988 /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkCommon.h; path = src/mkCommon.h; sourceTree = "<group>"; };
+		964953601DC2E0E700838988 /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkContext.cpp; path = src/mkContext.cpp; sourceTree = "<group>"; };
+		964953611DC2E0E700838988 /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkContext.h; path = src/mkContext.h; sourceTree = "<group>"; };
+		964953621DC2E0E700838988 /* mkMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkMath.cpp; path = src/mkMath.cpp; sourceTree = "<group>"; };
+		964953631DC2E0E700838988 /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkMath.h; path = src/mkMath.h; sourceTree = "<group>"; };
+		964953641DC2E0E700838988 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPaint.cpp; path = src/mkPaint.cpp; sourceTree = "<group>"; };
+		964953651DC2E0E700838988 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPaint.h; path = src/mkPaint.h; sourceTree = "<group>"; };
+		964953661DC2E0E700838988 /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkParameter.cpp; path = src/mkParameter.cpp; sourceTree = "<group>"; };
+		964953671DC2E0E700838988 /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = src/mkPath.cpp; sourceTree = "<group>"; };
+		964953681DC2E0E700838988 /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = src/mkPath.h; sourceTree = "<group>"; };
+		964953691DC2E0E700838988 /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkVGU.cpp; path = src/mkVGU.cpp; sourceTree = "<group>"; };
+		9649536A1DC2E0E700838988 /* vec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vec.hpp; path = src/vec.hpp; sourceTree = "<group>"; };
+		96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "thirdparty/cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
+		96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess2.xcodeproj; path = thirdparty/libtess2/Tess2.xcodeproj; sourceTree = "<group>"; };
 		96DD69D11DA3415200AD0E22 /* mkOpenVG_SVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkOpenVG_SVG.cpp; sourceTree = "<group>"; };
 		96DD69D21DA3415200AD0E22 /* mkOpenVG_SVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkOpenVG_SVG.h; sourceTree = "<group>"; };
-		96F7042F1D69D4490081408C /* libMonkSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		96F7042F1D69D4490081408C /* libSakaSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSakaSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F7043B1D6A11F20081408C /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkSVG.cpp; path = src/mkSVG.cpp; sourceTree = "<group>"; };
 		96F7043C1D6A11F20081408C /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkSVG.h; path = src/mkSVG.h; sourceTree = "<group>"; };
 		96F7043D1D6A11F20081408C /* mkTransform2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkTransform2d.h; path = src/mkTransform2d.h; sourceTree = "<group>"; };
@@ -97,11 +153,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		964953581DC2E0B600838988 /* MonkVG */ = {
+			isa = PBXGroup;
+			children = (
+				964953591DC2E0E700838988 /* glPlatform.h */,
+				9649535A1DC2E0E700838988 /* math.hpp */,
+				9649535B1DC2E0E700838988 /* mkBaseObject.cpp */,
+				9649535C1DC2E0E700838988 /* mkBaseObject.h */,
+				9649535D1DC2E0E700838988 /* mkBatch.cpp */,
+				9649535E1DC2E0E700838988 /* mkBatch.h */,
+				9649535F1DC2E0E700838988 /* mkCommon.h */,
+				964953601DC2E0E700838988 /* mkContext.cpp */,
+				964953611DC2E0E700838988 /* mkContext.h */,
+				964953621DC2E0E700838988 /* mkMath.cpp */,
+				964953631DC2E0E700838988 /* mkMath.h */,
+				964953641DC2E0E700838988 /* mkPaint.cpp */,
+				964953651DC2E0E700838988 /* mkPaint.h */,
+				964953661DC2E0E700838988 /* mkParameter.cpp */,
+				964953671DC2E0E700838988 /* mkPath.cpp */,
+				964953681DC2E0E700838988 /* mkPath.h */,
+				964953691DC2E0E700838988 /* mkVGU.cpp */,
+				9649536A1DC2E0E700838988 /* vec.hpp */,
+			);
+			path = MonkVG;
+			sourceTree = "<group>";
+		};
+		96BB2E001DC4FB41003079AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96BB2E041DC4FB41003079AC /* libcpp_btree.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96BB2E061DC4FB57003079AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96BB2E0A1DC4FB57003079AC /* libTess2.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		96F704261D69D4490081408C = {
 			isa = PBXGroup;
 			children = (
+				964953581DC2E0B600838988 /* MonkVG */,
 				96FA87CF1D71CE75006528A1 /* ThirdParty */,
-				96FA87CE1D71CE36006528A1 /* MonkSVG */,
+				96FA87CE1D71CE36006528A1 /* SakaSVG */,
 				96F704301D69D4490081408C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -109,12 +207,12 @@
 		96F704301D69D4490081408C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				96F7042F1D69D4490081408C /* libMonkSVG.a */,
+				96F7042F1D69D4490081408C /* libSakaSVG.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		96FA87CE1D71CE36006528A1 /* MonkSVG */ = {
+		96FA87CE1D71CE36006528A1 /* SakaSVG */ = {
 			isa = PBXGroup;
 			children = (
 				96DD69D11DA3415200AD0E22 /* mkOpenVG_SVG.cpp */,
@@ -123,12 +221,14 @@
 				96F7043C1D6A11F20081408C /* mkSVG.h */,
 				96F7043D1D6A11F20081408C /* mkTransform2d.h */,
 			);
-			name = MonkSVG;
+			name = SakaSVG;
 			sourceTree = "<group>";
 		};
 		96FA87CF1D71CE75006528A1 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */,
+				96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */,
 				96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */,
 				96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */,
 				96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */,
@@ -163,9 +263,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		96F7042E1D69D4490081408C /* MonkSVG */ = {
+		96F7042E1D69D4490081408C /* SakaSVG */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 96F704381D69D4490081408C /* Build configuration list for PBXNativeTarget "MonkSVG" */;
+			buildConfigurationList = 96F704381D69D4490081408C /* Build configuration list for PBXNativeTarget "SakaSVG" */;
 			buildPhases = (
 				96F7042B1D69D4490081408C /* Sources */,
 				96F7042C1D69D4490081408C /* Frameworks */,
@@ -174,13 +274,15 @@
 			buildRules = (
 			);
 			dependencies = (
+				96BB2E0C1DC4FE3F003079AC /* PBXTargetDependency */,
+				96BB2E0E1DC4FE3F003079AC /* PBXTargetDependency */,
 				96FA87EA1D71D003006528A1 /* PBXTargetDependency */,
 				96FA87EC1D71D003006528A1 /* PBXTargetDependency */,
 				96FA87EE1D71D003006528A1 /* PBXTargetDependency */,
 			);
-			name = MonkSVG;
+			name = SakaSVG;
 			productName = MonkSVG;
-			productReference = 96F7042F1D69D4490081408C /* libMonkSVG.a */;
+			productReference = 96F7042F1D69D4490081408C /* libSakaSVG.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -200,7 +302,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 96F7042A1D69D4490081408C /* Build configuration list for PBXProject "MonkSVG" */;
+			buildConfigurationList = 96F7042A1D69D4490081408C /* Build configuration list for PBXProject "SakaSVG" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -212,6 +314,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 96BB2E001DC4FB41003079AC /* Products */;
+					ProjectRef = 96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */;
+				},
+				{
 					ProductGroup = 96FA87D11D71CE87006528A1 /* Products */;
 					ProjectRef = 96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */;
 				},
@@ -220,18 +326,36 @@
 					ProjectRef = 96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */;
 				},
 				{
+					ProductGroup = 96BB2E061DC4FB57003079AC /* Products */;
+					ProjectRef = 96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */;
+				},
+				{
 					ProductGroup = 96FA87E31D71CF0F006528A1 /* Products */;
 					ProjectRef = 96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */;
 				},
 			);
 			projectRoot = "";
 			targets = (
-				96F7042E1D69D4490081408C /* MonkSVG */,
+				96F7042E1D69D4490081408C /* SakaSVG */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		96BB2E041DC4FB41003079AC /* libcpp_btree.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libcpp_btree.a;
+			remoteRef = 96BB2E031DC4FB41003079AC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		96BB2E0A1DC4FB57003079AC /* libTess2.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libTess2.a;
+			remoteRef = 96BB2E091DC4FB57003079AC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		96FA87D51D71CE87006528A1 /* libOpenVG.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -260,14 +384,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				964953711DC2E0E700838988 /* mkPath.cpp in Sources */,
+				9649536D1DC2E0E700838988 /* mkContext.cpp in Sources */,
+				964953701DC2E0E700838988 /* mkParameter.cpp in Sources */,
 				96F7043E1D6A11F20081408C /* mkSVG.cpp in Sources */,
+				9649536B1DC2E0E700838988 /* mkBaseObject.cpp in Sources */,
+				9649536E1DC2E0E700838988 /* mkMath.cpp in Sources */,
+				964953721DC2E0E700838988 /* mkVGU.cpp in Sources */,
+				9649536C1DC2E0E700838988 /* mkBatch.cpp in Sources */,
 				96DD69D31DA3415200AD0E22 /* mkOpenVG_SVG.cpp in Sources */,
+				9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		96BB2E0C1DC4FE3F003079AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Tess2;
+			targetProxy = 96BB2E0B1DC4FE3F003079AC /* PBXContainerItemProxy */;
+		};
+		96BB2E0E1DC4FE3F003079AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = cpp_btree;
+			targetProxy = 96BB2E0D1DC4FE3F003079AC /* PBXContainerItemProxy */;
+		};
 		96FA87EA1D71D003006528A1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = tinyxml2;
@@ -391,7 +533,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		96F7042A1D69D4490081408C /* Build configuration list for PBXProject "MonkSVG" */ = {
+		96F7042A1D69D4490081408C /* Build configuration list for PBXProject "SakaSVG" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				96F704361D69D4490081408C /* Debug */,
@@ -400,7 +542,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		96F704381D69D4490081408C /* Build configuration list for PBXNativeTarget "MonkSVG" */ = {
+		96F704381D69D4490081408C /* Build configuration list for PBXNativeTarget "SakaSVG" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				96F704391D69D4490081408C /* Debug */,
