@@ -69,3 +69,7 @@ Use git to clone the official original versions:
 ## Warning & Caveat Emptor
 
 __This branch is under heavy modification and is not safe to be used in any project yet (not even mine!)__. It's much preferable to use the working original MonkSVG and MonkVG projects. However, you can also get many merges, pulls, optimizations, adaptations and fixes, and cherry-pick my changes at : https://github.com/sakamura/SakaSVG/tree/monksvg-master where the original MonkSVG base is being kept as easier backport. My final official branch for MonkVG is kept here: https://github.com/sakamura/MonkVG. Even there, these branches and forks are heavily modified so YMMV and bugs were introduced. It can serve as a great "cleaner" modern starting point for further development, such as the one I'm doing with SakaSVG. If Micah eventually wishes to pull back the changes to his original fork and revive his project, I'll be happy to help spread the love.
+
+## Other OpenVG and SVG related projects
+
+- https://github.com/SVGKit/SVGKit Display and interact with SVG Images on iOS / OS X, using native rendering (CoreAnimation) (currently only supported for iOS - OS X code needs updating)
