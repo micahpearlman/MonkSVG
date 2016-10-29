@@ -37,8 +37,11 @@ SakaSVG is a rendering system allowing to read SVG files, parse them and push th
 - Merging SVG and VG to remove OpenVG code and reduce object complexities
 - Add SVG animations
 - Add gradients to tesselation
-- Add polygon intersection before tesselation
+- Add polygon intersection (occlusion & culling) before tesselation
+- Scissoring and masking
 - Finalize miter code
+- Pattern fills and strokes
+- Various blending modes
 
 
 ## Project fork & major contributors
