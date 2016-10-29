@@ -53,7 +53,7 @@ Use git to clone the official original versions:
 
 #### MonkSVG Additional contributors
 
-- Embedded SVG CSS Parsing: Added by Sean Batson <tt>https://github.com/adozenlines</tt>
+- Embedded SVG CSS Parsing: Added by Sean Batson https://github.com/adozenlines
 
 #### MonkVG Additional contributors
 
@@ -61,6 +61,7 @@ Use git to clone the official original versions:
 - Windows Port: Vincent Richomme (Removed from SakaSVG)
 - Android and Linux Port: Gav Wood (Removed from SakaSVG)
 - Smooth line, Miter, Cap: Sean Batson
+- math.hpp, vec.hpp: mapbox-gl-native https://github.com/mapbox/mapbox-gl-native
 
 ## Warning & Caveat Emptor
 
