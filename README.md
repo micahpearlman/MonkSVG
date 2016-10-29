@@ -51,11 +51,16 @@ Use git to clone the official original versions:
 - Official MonkSVG: <tt>$ git clone https://github.com/micahpearlman/MonkSVG.git</tt>
 - Official MonkVG: <tt>$ git clone https://github.com/micahpearlman/MonkVG.git</tt>
 
-### Embedded SVG CSS Parsing
+#### MonkSVG Additional contributors
 
-Added by Sean Batson 
-<tt>https://github.com/adozenlines</tt>
+- Embedded SVG CSS Parsing: Added by Sean Batson <tt>https://github.com/adozenlines</tt>
 
+#### MonkVG Additional contributors
+
+- Initial Android Port: Paul Holden (Removed from SakaSVG)
+- Windows Port: Vincent Richomme (Removed from SakaSVG)
+- Android and Linux Port: Gav Wood (Removed from SakaSVG)
+- Smooth line, Miter, Cap: Sean Batson
 
 ## Warning & Caveat Emptor
 
