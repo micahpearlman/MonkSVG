@@ -17,8 +17,6 @@
 		964953721DC2E0E700838988 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953691DC2E0E700838988 /* mkVGU.cpp */; };
 		96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043C1D6A11F20081408C /* mkSVG.h */; };
 		96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043D1D6A11F20081408C /* mkTransform2d.h */; };
-		96DD69D31DA3415200AD0E22 /* mkOpenVG_SVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96DD69D11DA3415200AD0E22 /* mkOpenVG_SVG.cpp */; };
-		96DD69D41DA3536D00AD0E22 /* mkOpenVG_SVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96DD69D21DA3415200AD0E22 /* mkOpenVG_SVG.h */; };
 		96F7043E1D6A11F20081408C /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96F7043B1D6A11F20081408C /* mkSVG.cpp */; };
 /* End PBXBuildFile section */
 
@@ -102,7 +100,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				96DD69D41DA3536D00AD0E22 /* mkOpenVG_SVG.h in CopyFiles */,
 				96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */,
 				96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */,
 			);
@@ -131,8 +128,6 @@
 		9649536A1DC2E0E700838988 /* vec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vec.hpp; path = src/vec.hpp; sourceTree = "<group>"; };
 		96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "thirdparty/cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
 		96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess2.xcodeproj; path = thirdparty/libtess2/Tess2.xcodeproj; sourceTree = "<group>"; };
-		96DD69D11DA3415200AD0E22 /* mkOpenVG_SVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkOpenVG_SVG.cpp; sourceTree = "<group>"; };
-		96DD69D21DA3415200AD0E22 /* mkOpenVG_SVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkOpenVG_SVG.h; sourceTree = "<group>"; };
 		96F7042F1D69D4490081408C /* libSakaSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSakaSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F7043B1D6A11F20081408C /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkSVG.cpp; path = src/mkSVG.cpp; sourceTree = "<group>"; };
 		96F7043C1D6A11F20081408C /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkSVG.h; path = src/mkSVG.h; sourceTree = "<group>"; };
@@ -215,8 +210,6 @@
 		96FA87CE1D71CE36006528A1 /* SakaSVG */ = {
 			isa = PBXGroup;
 			children = (
-				96DD69D11DA3415200AD0E22 /* mkOpenVG_SVG.cpp */,
-				96DD69D21DA3415200AD0E22 /* mkOpenVG_SVG.h */,
 				96F7043B1D6A11F20081408C /* mkSVG.cpp */,
 				96F7043C1D6A11F20081408C /* mkSVG.h */,
 				96F7043D1D6A11F20081408C /* mkTransform2d.h */,
@@ -392,7 +385,6 @@
 				9649536E1DC2E0E700838988 /* mkMath.cpp in Sources */,
 				964953721DC2E0E700838988 /* mkVGU.cpp in Sources */,
 				9649536C1DC2E0E700838988 /* mkBatch.cpp in Sources */,
-				96DD69D31DA3415200AD0E22 /* mkOpenVG_SVG.cpp in Sources */,
 				9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

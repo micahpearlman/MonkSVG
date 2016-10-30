@@ -10,12 +10,16 @@
 #ifndef __mkSVG_h__
 #define __mkSVG_h__
 
-
+#include <VG/openvg.h>
+#include <VG/vgu.h>
+#include <VG/vgext.h>
 #include <string>
 #include <vector>
 #include <map>
 #include <cmath>
 #include <memory>
+#include <list>
+#include "mkTransform2d.h"
 
 namespace tinyxml2
 {
@@ -31,52 +35,98 @@ namespace MonkSVG {
     
     class SVG;
 
-    class ISVGHandler {
+    class MKSVGHandler {
 	public:
-		
-		typedef std::shared_ptr<ISVGHandler> SmartPtr;
-		
-		// transforms 
-		virtual void onTransformTranslate( float x, float y ) {}
-		virtual void onTransformScale( float s ) {}
-		virtual void onTransformRotate( float r ) {}
-		virtual void onTransformMatrix( float a, float b, float c, float d, float e, float f ) {}
-		
-		// groups
-		virtual void onGroupBegin() {}
-		virtual void onGroupEnd() {}
-		virtual void onUseBegin() {}
-		virtual void onUseEnd() {}
-		
-		virtual void onId( const std::string& id_ ) {}
-		
-		// paths 
-		virtual void onPathBegin() {}
-		virtual void onPathEnd() {}
-		virtual void onPathMoveTo( float x, float y ) {}
-		virtual void onPathClose(){}
-		virtual void onPathLineTo( float x, float y ) {}
-		virtual void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) {}
-		virtual void onPathSCubic( float x2, float y2, float x3, float y3 ) {}
-		virtual void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {}
-		virtual void onPathRect( float x, float y, float w, float h ) {}
-		virtual void onPathHorizontalLine( float x ) {}
-		virtual void onPathVerticalLine( float y ) {}
-        virtual void onPathQuad( float x1, float y1, float x2, float y2 ) {}
+        ~MKSVGHandler();
 
-		// fill
-		virtual void onPathFillColor( unsigned int color ) {}
-		virtual void onPathFillOpacity( float o ) {}
-		virtual void onPathFillRule( const string& rule ) {}
-		// stroke
-		virtual void onPathStrokeColor( unsigned int color ) {}
-		virtual void onPathStrokeOpacity( float o ) {}
-		virtual void onPathStrokeWidth( float width ) {}
-        virtual void onPathStrokDashPattern( int *pattern ) {}
-        virtual void onPathStrokeCapStyle( const string& style ) {}
-        virtual void onPathStrokeDashPhase( unsigned int phase ) {}
-        virtual void onPathStrokeLineJoin( const string& join ) {}
-        virtual void onPathStrokeMiterLimit( float o) {}
+        typedef std::shared_ptr<MKSVGHandler> SmartPtr;
+        static SmartPtr create();
+
+        void draw();
+        void dump( void **vertices, size_t *size );
+        void optimize();
+        
+        const Transform2d& rootTransform() { return _root_transform; }
+        void setRootTransform( const Transform2d& t ) { _root_transform = t; }
+        
+        const bool hasTransparentColors() { return _has_transparent_colors; }
+
+        // groups
+        void onGroupBegin();
+        void onGroupEnd();
+        
+        // use
+        void onUseBegin();
+        void onUseEnd();
+        
+        
+        // paths
+        void onPathBegin();
+        void onPathEnd();
+        void onPathClose();
+        void onPathMoveTo( float x, float y );
+        void onPathLineTo( float x, float y );
+        void onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 );
+        void onPathSCubic( float x2, float y2, float x3, float y3 );
+        void onPathHorizontalLine( float x );
+        void onPathVerticalLine( float y );
+        void onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y );
+        void onPathRect( float x, float y, float w, float h );
+        
+        void onPathQuad( float x1, float y1, float x2, float y2);
+        
+        
+        // paint
+        void onPathFillColor( unsigned int color );
+        void onPathFillOpacity( float o );
+        void onPathFillRule( const string& rule );
+        
+        
+        // stroke
+        void onPathStrokeColor( unsigned int color );
+        void onPathStrokeWidth( float width );
+        void onPathStrokeOpacity( float o );
+        
+        
+        // transforms
+        void onTransformTranslate( float x, float y );
+        void onTransformScale( float s );
+        void onTransformRotate( float r );
+        void onTransformMatrix( float a, float b, float c, float d, float e, float f );
+        
+        // misc
+        void onId( const std::string& id_ );
+        
+        uint32_t openVGRelative() {
+            if ( relative() ) {
+                return VG_RELATIVE;
+            }
+            return VG_ABSOLUTE;
+        }
+        
+        
+        void pushTransform( const Transform2d& t ) {
+            Transform2d top_transform;
+            if ( _transform_stack.size() == 0 ) {	// nothing on the stack so push the identity onto the stack
+                _transform_stack.push_back( t );
+            } else {
+                const Transform2d& current_tranform = topTransform();
+                //Transform2d::multiply( top_transform, t, current_tranform );
+                Transform2d::multiply( top_transform, current_tranform, t );
+                _transform_stack.push_back( top_transform );
+                //vgLoadMatrix( top_transform.m );
+            }
+        }
+        
+        void popTransform() {
+            _transform_stack.pop_back();
+            //Transform2d& top = _transform_stack.back();
+            //vgLoadMatrix( top.m );
+        }
+        
+        const Transform2d& topTransform() {
+            return _transform_stack.back();
+        }
 		
 		void setRelative( bool r ) {
 			_relative = r;
@@ -100,15 +150,8 @@ namespace MonkSVG {
 		}
 		
 	protected:
-		
-		ISVGHandler() 
-		:	_minX( MAXFLOAT )
-		,	_minY( MAXFLOAT )
-		,	_width( -MAXFLOAT )
-		,	_height( -MAXFLOAT ) 
-		{
-			
-		}
+        MKSVGHandler();
+        
 		// bounds info
 		float _minX;
 		float _minY;
@@ -119,18 +162,88 @@ namespace MonkSVG {
 	private:
 		bool _relative;
 		
+        struct path_object_t {
+            VGPath		path;
+            VGPaint		fill;
+            VGFillRule	fill_rule;
+            VGPaint		stroke;
+            VGfloat		stroke_width;
+            Transform2d transform;
+            std::string id;
+            
+            path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
+                
+            }
+            virtual ~path_object_t() {
+                vgDestroyPaint( fill );
+                vgDestroyPaint( stroke );
+                vgDestroyPath( path );
+            }
+        };
+        
+        struct group_t {
+            group_t()
+            :	parent( 0 )
+            ,	current_path( 0 )
+            ,	fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO )
+            {
+                
+            }
+            Transform2d			transform;
+            group_t*			parent;
+            list<group_t>		children;
+            list<path_object_t> path_objects;
+            path_object_t*		current_path;
+            std::string			id;
+            
+            VGPaint		fill;
+            VGFillRule	fill_rule;
+            VGPaint		stroke;
+            VGfloat		stroke_width;
+            
+        };
+        
+        group_t		_root_group;
+        group_t*	_current_group;
+        
+        
+        vector<Transform2d>		_transform_stack;
+        Transform2d				_root_transform;
+        Transform2d				_use_transform;
+        VGfloat					_use_opacity;
+        
+        enum mode {
+            kGroupParseMode = 1,
+            kPathParseMode = 2,
+            kUseParseMode = 3
+        };
+        
+        mode _mode;
+        
+        VGPaint	_blackBackFill;		// if a path doesn't have a stroke or a fill then use this fill
+        
+        
+        /// optimized batch monkvg batch object
+        VGBatchMNK			_batch;
+        
+        // flag indicating if any of the fills or strokes in the image use transparent colors 
+        // if there are no transparent colors in the image, blending can be disabled in open gl 
+        // to improve rendering performance
+        bool _has_transparent_colors;
+        
+        void draw_recursive( MKSVGHandler::group_t& group );
 	};
 	
 	class SVG  {
 	public:
 		
-		bool initialize( ISVGHandler::SmartPtr handler );
+		bool initialize( MKSVGHandler::SmartPtr handler );
 		bool read( string& data );
 		bool read( const char* data );
 
 	private:
 		
-		ISVGHandler::SmartPtr		_handler;
+		MKSVGHandler::SmartPtr		_handler;
 		
 		// holds svg <symbols>
 		map<string, XMLElement*>	_symbols;
@@ -156,7 +269,6 @@ namespace MonkSVG {
 		float d_string_to_float( char *c, char **str );
 		int d_string_to_int( char *c, char **str );
 		void nextState( char** c, char* state );
-
 	};
 }
 
