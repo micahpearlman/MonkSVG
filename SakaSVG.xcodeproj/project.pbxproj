@@ -15,6 +15,11 @@
 		964953701DC2E0E700838988 /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953661DC2E0E700838988 /* mkParameter.cpp */; };
 		964953711DC2E0E700838988 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953671DC2E0E700838988 /* mkPath.cpp */; };
 		964953721DC2E0E700838988 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953691DC2E0E700838988 /* mkVGU.cpp */; };
+		96874F391DC7ABE4002B18FE /* libcpp_btree.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96BB2E041DC4FB41003079AC /* libcpp_btree.a */; };
+		96874F3A1DC7ABE4002B18FE /* libOpenVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87D51D71CE87006528A1 /* libOpenVG.a */; };
+		96874F3B1DC7ABE4002B18FE /* libStyleSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87DB1D71CE93006528A1 /* libStyleSheet.a */; };
+		96874F3C1DC7ABE4002B18FE /* libTess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96BB2E0A1DC4FB57003079AC /* libTess2.a */; };
+		96874F3D1DC7ABE4002B18FE /* libtinyxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87E71D71CF0F006528A1 /* libtinyxml2.a */; };
 		96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043C1D6A11F20081408C /* mkSVG.h */; };
 		96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043D1D6A11F20081408C /* mkTransform2d.h */; };
 		96F7043E1D6A11F20081408C /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96F7043B1D6A11F20081408C /* mkSVG.cpp */; };
@@ -142,6 +147,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96874F391DC7ABE4002B18FE /* libcpp_btree.a in Frameworks */,
+				96874F3A1DC7ABE4002B18FE /* libOpenVG.a in Frameworks */,
+				96874F3B1DC7ABE4002B18FE /* libStyleSheet.a in Frameworks */,
+				96874F3C1DC7ABE4002B18FE /* libTess2.a in Frameworks */,
+				96874F3D1DC7ABE4002B18FE /* libtinyxml2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,7 +294,7 @@
 		96F704271D69D4490081408C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Michel Donais";
 				TargetAttributes = {
 					96F7042E1D69D4490081408C = {
@@ -435,8 +445,10 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -480,8 +492,10 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
