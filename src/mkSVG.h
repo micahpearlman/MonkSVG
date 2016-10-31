@@ -10,9 +10,6 @@
 #ifndef __mkSVG_h__
 #define __mkSVG_h__
 
-#include <VG/openvg.h>
-#include <VG/vgu.h>
-#include <VG/vgext.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -20,6 +17,8 @@
 #include <memory>
 #include <list>
 #include "mkTransform2d.h"
+#include "mkMath.h"
+#include <VG/openvg.h>
 
 namespace tinyxml2
 {
@@ -27,23 +26,26 @@ namespace tinyxml2
     class XMLElement;
 }
 
+namespace MonkVG {
+    class MKPaint;
+    class MKBatch;
+    class MKPath;
+}
 
 namespace MonkSVG {
 
     using namespace std;
     using namespace tinyxml2;
+    using namespace MonkVG;
     
     class SVG;
 
     class MKSVGHandler {
 	public:
+        MKSVGHandler();
         ~MKSVGHandler();
 
-        typedef std::shared_ptr<MKSVGHandler> SmartPtr;
-        static SmartPtr create();
-
         void draw();
-        void dump( void **vertices, size_t *size );
         void optimize();
         
         const Transform2d& rootTransform() { return _root_transform; }
@@ -111,17 +113,13 @@ namespace MonkSVG {
                 _transform_stack.push_back( t );
             } else {
                 const Transform2d& current_tranform = topTransform();
-                //Transform2d::multiply( top_transform, t, current_tranform );
                 Transform2d::multiply( top_transform, current_tranform, t );
                 _transform_stack.push_back( top_transform );
-                //vgLoadMatrix( top_transform.m );
             }
         }
         
         void popTransform() {
             _transform_stack.pop_back();
-            //Transform2d& top = _transform_stack.back();
-            //vgLoadMatrix( top.m );
         }
         
         const Transform2d& topTransform() {
@@ -150,8 +148,6 @@ namespace MonkSVG {
 		}
 		
 	protected:
-        MKSVGHandler();
-        
 		// bounds info
 		float _minX;
 		float _minY;
@@ -163,22 +159,18 @@ namespace MonkSVG {
 		bool _relative;
 		
         struct path_object_t {
-            VGPath		path;
-            VGPaint		fill;
+            MKPath*		path;
+            MKPaint*		fill;
             VGFillRule	fill_rule;
-            VGPaint		stroke;
-            VGfloat		stroke_width;
+            MKPaint*		stroke;
+            float		stroke_width;
             Transform2d transform;
             std::string id;
             
-            path_object_t() : path( 0 ), fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
+            path_object_t() : path( nullptr ), fill( nullptr ), stroke( nullptr ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
                 
             }
-            virtual ~path_object_t() {
-                vgDestroyPaint( fill );
-                vgDestroyPaint( stroke );
-                vgDestroyPath( path );
-            }
+            ~path_object_t();
         };
         
         struct group_t {
@@ -196,9 +188,9 @@ namespace MonkSVG {
             path_object_t*		current_path;
             std::string			id;
             
-            VGPaint		fill;
+            MKPaint*		fill;
             VGFillRule	fill_rule;
-            VGPaint		stroke;
+            MKPaint*		stroke;
             VGfloat		stroke_width;
             
         };
@@ -220,11 +212,11 @@ namespace MonkSVG {
         
         mode _mode;
         
-        VGPaint	_blackBackFill;		// if a path doesn't have a stroke or a fill then use this fill
+        MKPaint*	_blackBackFill;		// if a path doesn't have a stroke or a fill then use this fill
         
         
         /// optimized batch monkvg batch object
-        VGBatchMNK			_batch;
+        MKBatch*	_batch;
         
         // flag indicating if any of the fills or strokes in the image use transparent colors 
         // if there are no transparent colors in the image, blending can be disabled in open gl 
@@ -232,18 +224,174 @@ namespace MonkSVG {
         bool _has_transparent_colors;
         
         void draw_recursive( MKSVGHandler::group_t& group );
+        
+        
+        //
+        //
+        // From MonkVG's mkContext
+        // =======================
+        //
+        //
+        
+    public:
+        //// Paints ////
+        void setStrokePaint( MKPaint* paint );
+        inline MKPaint* getStrokePaint() const {
+            return _stroke_paint;
+        }
+        void setFillPaint( MKPaint* paint );
+        inline MKPaint* getFillPaint() {
+            return _fill_paint;
+        }
+        inline VGFillRule getFillRule() const {
+            return _fill_rule;
+        }
+        inline void setFillRule( VGFillRule r ) {
+            _fill_rule = r;
+        }
+        
+        //// drawing context ////
+        inline VGint getWidth() const {
+            return _width;
+        }
+        inline void setWidth( VGint w ) {
+            _width = w;
+        }
+        
+        inline VGint getHeight() const {
+            return _height;
+        }
+        inline void setHeight( VGint h ) {
+            _height = h;
+        }
+        
+        //// parameters ////
+        void set( VGuint type, VGfloat f );
+        void set( VGuint type, const VGfloat * values );
+        void set( VGuint type, VGint i );
+        void get( VGuint type, VGfloat &f ) const;
+        void get( VGuint type, VGfloat *fv ) const;
+        void get( VGuint type, VGint &i ) const;
+        
+        //// stroke parameters ////
+        inline void setStrokeLineWidth( VGfloat w ) {
+            _stroke_line_width = w;
+        }
+        inline VGfloat getStrokeLineWidth() const {
+            return _stroke_line_width;
+        }
+        
+        //// transforms ////
+        inline Matrix33& getPathUserToSurface() {
+            return _path_user_to_surface;
+        }
+        inline void setPathUserToSurface( const Matrix33& m ) {
+            _path_user_to_surface = m;
+        }
+        inline Matrix33* getActiveMatrix() {
+            return _active_matrix;
+        }
+        
+        //// error handling ////
+        inline VGErrorCode getError() const {
+            return _error;
+        }
+        inline void setError( const VGErrorCode e ) {
+            _error = e;
+        }
+        
+        /// rendering quality
+        inline VGRenderingQuality getRenderingQuality() const { return _renderingQuality; }
+        inline void setRenderingQuality( VGRenderingQuality rc ) { _renderingQuality = rc; }
+        
+        inline int32_t getTessellationIterations() const { return _tessellationIterations; }
+        inline void setTessellationIterations( int32_t i ) { _tessellationIterations = i; }
+        
+        MKBatch* currentBatch() { return _currentBatch; }
+        
+    protected:
+        
+        // matrix transforms
+        Matrix33			_path_user_to_surface;
+        Matrix33			*_active_matrix;
+        VGMatrixMode		_matrixMode;
+        
+        // stroke properties
+        VGfloat				_stroke_line_width;			// VG_STROKE_LINE_WIDTH
+        
+        // rendering quality
+        VGRenderingQuality	_renderingQuality;
+        int32_t				_tessellationIterations;
+        
+        // paints
+        MKPaint*				_stroke_paint;
+        MKPaint*				_fill_paint;
+        VGFillRule			_fill_rule;
+        
+        // batch
+        MKBatch*				_currentBatch;
+        
+        // error
+        VGErrorCode			_error;
+        
+    public:
+        bool Initialize();
+        bool Terminate();
+        
+        //// factories ////
+        MKPaint* createPaint();
+        MKPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities );
+        MKBatch* createBatch();
+        
+        //// platform specific execution of stroke and fill ////
+        void stroke();
+        void fill();
+        
+        //// platform specific execution of Masking and Clearing ////
+        void clear(VGint x, VGint y, VGint width, VGint height);
+        
+        //// platform specific implementation of transform ////
+        void setIdentity();
+        void transform( VGfloat* t );
+        void scale( VGfloat sx, VGfloat sy );
+        void translate( VGfloat x, VGfloat y );
+        float angle ();
+        void rotate( VGfloat angle );
+        void rotate( VGfloat angle , VGfloat x, VGfloat y, VGfloat z);
+        void setTransform( const VGfloat* t ) ;
+        void multiply( const VGfloat* t );
+        void loadGLMatrix();
+        
+        void beginRender();
+        void endRender();
+        
+        void resize();
+        
+        
+        static void checkGLError();
+        
+        /// batch drawing
+        void startBatch( MKBatch* batch );
+        void endBatch( MKBatch* batch );
+        
+    private:
+        
+        // restore values to play nice with other apps
+        int		_viewport[4];
+        float	_projection[16];
+        float	_modelview[16];
 	};
 	
 	class SVG  {
 	public:
 		
-		bool initialize( MKSVGHandler::SmartPtr handler );
+		bool initialize( MKSVGHandler* handler );
 		bool read( string& data );
 		bool read( const char* data );
 
 	private:
 		
-		MKSVGHandler::SmartPtr		_handler;
+		MKSVGHandler*		_handler;
 		
 		// holds svg <symbols>
 		map<string, XMLElement*>	_symbols;
@@ -271,5 +419,16 @@ namespace MonkSVG {
 		void nextState( char** c, char* state );
 	};
 }
+
+class SakaSVG
+{
+public:
+    MonkSVG::MKSVGHandler handler;
+    
+    SakaSVG(float width, float height, const char* const svgFile);
+    ~SakaSVG();
+    void resize(float width, float height);
+    void draw();
+};
 
 #endif // __mkSVG_h__

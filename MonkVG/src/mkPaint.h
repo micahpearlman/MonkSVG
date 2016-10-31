@@ -10,35 +10,29 @@
 #ifndef __mkPaint_h__
 #define __mkPaint_h__
 
-#include "mkBaseObject.h"
+#include <VG/openvg.h>
 #include <vector>
 
 namespace MonkVG {
 	
-	class MKPaint : public BaseObject {
+	class MKPaint {
 	public:
 	
         MKPaint();
         ~MKPaint();
 	
-		inline BaseObject::Type getType() const {
-			return BaseObject::kPaintType;
-		}
-		
-		//// parameter accessors/mutators ////
-		virtual VGint getParameteri( const VGint p ) const;
-		virtual VGfloat getParameterf( const VGint f ) const;
-		virtual void getParameterfv( const VGint p, VGfloat *fv ) const;
-		virtual void setParameter( const VGint p, const VGfloat f );
-		virtual void setParameter( const VGint p, const VGint i );
-		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
-		
 		const VGfloat* getPaintColor() const {
 			return _paintColor;
 		}
 		
 		VGPaintType getPaintType() { return _paintType; }
 		void setPaintType( VGPaintType t ) { _paintType = t; }
+
+        void getPaintColor( float f[4] );
+        void setPaintColor( const float f[4] );
+        void setPaintLinearGradient( const float f[4] );
+        void setPaintRadialGradient( const float f[5] );
+        void setPaintColorRampStops( const float* f, int cnt );
 		
 		bool isDirty() { return _isDirty; }
 		void setIsDirty( bool b ) { _isDirty = b; }

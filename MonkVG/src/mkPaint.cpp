@@ -8,156 +8,56 @@
  */
 
 #include "mkPaint.h"
-#include "mkContext.h"
+#include <cassert>
 
 namespace MonkVG {	// Internal Implementation
-	VGint MKPaint::getParameteri( const VGint p ) const {
-		switch (p) {
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				return -1;	//todo: set error
-				break;
-		}
-	}
-	
-	VGfloat MKPaint::getParameterf( const VGint p ) const {
-		switch (p) {
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				return -1;	//todo: set error
-				break;
-		}
-	}
-	
-	void MKPaint::getParameterfv( const VGint p, VGfloat *fv ) const {
-		switch (p) {
-			case VG_PAINT_COLOR:
-				for( int i = 0; i < 4; i++ )
-					fv[i] = _paintColor[i];
-				break;
-	
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				break;
-		}
-		
-	}
+    void MKPaint::getPaintColor( float f[4] )
+    {
+        for( int i = 0; i < 4; i++ ) {
+            f[i] = _paintColor[i];
+        }
+        
+    }
+    void MKPaint::setPaintColor( const float f[4] )
+    {
+        for( int i = 0; i < 4; i++ ) {
+            _paintColor[i] = f[i];
+        }
 
-	void MKPaint::setParameter( const VGint p, const VGint v ) {
-		switch (p) {
-			case VG_PAINT_TYPE:
-				setPaintType( (VGPaintType)v );
-				break;
-			case VG_PAINT_COLOR_RAMP_SPREAD_MODE:
-				_colorRampSpreadMode = (VGColorRampSpreadMode)v;
-				break;
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				break;
-		}
-	}
-	
-	void MKPaint::setParameter( const VGint p, const VGfloat v ) 
-	{
-		switch (p) {
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				break;
-		}
-	}
-	
-	void MKPaint::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
-		switch (p) {
-			case VG_PAINT_COLOR:
-				for( int i = 0; i < 4; i++ )
-					_paintColor[i] = fv[i];
-				break;
+    }
+    void MKPaint::setPaintLinearGradient( const float f[4] )
+    {
+        for ( int i = 0; i < 4; i++ ) {
+            _paintLinearGradient[i] = f[i];
+        }
 
-			case VG_PAINT_LINEAR_GRADIENT:
-				for ( int i = 0; i < 4; i++ ) {
-					_paintLinearGradient[i] = fv[i];
-				}
-				break;
-			case VG_PAINT_RADIAL_GRADIENT:
-				for ( int i = 0; i < 5; i++ ) {
-					_paintRadialGradient[i] = fv[i];
-				}
-				break;
-			case VG_PAINT_COLOR_RAMP_STOPS:
-				for ( int j = 0; j < cnt/5; j++ ) {
-					Stop_t stop;
-					for ( int p = 0; p < 5; p++ ) {
-						stop.a[p] = fv[(j * 5) + p];
-					}
-					_colorRampStops.push_back( stop );
-				}
-				break;
-/*			case VG_PAINT_2x3_GRADIENT:
-				for ( int i = 0; i < 6; i++ ) {
-					_paint2x3Gradient[i] = fv[i];
-				}
-				break;
-*/
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				break;
-		}
-	}
-	
+    }
+    void MKPaint::setPaintRadialGradient( const float f[5] )
+    {
+        for ( int i = 0; i < 5; i++ ) {
+            _paintRadialGradient[i] = f[i];
+        }
 
-	
+    }
+    void MKPaint::setPaintColorRampStops( const float* f, int cnt )
+    {
+        for ( int j = 0; j < cnt/5; j++ ) {
+            Stop_t stop;
+            for ( int p = 0; p < 5; p++ ) {
+                stop.a[p] = f[(j * 5) + p];
+            }
+            _colorRampStops.push_back( stop );
+        }
+    }
 }
 
 
 ///// OpenVG API Implementation /////
 
-using namespace MonkVG;
-
-VG_API_CALL VGPaint vgCreatePaint(void) {
-	return (VGPaint)MKContext::instance().createPaint();
-}
-
-VG_API_CALL void vgDestroyPaint(VGPaint paint) {
-	MKContext::instance().destroyPaint( (MKPaint*)paint );
-}
-
-VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes) {
-	if ( paint != VG_INVALID_HANDLE && ((MKPaint*)paint)->getType() != BaseObject::kPaintType ) {
-		SetError( VG_BAD_HANDLE_ERROR );
-		return;
-	}
-	if ( !paintModes || paintModes & ~(VG_FILL_PATH | VG_STROKE_PATH) ) {
-		SetError( VG_BAD_HANDLE_ERROR );
-		return;
-	}
-	
-	// Set stroke / fill 
-	if (paintModes & VG_STROKE_PATH)
-		MKContext::instance().setStrokePaint( (MKPaint*)paint );
-	if (paintModes & VG_FILL_PATH)
-		MKContext::instance().setFillPaint( (MKPaint*)paint );
-}
-
-VG_API_CALL VGPaint vgGetPaint(VGPaintMode paintModes) {
-	if (paintModes & VG_STROKE_PATH)
-		return (VGPaint)MKContext::instance().getStrokePaint();
-	if (paintModes & VG_FILL_PATH)
-		return (VGPaint)MKContext::instance().getFillPaint();
-	SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-	return VG_INVALID_HANDLE;
-}
-
-
-VG_API_CALL void vgPaintPattern(VGPaint paint, VGImage pattern)
-{
-// todo	((SHPaint*)paint)->pattern = pattern;
-}
-
 namespace MonkVG {	// Internal Implementation
 
-    MKPaint::MKPaint()
-    :	BaseObject()
-    ,	_paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
+    MKPaint::MKPaint() :
+        _paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
     ,	_isDirty( true )
     {
         

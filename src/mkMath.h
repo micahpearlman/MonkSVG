@@ -10,13 +10,7 @@
 #ifndef __mkMath_h__
 #define __mkMath_h__
 
-#include <VG/openvg.h>
 #include <cmath>
-#include <cstdio>
-#include <stdlib.h>
-#include <iostream>
-#include <iomanip>
-#include "mkCommon.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -24,8 +18,8 @@
 
 namespace MonkVG {
 	
-	static inline VGfloat radians (VGfloat degrees) {return (VGfloat)(degrees * (M_PI/180.0f));}	
-	static inline VGfloat degrees (VGfloat radians) {return (VGfloat)(radians * (180.0f/M_PI));}
+	static inline float radians (float degrees) {return (float)(degrees * (M_PI/180.0f));}
+	static inline float degrees (float radians) {return (float)(radians * (180.0f/M_PI));}
 	
 	//	[ sx	shx	tx
 	//	 shy	sy	ty
@@ -103,18 +97,6 @@ namespace MonkVG {
         }
 		
 		
-		
-		void print() {
-			std::cout << ":: Matrix33 ::" << std::endl;
-			for( int i = 0; i < 3; i++ ) {
-				for( int p = 0; p < 3; p++ ) {
-					std::cout << std::setw(6) << std::setiosflags(std::ios::fixed) << std::setprecision(3) << mm[i][p];
-				}
-				std::cout << std::endl;
-			}
-		}
-		
-		
 		Matrix33() {
 			setIdentity();
 		}
@@ -123,11 +105,11 @@ namespace MonkVG {
 			this->copy( m );
 		}
 		
-		inline void set( int row, int col, VGfloat v ) {
+		inline void set( int row, int col, float v ) {
 			mm[row][col] = v; 
 		}
 		
-		inline VGfloat get( int row, int col ) const {
+		inline float get( int row, int col ) const {
 			return mm[row][col];
 		}
 		

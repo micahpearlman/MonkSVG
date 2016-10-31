@@ -15,11 +15,23 @@
 #include <regex>
 #include <cstring>
 
+#include "mkPath.h"
+#include "mkBatch.h"
+#include "mkMath.h"
+#include "mkPaint.h"
+#include <VG/vgext.h>
+#include <OpenGLES/ES2/gl.h>
+
 namespace MonkSVG {
-	
+    MKSVGHandler::path_object_t::~path_object_t() {
+        if (fill) delete fill;
+        if (stroke) delete stroke;
+        if (path) delete path;
+    }
+
     StyleSheet::CssDocument _styleDocument;
 	
-	bool SVG::initialize( MKSVGHandler::SmartPtr handler ) {
+	bool SVG::initialize( MKSVGHandler* handler ) {
 		_handler = handler;
 		
 		return true;
@@ -827,11 +839,6 @@ namespace MonkSVG {
         _handler->onPathClose();
 	}
     
-    MKSVGHandler::SmartPtr MKSVGHandler::create()
-    {
-        return SmartPtr(new MKSVGHandler);
-    }
-    
     MKSVGHandler::MKSVGHandler()
     :	_minX( MAXFLOAT )
     ,	_minY( MAXFLOAT )
@@ -843,10 +850,27 @@ namespace MonkSVG {
     ,	_batch( 0 )
     ,	_use_opacity( 1 )
     ,   _has_transparent_colors( false )
+
+    ,	_error( VG_NO_ERROR )
+    ,	_stroke_line_width( 1.0f )
+    ,	_stroke_paint( 0 )
+    ,	_fill_paint( 0 )
+    ,	_active_matrix( &_path_user_to_surface )
+    ,	_fill_rule( VG_EVEN_ODD )
+    ,	_renderingQuality( VG_RENDERING_QUALITY_BETTER )
+    ,	_tessellationIterations( 16 )
+    ,	_matrixMode( VG_MATRIX_PATH_USER_TO_SURFACE )
+    ,	_currentBatch( 0 )
+
     {
-        _blackBackFill = vgCreatePaint();
+        _path_user_to_surface.setIdentity();
+        _active_matrix->setIdentity();
+        
+        disableAutomaticCleanup();
+
+        _blackBackFill = createPaint();
         VGfloat fcolor[4] = { 0,0,0,1 };
-        vgSetParameterfv( _blackBackFill, VG_PAINT_COLOR, 4, &fcolor[0]);
+        _blackBackFill->setPaintColor(fcolor);
         _use_transform.setIdentity();
         
         //_root_transform.setScale( 1, -1 );
@@ -854,26 +878,18 @@ namespace MonkSVG {
     }
     
     MKSVGHandler::~MKSVGHandler() {
-        vgDestroyPaint( _blackBackFill );
-        _blackBackFill = 0;
+        delete _blackBackFill;
         
-        if( _batch ) {
-            vgDestroyBatchMNK( _batch );
-            _batch = 0;
-        }
-        
+        if( _batch ) delete _batch;
     }
     
     
     void MKSVGHandler::draw() {
-        
-        vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
-        
         // clear out the transform stack
         _transform_stack.clear();
         
         float m[9];
-        vgGetMatrix( m );
+        transform( m );
         // assume the current openvg matrix is like the camera matrix and should always be applied first
         Transform2d top;
         Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
@@ -886,72 +902,77 @@ namespace MonkSVG {
         //		pushTransform( flip );
         
         if( _batch ) {
-            vgLoadMatrix( topTransform().m );
-            vgDrawBatchMNK( _batch );
+            setTransform( topTransform().m );
+            loadGLMatrix();
+
+            _batch->draw();
         } else {
             draw_recursive( _root_group );
         }
         
-        vgLoadMatrix( m );	// restore matrix
+        setTransform( m );	// restore matrix
+        loadGLMatrix();
+
         _transform_stack.clear();
     }
     
     void MKSVGHandler::draw_recursive( group_t& group ) {
         
         // push the group matrix onto the stack
-        pushTransform( group.transform ); vgLoadMatrix( topTransform().m );
+        pushTransform( group.transform ); setTransform( topTransform().m );
         
         for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
             path_object_t& po = *it;
             uint32_t draw_params = 0;
             if ( po.fill ) {
-                vgSetPaint( po.fill, VG_FILL_PATH );
+                setFillPaint(po.fill);
                 draw_params |= VG_FILL_PATH;
             }
             
             if ( po.stroke ) {
-                vgSetPaint( po.stroke, VG_STROKE_PATH );
-                vgSetf( VG_STROKE_LINE_WIDTH, po.stroke_width );
+                setStrokePaint( po.stroke );
+                set( VG_STROKE_LINE_WIDTH, po.stroke_width );
                 draw_params |= VG_STROKE_PATH;
             }
             
             if( draw_params == 0 ) {	// if no stroke or fill use the default black fill
-                vgSetPaint( _blackBackFill, VG_FILL_PATH );
+                setFillPaint( _blackBackFill );
                 draw_params |= VG_FILL_PATH;
             }
             
             // set the fill rule
-            vgSeti( VG_FILL_RULE, po.fill_rule );
+            set( VG_FILL_RULE, po.fill_rule );
             // trasnform
-            pushTransform( po.transform );	vgLoadMatrix( topTransform().m );
-            vgDrawPath( po.path, draw_params );
-            popTransform();	vgLoadMatrix( topTransform().m );
+            pushTransform( po.transform );	setTransform( topTransform().m );
+            po.path->draw( draw_params );
+            popTransform();	setTransform( topTransform().m );
         }
         
         for ( list<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
             draw_recursive( *it );
         }
         
-        popTransform();	vgLoadMatrix( topTransform().m );
+        popTransform();	setTransform( topTransform().m );
     }
     
     void MKSVGHandler::optimize() {
         
-        if( _batch ) {
-            vgDestroyBatchMNK( _batch );
+        if( _batch )
+        {
+            delete _batch;
             _batch = 0;
         }
         // use the monkvg batch extension to greatly optimize rendering.  don't need this for
         // other OpenVG implementations
-        _batch = vgCreateBatchMNK();
+        _batch = createBatch();
         
-        vgBeginBatchMNK( _batch ); { // draw
+        startBatch( _batch ); { // draw
             
             // clear out the transform stack
             _transform_stack.clear();
             
             float m[9];
-            vgGetMatrix( m );
+            transform( m );
             // assume the current openvg matrix is like the camera matrix and should always be applied first
             Transform2d top;
             Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
@@ -965,52 +986,14 @@ namespace MonkSVG {
             
             draw_recursive( _root_group );
             
-            vgLoadMatrix( m );	// restore matrix
+            setTransform( m );	// restore matrix
             _transform_stack.clear();
             
             
-        } vgEndBatchMNK( _batch );
+        } endBatch( _batch );
         
     }
-    
-    void MKSVGHandler::dump(void **vertices, size_t *size) {
         
-        VGBatchMNK temp;
-        temp = vgCreateBatchMNK();
-        
-        vgBeginBatchMNK( temp );
-        
-        {
-            
-            // clear the transform stack
-            _transform_stack.clear();
-            
-            // save matrix
-            VGfloat m[9];
-            vgGetMatrix( m );
-            
-            // assume the current openvg matrix is like the camera matrix and should always be applied first
-            Transform2d top;
-            Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
-            pushTransform( top );
-            
-            // draw
-            draw_recursive( _root_group );
-            
-            // restore matrix
-            vgLoadMatrix( m );
-            
-            // clear the transform stack
-            _transform_stack.clear();
-            
-        }
-        
-        //TODO: vgDumpBatchMNK( temp, vertices, size );
-        vgEndBatchMNK( temp );
-        vgDestroyBatchMNK( temp );
-        
-    }
-    
     void MKSVGHandler::onGroupBegin() {
         _mode = kGroupParseMode;
         _current_group->children.push_back( group_t() );
@@ -1028,7 +1011,7 @@ namespace MonkSVG {
     void MKSVGHandler::onPathBegin() {
         _mode = kPathParseMode;
         _current_group->current_path = new path_object_t();
-        _current_group->current_path->path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,
+        _current_group->current_path->path = createPath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,
                                                           1,0,0,0, VG_PATH_CAPABILITY_ALL);
         // inherit group settings
         _current_group->current_path->fill			= _current_group->fill;
@@ -1067,14 +1050,14 @@ namespace MonkSVG {
         VGfloat data[2];
         
         data[0] = x; data[1] = y;
-        vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
+        _current_group->current_path->path->appendData( 1, &seg, data );
         
     }
     
     void MKSVGHandler::onPathClose(){
         VGubyte seg = VG_CLOSE_PATH;
         VGfloat data = 0.0f;
-        vgAppendPathData( _current_group->current_path->path, 1, &seg, &data );
+        _current_group->current_path->path->appendData( 1, &seg, &data );
         
     }
     void MKSVGHandler::onPathLineTo( float x, float y ) {
@@ -1082,7 +1065,7 @@ namespace MonkSVG {
         VGfloat data[2];
         
         data[0] = x; data[1] = y;
-        vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
+        _current_group->current_path->path->appendData( 1, &seg, data );
         
     }
     
@@ -1090,14 +1073,14 @@ namespace MonkSVG {
         VGubyte seg = VG_HLINE_TO | openVGRelative();
         VGfloat data[1];
         data[0] = x;
-        vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
+        _current_group->current_path->path->appendData( 1, &seg, data );
         
     }
     void MKSVGHandler::onPathVerticalLine( float y ) {
         VGubyte seg = VG_VLINE_TO | openVGRelative();
         VGfloat data[1];
         data[0] = y;
-        vgAppendPathData( _current_group->current_path->path, 1, &seg, data );
+        _current_group->current_path->path->appendData( 1, &seg, data );
         
     }
     
@@ -1108,7 +1091,7 @@ namespace MonkSVG {
         data[0] = x1; data[1] = y1;
         data[2] = x2; data[3] = y2;
         data[4] = x3; data[5] = y3;
-        vgAppendPathData( _current_group->current_path->path, 1, &seg, data);
+        _current_group->current_path->path->appendData( 1, &seg, data);
         
     }
     
@@ -1118,7 +1101,7 @@ namespace MonkSVG {
         
         data[0] = x2; data[1] = y2;
         data[2] = x3; data[3] = y3;
-        vgAppendPathData( _current_group->current_path->path, 1, &seg, data);
+        _current_group->current_path->path->appendData( 1, &seg, data);
         
     }
     
@@ -1127,7 +1110,7 @@ namespace MonkSVG {
         VGfloat data[4];
         data[0] = x1; data[1] = y1;
         data[2] = x2; data[3] = y2;
-        vgAppendPathData(_current_group->current_path->path, 1, &seg, data);
+        _current_group->current_path->path->appendData( 1, &seg, data);
     }
     
     void MKSVGHandler::onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {
@@ -1157,31 +1140,31 @@ namespace MonkSVG {
         data[3] = x;
         data[4] = y;
         
-        vgAppendPathData( _current_group->current_path->path, 1, &seg, data);
+        _current_group->current_path->path->appendData( 1, &seg, data);
         
     }
     
     void MKSVGHandler::onPathRect( float x, float y, float w, float h ) {
-        vguRect( _current_group->current_path->path, x, y, w, h );
+        _current_group->current_path->path->vguRect( x, y, w, h );
     }
     
     
     void MKSVGHandler::onPathFillColor( unsigned int color ) {
         if( _mode == kGroupParseMode ) {
-            _current_group->fill = vgCreatePaint();
+            _current_group->fill = createPaint();
             VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f,
                 VGfloat( (color & 0x00ff0000) >> 16)/255.0f,
                 VGfloat( (color & 0x0000ff00) >> 8)/255.0f,
                 _use_opacity };
-            vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->fill->setPaintColor(fcolor);
             
         } else {
-            _current_group->current_path->fill = vgCreatePaint();
+            _current_group->current_path->fill = createPaint();
             VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f,
                 VGfloat( (color & 0x00ff0000) >> 16)/255.0f,
                 VGfloat( (color & 0x0000ff00) >> 8)/255.0f,
                 _use_opacity  };
-            vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->current_path->fill->setPaintColor(fcolor);
         }
     }
     
@@ -1189,37 +1172,37 @@ namespace MonkSVG {
         VGfloat fcolor[4];
         if( _mode == kGroupParseMode ) {
             if( _current_group->fill == 0 ) {	// if no fill create a black fill
-                _current_group->fill = vgCreatePaint();
+                _current_group->fill = createPaint();
                 VGfloat fcolor[4] = { 0,0,0,1 };
-                vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+                _current_group->fill->setPaintColor(fcolor);
             }
-            vgGetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
+            _current_group->fill->getPaintColor( &fcolor[0] );
             // set the opacity
             fcolor[3] = o;
-            vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->fill->setPaintColor(fcolor);
             
         } else if( _mode == kPathParseMode ) {
             if( _current_group->current_path->fill == 0 ) {	// if no fill create a black fill
-                _current_group->current_path->fill = vgCreatePaint();
+                _current_group->current_path->fill = createPaint();
                 VGfloat fcolor[4] = { 0,0,0,1 };
-                vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+                _current_group->fill->setPaintColor(fcolor);
             }
             
-            vgGetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
+            _current_group->current_path->fill->getPaintColor( &fcolor[0] );
             // set the opacity
             fcolor[3] = o;
-            vgSetParameterfv( _current_group->current_path->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->current_path->fill->setPaintColor(fcolor);
         } else if( _mode == kUseParseMode ) {
             _use_opacity = o;
             if( _current_group->fill == 0 ) {	// if no fill create a black fill
-                _current_group->fill = vgCreatePaint();
+                _current_group->fill = createPaint();
                 VGfloat fcolor[4] = { 0,0,0,1 };
-                vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+                _current_group->fill->setPaintColor(fcolor);
             }
-            vgGetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0] );
+            _current_group->fill->getPaintColor( &fcolor[0] );
             // set the opacity
             fcolor[3] = o;
-            vgSetParameterfv( _current_group->fill, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->fill->setPaintColor(fcolor);
             _use_opacity = o;
             
         }
@@ -1227,34 +1210,34 @@ namespace MonkSVG {
     }
     void MKSVGHandler::onPathStrokeColor( unsigned int color ) {
         if( _mode == kGroupParseMode ) {
-            _current_group->stroke = vgCreatePaint();
+            _current_group->stroke = createPaint();
             VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f,
                 VGfloat( (color & 0x00ff0000) >> 16)/255.0f,
                 VGfloat( (color & 0x0000ff00) >> 8)/255.0f,
                 _use_opacity };
-            vgSetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->stroke->setPaintColor(fcolor);
         } else {
-            _current_group->current_path->stroke = vgCreatePaint();
+            _current_group->current_path->stroke = createPaint();
             VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f,
                 VGfloat( (color & 0x00ff0000) >> 16)/255.0f,
                 VGfloat( (color & 0x0000ff00) >> 8)/255.0f,
                 _use_opacity };
-            vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->current_path->stroke->setPaintColor(fcolor);
         }
     }
     void MKSVGHandler::onPathStrokeOpacity( float o ) {
         VGfloat fcolor[4];
         if( _mode == kGroupParseMode ) {
-            vgGetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0] );
+            _current_group->stroke->getPaintColor( &fcolor[0] );
             // set the opacity
             fcolor[3] = o;
-            vgSetParameterfv( _current_group->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->stroke->setPaintColor(fcolor);
             
         } else {
-            vgGetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0] );
+            _current_group->current_path->stroke->getPaintColor( &fcolor[0] );
             // set the opacity
             fcolor[3] = o;
-            vgSetParameterfv( _current_group->current_path->stroke, VG_PAINT_COLOR, 4, &fcolor[0]);
+            _current_group->current_path->stroke->setPaintColor(fcolor);
         }
         _has_transparent_colors = _has_transparent_colors || (o < 1.0f);
     }
@@ -1337,4 +1320,358 @@ namespace MonkSVG {
         _use_transform.setIdentity();
         _use_opacity = 1.0;
     }
-};
+
+    
+    //// parameters ////
+    void MKSVGHandler::set( VGuint type, VGfloat f ) {
+        switch ( type ) {
+            case VG_STROKE_LINE_WIDTH:
+                setStrokeLineWidth( f );
+                break;
+            default:
+                assert(false);
+                break;
+        }
+    }
+    
+    void MKSVGHandler::set( VGuint type, VGint i ) {
+        
+        switch ( type ) {
+            case VG_FILL_RULE:
+                setFillRule( (VGFillRule)i );
+                break;
+            case VG_TESSELLATION_ITERATIONS_MNK:
+                setTessellationIterations( i );
+                break;
+            default:
+                assert(false);
+                break;
+        }
+        
+    }
+    void MKSVGHandler::get( VGuint type, VGfloat &f ) const {
+        switch ( type ) {
+            case VG_STROKE_LINE_WIDTH:
+                f = getStrokeLineWidth();
+                break;
+            default:
+                break;
+        }
+    }
+    void MKSVGHandler::get( VGuint type, VGint& i ) const {
+        i = -1;
+        
+        switch ( type ) {
+            case VG_FILL_RULE:
+                i =  getFillRule( );
+                break;
+            case VG_TESSELLATION_ITERATIONS_MNK:
+                i = getTessellationIterations( );
+                break;
+            case VG_SURFACE_WIDTH_MNK:
+                i = getWidth();
+                break;
+            case VG_SURFACE_HEIGHT_MNK:
+                i = getHeight();
+                break;
+                
+            default:
+                break;
+        }
+    }
+}
+
+#include "mkPath.h"
+#include "mkPaint.h"
+#include "mkBatch.h"
+
+
+namespace MonkSVG {
+    void MKSVGHandler::checkGLError() {
+        
+        int err = glGetError();
+        
+        
+        const char* RVAL = "GL_UNKNOWN_ERROR";
+        
+        switch( err )
+        {
+            case GL_NO_ERROR:
+                RVAL =  "GL_NO_ERROR";
+                break;
+            case GL_INVALID_ENUM:
+                RVAL =  "GL_INVALID_ENUM";
+                break;
+            case GL_INVALID_VALUE:
+                RVAL =  "GL_INVALID_VALUE";
+                break;
+            case GL_INVALID_OPERATION:
+                RVAL = "GL_INVALID_OPERATION";
+                break;
+            case GL_OUT_OF_MEMORY:
+                RVAL =  "GL_OUT_OF_MEMORY";
+                break;
+            default:
+                break;
+        }
+        
+        if( err != GL_NO_ERROR ) {
+            printf("GL_ERROR: %s\n", RVAL );
+            assert(false);
+        }
+    }
+    
+    bool MKSVGHandler::Initialize() {
+        glGetIntegerv(GL_VIEWPORT, _viewport);
+        resize();
+        glDisable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_DEPTH_TEST);
+        
+        return true;
+    }
+    
+    void MKSVGHandler::resize() {
+        // setup GL projection
+        glViewport(0,0, _width, _height);
+    }
+    
+    
+    bool MKSVGHandler::Terminate() {
+        _stroke_paint = NULL;
+        _fill_paint = NULL;
+        return true;
+    }
+    
+    
+    void MKSVGHandler::beginRender() {
+    }
+    void MKSVGHandler::endRender() {
+    }
+    
+    
+    /// factories
+    
+    MKPath* MKSVGHandler::createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {
+        
+        MKPath *path = new MKPath(this, pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL);
+        assert( path );
+        return (MKPath*)path;
+    }
+    
+    MKPaint* MKSVGHandler::createPaint() {
+        MKPaint *paint = new MKPaint();
+        assert( paint );
+        return (MKPaint*)paint;
+    }
+    
+    MKBatch* MKSVGHandler::createBatch() {
+        MKBatch *batch = new MKBatch(this);
+        assert( batch );
+        return (MKBatch*)batch;
+    }
+    
+    /// state
+    void MKSVGHandler::setStrokePaint( MKPaint* paint ) {
+        if ( paint != _stroke_paint ) {
+            _stroke_paint = paint;
+            MKPaint* glPaint = (MKPaint*)_stroke_paint;
+            //glPaint->setGLState();
+            if (glPaint)
+                glPaint->setIsDirty( true );
+        }
+    }
+    
+    void MKSVGHandler::setFillPaint( MKPaint* paint ) {
+        if ( paint != _fill_paint ) {
+            _fill_paint = paint;
+            MKPaint* glPaint = (MKPaint*)_fill_paint;
+            //glPaint->setGLState();
+            if (glPaint)
+                glPaint->setIsDirty( true );
+        }
+        
+    }
+    
+    
+    void MKSVGHandler::stroke() {
+        if ( _stroke_paint ) {
+            MKPaint* glPaint = (MKPaint*)_stroke_paint;
+            glPaint->setGLState();
+            glPaint->setIsDirty( false );
+            // set the fill paint to dirty
+            if ( _fill_paint ) {
+                glPaint = (MKPaint*)_fill_paint;
+                glPaint->setIsDirty( true );
+            }
+        }
+    }
+    
+    void MKSVGHandler::fill() {
+        
+        if ( _fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR ) {
+            MKPaint* glPaint = (MKPaint*)_fill_paint;
+            glPaint->setGLState();
+            glPaint->setIsDirty( false );
+            // set the stroke paint to dirty
+            if ( _stroke_paint ) {
+                glPaint = (MKPaint*)_stroke_paint;
+                glPaint->setIsDirty( true );
+            }
+        }
+    }
+    
+    void MKSVGHandler::startBatch( MKBatch* batch ) {
+        assert( _currentBatch == 0 );	// can't have multiple batches going on at once
+        _currentBatch = batch;
+    }
+    void MKSVGHandler::endBatch( MKBatch* batch ) {
+        _currentBatch->finalize();
+        _currentBatch = 0;
+    }
+    
+    
+    void MKSVGHandler::clear(VGint x, VGint y, VGint width, VGint height) {
+        // TODO:
+    }
+    
+    void MKSVGHandler::loadGLMatrix() {
+        Matrix33& active = *getActiveMatrix();
+         GLfloat mat44[4][4];
+         for( int x = 0; x < 4; x++ )
+         for( int y = 0; y < 4; y++ )
+         mat44[x][y] = 0;
+         mat44[0][0] = 1.0f;
+         mat44[1][1] = 1.0f;
+         mat44[2][2] = 1.0f;
+         mat44[3][3]	= 1.0f;
+         
+        
+         //		a, c, e,			// cos(a) -sin(a) tx
+         //		b, d, f,			// sin(a) cos(a)  ty
+         //		ff0, ff1, ff2;		// 0      0       1
+         
+         mat44[0][0] = active.a;	mat44[0][1] = active.b;
+         mat44[1][0] = active.c;	mat44[1][1] = active.d;
+         mat44[3][0] = active.e;	mat44[3][1] = active.f;
+// TODO send as uniform to shader         glLoadMatrixf( &mat44[0][0] );
+    }
+    
+    
+    
+    void MKSVGHandler::setIdentity() {
+        Matrix33* active = getActiveMatrix();
+        active->setIdentity();
+    }
+    
+    void MKSVGHandler::transform( VGfloat* t ) {
+        // a	b	0
+        // c	d	0
+        // tx	ty	1
+        Matrix33* active = getActiveMatrix();
+        for( int i = 0; i < 9; i++ )
+            t[i] = active->m[i];
+        
+    }
+    
+    void MKSVGHandler::setTransform( const VGfloat* t )  {
+        //	OpenVG:
+        //	sh	shx	tx
+        //	shy	sy	ty
+        //	0	0	1
+        //
+        // OpenGL
+        // a	b	0
+        // c	d	0
+        // tx	ty	1
+        
+        Matrix33* active = getActiveMatrix();
+        for( int i = 0; i < 9; i++ )
+            active->m[i] = t[i];
+    }
+    
+    
+    void MKSVGHandler::multiply( const VGfloat* t ) {
+        Matrix33 m;
+        for ( int x = 0; x < 3; x++ ) {
+            for ( int y = 0; y < 3; y++ ) {
+                m.set( y, x, t[(y*3)+x] );
+            }
+        }
+        Matrix33* active = getActiveMatrix();
+        active->postMultiply( m );
+    }
+    
+    void MKSVGHandler::scale( VGfloat sx, VGfloat sy ) {
+        Matrix33* active = getActiveMatrix();
+        Matrix33 scale;
+        scale.setIdentity();
+        scale.setScale( sx, sy );
+        Matrix33 tmp;
+        Matrix33::multiply( tmp, scale, *active );
+        active->copy( tmp );
+    }
+    void MKSVGHandler::translate( VGfloat x, VGfloat y ) {
+        
+        Matrix33* active = getActiveMatrix();
+        Matrix33 translate;
+        translate.setTranslate( x, y );
+        Matrix33 tmp;
+        tmp.setIdentity();
+        Matrix33::multiply( tmp, translate, *active );
+        active->copy( tmp );
+    }
+    float MKSVGHandler::angle()
+    {
+        Matrix33* active = getActiveMatrix();
+        
+        return active->angle();
+    }
+    
+    void MKSVGHandler::rotate( VGfloat angle ) {
+        Matrix33* active = getActiveMatrix();
+        Matrix33 rotate;
+        rotate.setRotation( radians( angle ) );
+        Matrix33 tmp;
+        tmp.setIdentity();
+        Matrix33::multiply( tmp, rotate, *active );
+        active->copy( tmp );
+    }
+    
+    void MKSVGHandler::rotate(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) {
+        
+        translate(x, y);
+        rotate(angle);
+        
+    }
+}
+
+SakaSVG::SakaSVG(float width, float height, const char* const svgFile)
+{
+    handler.setWidth( width );
+    handler.setHeight( height );
+    handler.Initialize();
+    
+    MonkSVG::SVG svg_parser;
+    svg_parser.initialize( &handler );
+    svg_parser.read( svgFile );
+    
+    handler.optimize();
+}
+SakaSVG::~SakaSVG()
+{
+    handler.Terminate();
+}
+void SakaSVG::resize(float width, float height)
+{
+    handler.setWidth(width);
+    handler.setHeight(height);
+    handler.resize();
+}
+void SakaSVG::draw()
+{
+    handler.draw();
+}
+

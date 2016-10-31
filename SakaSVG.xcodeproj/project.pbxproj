@@ -7,19 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9649536B1DC2E0E700838988 /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9649535B1DC2E0E700838988 /* mkBaseObject.cpp */; };
 		9649536C1DC2E0E700838988 /* mkBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9649535D1DC2E0E700838988 /* mkBatch.cpp */; };
-		9649536D1DC2E0E700838988 /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953601DC2E0E700838988 /* mkContext.cpp */; };
-		9649536E1DC2E0E700838988 /* mkMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953621DC2E0E700838988 /* mkMath.cpp */; };
 		9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953641DC2E0E700838988 /* mkPaint.cpp */; };
-		964953701DC2E0E700838988 /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953661DC2E0E700838988 /* mkParameter.cpp */; };
 		964953711DC2E0E700838988 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953671DC2E0E700838988 /* mkPath.cpp */; };
-		964953721DC2E0E700838988 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953691DC2E0E700838988 /* mkVGU.cpp */; };
 		96874F391DC7ABE4002B18FE /* libcpp_btree.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96BB2E041DC4FB41003079AC /* libcpp_btree.a */; };
 		96874F3A1DC7ABE4002B18FE /* libOpenVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87D51D71CE87006528A1 /* libOpenVG.a */; };
 		96874F3B1DC7ABE4002B18FE /* libStyleSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87DB1D71CE93006528A1 /* libStyleSheet.a */; };
 		96874F3C1DC7ABE4002B18FE /* libTess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96BB2E0A1DC4FB57003079AC /* libTess2.a */; };
 		96874F3D1DC7ABE4002B18FE /* libtinyxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87E71D71CF0F006528A1 /* libtinyxml2.a */; };
+		96874F3F1DC7BC21002B18FE /* mkMath.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96874F3E1DC7BBEA002B18FE /* mkMath.h */; };
 		96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043C1D6A11F20081408C /* mkSVG.h */; };
 		96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043D1D6A11F20081408C /* mkTransform2d.h */; };
 		96F7043E1D6A11F20081408C /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96F7043B1D6A11F20081408C /* mkSVG.cpp */; };
@@ -105,6 +101,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				96874F3F1DC7BC21002B18FE /* mkMath.h in CopyFiles */,
 				96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */,
 				96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */,
 			);
@@ -113,24 +110,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		964953591DC2E0E700838988 /* glPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glPlatform.h; path = src/glPlatform.h; sourceTree = "<group>"; };
 		9649535A1DC2E0E700838988 /* math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = math.hpp; path = src/math.hpp; sourceTree = "<group>"; };
-		9649535B1DC2E0E700838988 /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBaseObject.cpp; path = src/mkBaseObject.cpp; sourceTree = "<group>"; };
-		9649535C1DC2E0E700838988 /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBaseObject.h; path = src/mkBaseObject.h; sourceTree = "<group>"; };
 		9649535D1DC2E0E700838988 /* mkBatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBatch.cpp; path = src/mkBatch.cpp; sourceTree = "<group>"; };
 		9649535E1DC2E0E700838988 /* mkBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBatch.h; path = src/mkBatch.h; sourceTree = "<group>"; };
-		9649535F1DC2E0E700838988 /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkCommon.h; path = src/mkCommon.h; sourceTree = "<group>"; };
-		964953601DC2E0E700838988 /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkContext.cpp; path = src/mkContext.cpp; sourceTree = "<group>"; };
-		964953611DC2E0E700838988 /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkContext.h; path = src/mkContext.h; sourceTree = "<group>"; };
-		964953621DC2E0E700838988 /* mkMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkMath.cpp; path = src/mkMath.cpp; sourceTree = "<group>"; };
-		964953631DC2E0E700838988 /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkMath.h; path = src/mkMath.h; sourceTree = "<group>"; };
 		964953641DC2E0E700838988 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPaint.cpp; path = src/mkPaint.cpp; sourceTree = "<group>"; };
 		964953651DC2E0E700838988 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPaint.h; path = src/mkPaint.h; sourceTree = "<group>"; };
-		964953661DC2E0E700838988 /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkParameter.cpp; path = src/mkParameter.cpp; sourceTree = "<group>"; };
 		964953671DC2E0E700838988 /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = src/mkPath.cpp; sourceTree = "<group>"; };
 		964953681DC2E0E700838988 /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = src/mkPath.h; sourceTree = "<group>"; };
-		964953691DC2E0E700838988 /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkVGU.cpp; path = src/mkVGU.cpp; sourceTree = "<group>"; };
 		9649536A1DC2E0E700838988 /* vec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vec.hpp; path = src/vec.hpp; sourceTree = "<group>"; };
+		96874F3E1DC7BBEA002B18FE /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkMath.h; path = src/mkMath.h; sourceTree = "<group>"; };
 		96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "thirdparty/cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
 		96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess2.xcodeproj; path = thirdparty/libtess2/Tess2.xcodeproj; sourceTree = "<group>"; };
 		96F7042F1D69D4490081408C /* libSakaSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSakaSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,23 +149,13 @@
 		964953581DC2E0B600838988 /* MonkVG */ = {
 			isa = PBXGroup;
 			children = (
-				964953591DC2E0E700838988 /* glPlatform.h */,
 				9649535A1DC2E0E700838988 /* math.hpp */,
-				9649535B1DC2E0E700838988 /* mkBaseObject.cpp */,
-				9649535C1DC2E0E700838988 /* mkBaseObject.h */,
 				9649535D1DC2E0E700838988 /* mkBatch.cpp */,
 				9649535E1DC2E0E700838988 /* mkBatch.h */,
-				9649535F1DC2E0E700838988 /* mkCommon.h */,
-				964953601DC2E0E700838988 /* mkContext.cpp */,
-				964953611DC2E0E700838988 /* mkContext.h */,
-				964953621DC2E0E700838988 /* mkMath.cpp */,
-				964953631DC2E0E700838988 /* mkMath.h */,
 				964953641DC2E0E700838988 /* mkPaint.cpp */,
 				964953651DC2E0E700838988 /* mkPaint.h */,
-				964953661DC2E0E700838988 /* mkParameter.cpp */,
 				964953671DC2E0E700838988 /* mkPath.cpp */,
 				964953681DC2E0E700838988 /* mkPath.h */,
-				964953691DC2E0E700838988 /* mkVGU.cpp */,
 				9649536A1DC2E0E700838988 /* vec.hpp */,
 			);
 			path = MonkVG;
@@ -220,6 +198,7 @@
 		96FA87CE1D71CE36006528A1 /* SakaSVG */ = {
 			isa = PBXGroup;
 			children = (
+				96874F3E1DC7BBEA002B18FE /* mkMath.h */,
 				96F7043B1D6A11F20081408C /* mkSVG.cpp */,
 				96F7043C1D6A11F20081408C /* mkSVG.h */,
 				96F7043D1D6A11F20081408C /* mkTransform2d.h */,
@@ -388,12 +367,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				964953711DC2E0E700838988 /* mkPath.cpp in Sources */,
-				9649536D1DC2E0E700838988 /* mkContext.cpp in Sources */,
-				964953701DC2E0E700838988 /* mkParameter.cpp in Sources */,
 				96F7043E1D6A11F20081408C /* mkSVG.cpp in Sources */,
-				9649536B1DC2E0E700838988 /* mkBaseObject.cpp in Sources */,
-				9649536E1DC2E0E700838988 /* mkMath.cpp in Sources */,
-				964953721DC2E0E700838988 /* mkVGU.cpp in Sources */,
 				9649536C1DC2E0E700838988 /* mkBatch.cpp in Sources */,
 				9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */,
 			);

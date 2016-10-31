@@ -7,11 +7,11 @@
 //
 
 #include "mkBatch.h"
-#include "mkContext.h"
 #include <set>
 #include <unordered_map>
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
+#include <tess2/tesselator.h>
 
 
 namespace MonkVG {
@@ -47,96 +47,16 @@ template <> struct std::hash<MonkVG::vertexData_t>
     }
 };
 
-
-namespace MonkVG {	// Internal Implementation
-	VGint MKBatch::getParameteri( const VGint p ) const {
-		switch (p) {
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				return -1;	//todo: set error
-				break;
-		}
-	}
-	
-	VGfloat MKBatch::getParameterf( const VGint p ) const {
-		switch (p) {
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				return -1;	//todo: set error
-				break;
-		}
-	}
-	
-	void MKBatch::getParameterfv( const VGint p, VGfloat *fv ) const {
-		switch (p) {
-				
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				break;
-		}
-		
-	}
-	
-	void MKBatch::setParameter( const VGint p, const VGint v ) {
-		switch (p) {
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				break;
-		}
-	}
-	
-	void MKBatch::setParameter( const VGint p, const VGfloat v ) 
-	{
-		switch (p) {
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				break;
-		}
-	}
-	
-	void MKBatch::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
-		switch (p) {
-				
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				break;
-		}
-	}
-	
-	
-	
-}
-
-
-///// OpenVG API Implementation /////
-
-using namespace MonkVG;
-
-VG_API_CALL VGBatchMNK VG_API_ENTRY vgCreateBatchMNK() VG_API_EXIT {
-	return (VGBatchMNK)MKContext::instance().createBatch();
-}
-
-VG_API_CALL void VG_API_ENTRY vgDestroyBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
-	MKContext::instance().destroyBatch( (MKBatch*)batch );
-}
-VG_API_CALL void VG_API_ENTRY vgBeginBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
-	MKContext::instance().startBatch( (MKBatch*)batch );	
-}
-VG_API_CALL void VG_API_ENTRY vgEndBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
-	MKContext::instance().endBatch( (MKBatch*)batch );	
-}
-VG_API_CALL void VG_API_ENTRY vgDrawBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
-	((MKBatch*)batch)->draw();
-}
-
 #include <cstring> // for std::memcpy
 #include <deque>
-#include "mkContext.h"
+#include "mkMath.h"
+#include "mkSVG.h"
+#include "mkPaint.h"
 
 namespace MonkVG {
     
-    MKBatch::MKBatch() :
-        BaseObject()
+    MKBatch::MKBatch(MonkSVG::MKSVGHandler* h) :
+        _handler(h)
     ,   _vao(-1)
     ,	_vbo(-1)
     ,   _ebo(-1)
@@ -309,13 +229,13 @@ namespace MonkVG {
     void MKBatch::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, VGbitfield paintModes ) {
         
         // get the current transform
-        Matrix33& transform = *MKContext::instance().getActiveMatrix();
+        const Matrix33& transform = *_handler->getActiveMatrix();
         int32_t v[6];
         
         //printf("Adding %d fill %d stroke\n", (int)fillVertCnt, (int)strokeVertCnt);
         if ( paintModes & VG_FILL_PATH) {
             // get the paint color
-            MKPaint* paint = MKContext::instance().getFillPaint();
+            MKPaint* paint = _handler->getFillPaint();
             const VGfloat* fc = paint->getPaintColor();
             
             const GLuint color =
@@ -344,7 +264,7 @@ namespace MonkVG {
         
         if ( paintModes & VG_STROKE_PATH) {
             // get the paint color
-            MKPaint* paint = MKContext::instance().getStrokePaint();
+            MKPaint* paint = _handler->getStrokePaint();
             const VGfloat* fc = paint->getPaintColor();
             
             const GLuint color =
@@ -471,8 +391,7 @@ namespace MonkVG {
     
     void MKBatch::draw() {
         // get the native OpenGL context
-        MKContext& glContext = (MonkVG::MKContext&)MKContext::instance();
-        glContext.beginRender();
+        _handler->beginRender();
 
         glBindVertexArrayOES(_vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
@@ -493,7 +412,7 @@ namespace MonkVG {
         GL->glDrawArrays( GL_TRIANGLES, 0, (GLsizei)_vertexCount );
         GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
 */       
-        glContext.endRender();
+        _handler->endRender();
     }
     
     void MKBatch::reset()

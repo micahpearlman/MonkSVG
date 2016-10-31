@@ -10,28 +10,29 @@
 #ifndef __mkPath_h__
 #define __mkPath_h__
 
-#include "mkBaseObject.h"
 #include "mkMath.h"
 
 #include <vector>
-#include "glPlatform.h"
 #include "mkPaint.h"
 #include <list>
 #include <vector>
 #include "vec.hpp"
 #include "math.hpp"
 #include <Tess2/tesselator.h>
+#include <VG/vgu.h>
+#include <OpenGLES/ES2/gl.h>
+
+
+namespace MonkSVG {
+    class MKSVGHandler;
+}
 
 namespace MonkVG {
 	
-	class MKPath : public BaseObject {
+	class MKPath {
 	public:
         void clear( VGbitfield caps );
 
-		inline BaseObject::Type getType() const {
-			return BaseObject::kPathType;
-		}
-		
 		inline VGint getFormat() const {
 			return _format;
 		}
@@ -131,14 +132,6 @@ namespace MonkVG {
 			return _height;
 		}
 		
-		//// parameter accessors/mutators ////
-		virtual VGint getParameteri( const VGint p ) const;
-		virtual VGfloat getParameterf( const VGint f ) const;
-		virtual void getParameterfv( const VGint p, VGfloat *fv ) const;
-		virtual void setParameter( const VGint p, const VGfloat f );
-		virtual void setParameter( const VGint p, const VGint i );
-		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
-		
 		//// internal data manipulators ////
         bool draw( VGbitfield paintModes );
 		void appendData( const VGint numSegments, const VGubyte * pathSegments, const void * pathData ) ;
@@ -147,8 +140,9 @@ namespace MonkVG {
 		void buildFillIfDirty();
 		
 
-		MKPath( VGint f, VGPathDatatype dt, VGfloat s, VGfloat b, VGint ns, VGint nc, VGbitfield cap )
-		:	_format( f )
+        MKPath( MonkSVG::MKSVGHandler* h, VGint f, VGPathDatatype dt, VGfloat s, VGfloat b, VGint ns, VGint nc, VGbitfield cap )
+		:   _handler(h)
+        ,   _format( f )
 		,	_datatype( dt )
 		,	_scale( s )
 		,	_bias( b )
@@ -177,6 +171,21 @@ namespace MonkVG {
 		}
 		
         ~MKPath();
+        
+        
+    public:
+        //
+        // From mkVGU.cpp
+        // ==============
+        //
+        void append(int numSegments, const VGubyte* segments, int numCoordinates, const VGfloat* coordinates);
+        void vguLine(VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1);
+        void vguPolygon(const VGfloat * points, VGint count, VGboolean closed);
+        void vguRect(VGfloat x, VGfloat y, VGfloat width, VGfloat height);
+        void vguEllipse(VGfloat cx, VGfloat cy, VGfloat width, VGfloat height);
+        void vguRoundRect(VGfloat x, VGfloat y, VGfloat width, VGfloat height, VGfloat arcWidth, VGfloat arcHeight);
+        void vguArc(VGfloat x, VGfloat y, VGfloat width, VGfloat height, VGfloat startAngle, VGfloat angleExtent, VGUArcType arcType);
+
 		
 	protected:
 
@@ -205,10 +214,11 @@ namespace MonkVG {
         VGCapStyle  _capStyle;
 
     private:
+        MonkSVG::MKSVGHandler* _handler;
         
         typedef vec2<GLfloat> v2_t;
         
-        typedef vec3<GLdouble> v3_t;
+        typedef vec3<float> v3_t;
         
         struct textured_vertex_t {
             GLfloat		v[2];
@@ -242,7 +252,7 @@ namespace MonkVG {
             _primType = t;
         }
         
-        GLdouble* tessVerticesBackPtr() {
+        float* tessVerticesBackPtr() {
             return &(_tessVertices.back().x);
         }
         
@@ -253,7 +263,7 @@ namespace MonkVG {
             _height = std::max(_height, y);
         }
         
-        void addVertex( GLdouble* v ) {
+        void addVertex( float* v ) {
             VGfloat x = (VGfloat)v[0];
             VGfloat y = (VGfloat)v[1];
             updateBounds(x, y);
@@ -261,7 +271,7 @@ namespace MonkVG {
             _vertices.push_back(y);
         }
         
-        GLdouble * addTessVertex( const v3_t & v ) {
+        float * addTessVertex( const v3_t & v ) {
             //updateBounds(v.x, v.y);
             _tessVertices.push_back( v );
             return tessVerticesBackPtr();

@@ -9,37 +9,30 @@
 #define __mkBatch_h__
 
 #include <stdlib.h>
-#include "mkBaseObject.h"
-#include "glPlatform.h"
-
+#include <OpenGLES/ES2/gl.h>
+#include <VG/openvg.h>
 #include <cpp_btree/btree_map.h>
 #include <map>
 #include <deque>
 
+namespace MonkSVG {
+    class MKSVGHandler;
+}
+
 namespace MonkVG {
-	class MKBatch : public BaseObject {
+	class MKBatch {
 	public:
-        MKBatch();
+        MKBatch(MonkSVG::MKSVGHandler* handler);
         ~MKBatch();
         
-		inline BaseObject::Type getType() const {
-			return BaseObject::kBatchType;
-		}
-		
-		//// parameter accessors/mutators ////
-		virtual VGint getParameteri( const VGint p ) const;
-		virtual VGfloat getParameterf( const VGint f ) const;
-		virtual void getParameterfv( const VGint p, VGfloat *fv ) const;
-		virtual void setParameter( const VGint p, const VGfloat f );
-		virtual void setParameter( const VGint p, const VGint i );
-		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
-		
         void draw();
         void finalize();
         
         void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, VGbitfield paintModes );
         
     private:
+        MonkSVG::MKSVGHandler* _handler;
+        
         GLuint _vao;
         GLuint _vbo;
         GLuint _ebo;

@@ -8,7 +8,8 @@
  */
 
 #include "mkPath.h"
-#include "mkContext.h"
+#include "mkSVG.h"
+#include <VG/vgext.h>
 #include <cassert>
 
 namespace MonkVG {	// Internal Implementation
@@ -54,223 +55,7 @@ namespace MonkVG {	// Internal Implementation
 		*_fcoords = *src._fcoords;
 	}
 	
-	VGint MKPath::getParameteri( const VGint p ) const {
-		switch (p) {
-			case VG_PATH_FORMAT:
-				return getFormat();
-			case VG_PATH_DATATYPE:
-				return getDataType();
-			case VG_PATH_NUM_SEGMENTS:
-				return getNumSegments();
-			case VG_PATH_NUM_COORDS:
-				return getNumCoords();
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				return -1;	
-				break;
-		}
-	}
-	
-	VGfloat MKPath::getParameterf( const VGint p ) const {
-		switch (p) {
-			case VG_PATH_SCALE:
-				return getScale();
-				break;
-			case VG_PATH_BIAS:
-				return getBias();
-				break;
-			default:
-				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-				return -1;	
-				break;
-		}
-	}
-	
-	void MKPath::getParameterfv( const VGint p, VGfloat *fv ) const {
-		SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-	}
-
-	
-	void MKPath::setParameter( const VGint p, const VGint v ) {
-		switch (p) {
-			case VG_PATH_FORMAT:
-				setFormat( v );
-				break;
-			case VG_PATH_DATATYPE:
-				setDataType( static_cast<VGPathDatatype>( v ) );
-				break;
-			case VG_PATH_NUM_SEGMENTS:
-				setNumSegments( v );
-				break;
-			case VG_PATH_NUM_COORDS:
-				setNumCoords( v );
-				break;
-			default:
-				break;
-		}
-	}
-	
-	void MKPath::setParameter( const VGint p, const VGfloat v ) 
-	{
-		switch (p) {
-			case VG_PATH_SCALE:
-				setScale( v );
-				break;
-			case VG_PATH_BIAS:
-				setBias( v );
-				break;
-			default:
-				break;
-		}
-	}
-	
-	void MKPath::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
-		SetError( VG_ILLEGAL_ARGUMENT_ERROR );
-	}
-	
-	
 }
-
-
-///// OpenVG API Implementation /////
-
-using namespace MonkVG;
-
-VG_API_CALL VGPath vgCreatePath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {
-	MKPath* path = MKContext::instance().createPath( pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL );
-	
-	return (VGPath)path;
-}
-
-VG_API_CALL void VG_API_ENTRY vgDestroyPath(VGPath path) VG_API_EXIT {
-	if( path ) {
-		MKContext::instance().destroyPath( (MKPath*)path );
-		path = VG_INVALID_HANDLE;
-	}
-}
-
-
-VG_API_CALL void vgAppendPathData( VGPath dstPath, VGint numSegments, const VGubyte * pathSegments, const void * pathData ) {
-	MKPath* path = (MKPath*)dstPath;
-	path->appendData( numSegments, pathSegments, pathData );
-}
-
-VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes) {
-	if ( path == VG_INVALID_HANDLE ) {
-		SetError( VG_BAD_HANDLE_ERROR );
-		return;
-	}
-	
-	// force image matrix mode
-	if( MKContext::instance().getMatrixMode() != VG_MATRIX_PATH_USER_TO_SURFACE ) {
-		MKContext::instance().setMatrixMode( VG_MATRIX_PATH_USER_TO_SURFACE );
-	}
-
-	MKPath* p = (MKPath*)path;
-	
-	
-	p->draw( paintModes );
-}
-
-VG_API_CALL void VG_API_ENTRY vgPathMiterLimit(VGPath path, VGfloat miterlimit) VG_API_EXIT {
-    if ( path == VG_INVALID_HANDLE ) {
-        SetError( VG_BAD_HANDLE_ERROR );
-        return;
-    }
-    
-    MKPath* p = (MKPath*)path;
-    
-    p->setMiterlimit( miterlimit );
-}
-
-VG_API_CALL void VG_API_ENTRY vgPathJoinStyle(VGPath path, VGJoinStyle joinstyle) VG_API_EXIT {
-    if ( path == VG_INVALID_HANDLE ) {
-        SetError( VG_BAD_HANDLE_ERROR );
-        return;
-    }
-    
-    MKPath* p = (MKPath*)path;
-    
-    p->setJoinStyle( joinstyle );
-}
-
-VG_API_CALL void VG_API_ENTRY vgPathCapStyle(VGPath path, VGCapStyle capstyle) VG_API_EXIT {
-    if ( path == VG_INVALID_HANDLE ) {
-        SetError( VG_BAD_HANDLE_ERROR );
-        return;
-    }
-    
-    MKPath* p = (MKPath*)path;
-    
-    p->setCapStyle( capstyle );
-}
-
-
-VG_API_CALL void VG_API_ENTRY vgClearPath(VGPath path, VGbitfield capabilities) VG_API_EXIT {
-	if ( path == VG_INVALID_HANDLE ) {
-		SetError( VG_BAD_HANDLE_ERROR );
-		return;
-	}
-	
-	MKPath* p = (MKPath*)path;
-	p->clear( capabilities );
-	
-}
-
-VG_API_CALL void VG_API_ENTRY vgTransformPath(VGPath dstPath, VGPath srcPath) VG_API_EXIT {
-	MKPath* dp = (MKPath*)dstPath;
-	dp->copy( *(MKPath*)srcPath, MKContext::instance().getPathUserToSurface() );
-}
-
-VG_API_CALL void VG_API_ENTRY vgPathBounds(VGPath path,
-										   VGfloat * minX, VGfloat * minY,
-										   VGfloat * width, VGfloat * height) VG_API_EXIT {
-	
-	MKPath* p = (MKPath*)path;
-	p->buildFillIfDirty();	// NOTE: according to the OpenVG specs we only care about the fill bounds, NOT the fill + stroke
-	*minX = p->getMinX();
-	*minY = p->getMinY();
-	*width = p->getWidth();
-	*height = p->getHeight();
-	
-}
-
-VG_API_CALL void VG_API_ENTRY vgPathTransformedBounds(VGPath path,
-						      VGfloat * minX, VGfloat * minY,
-						      VGfloat * width, VGfloat * height) VG_API_EXIT {
-	MKPath* p = (MKPath*)path;
-	p->buildFillIfDirty();	// NOTE: according to the OpenVG specs we only care about the fill bounds, NOT the fill + stroke
-	float x = p->getMinX();
-	float y = p->getMinX();
-	float w = p->getWidth();
-	float h = p->getHeight();
-
-	float p0[2];
-	p0[0] = x;
-	p0[1] = y;
-	float p1[2];
-	p1[0] = x + w;
-	p1[1] = y;
-	float p2[2];
-	p2[0] = x + w;
-	p2[1] = y + h;
-	float p3[2];
-	p3[0] = x;
-	p3[1] = y + h;
-
-	const Matrix33 & m = MKContext::instance().getPathUserToSurface();
-
-	affineTransform(m, p0);
-	affineTransform(m, p1);
-	affineTransform(m, p2);
-	affineTransform(m, p3);
-
-	*minX = std::min(std::min(std::min(p0[0], p1[0]), p2[0]), p3[0]);
-	*width = std::max(std::max(std::max(p0[0], p1[0]), p2[0]), p3[0]) - *minX;
-	*minY = std::min(std::min(std::min(p0[1], p1[1]), p2[1]), p3[1]);
-	*height = std::max(std::max(std::max(p0[1], p1[1]), p2[1]), p3[1]) - *minY;
-}
-
 
 #include "mkBatch.h"
 #include <cassert>
@@ -311,13 +96,13 @@ namespace MonkVG {
     }
     
     void MKPath::buildFillIfDirty() {
-        MKPaint* currentFillPaint = MKContext::instance().getFillPaint();
+        MKPaint* currentFillPaint = _handler->getFillPaint();
         if ( currentFillPaint != _fillPaintForPath ) {
             _fillPaintForPath = (MKPaint*)currentFillPaint;
             _isFillDirty = true;
         }
         // only build the fill if dirty or we are in batch build mode
-        if ( _isFillDirty || MKContext::instance().currentBatch() ) {
+        if ( _isFillDirty || _handler->currentBatch() ) {
             buildFill();
         }
         _isFillDirty = false;
@@ -336,13 +121,11 @@ namespace MonkVG {
             return false;
         
         // get the native OpenGL context
-        MKContext& glContext = (MonkVG::MKContext&)MKContext::instance();
-        
         if( paintModes & VG_FILL_PATH ) {	// build the fill polygons
             buildFillIfDirty();
         }
         
-        if( paintModes & VG_STROKE_PATH && (_isStrokeDirty == true || MKContext::instance().currentBatch())  ) {
+        if( paintModes & VG_STROKE_PATH && (_isStrokeDirty == true || _handler->currentBatch())  ) {
             buildStroke();
             _isStrokeDirty = false;
         }
@@ -350,7 +133,7 @@ namespace MonkVG {
         endOfTesselation( paintModes );
         
         
-        if ( glContext.currentBatch() ) {
+        if ( _handler->currentBatch() ) {
             return true;		// creating a batch so bail from here
         }
 
@@ -461,10 +244,10 @@ namespace MonkVG {
         //		gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (APIENTRY *) ( )) &MKPath::tessCombine );
         //		gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (APIENTRY *)())&MKPath::tessError );
         TessWindingRule winding = TESS_WINDING_POSITIVE;
-        if( MKContext::instance().getFillRule() == VG_EVEN_ODD ) {
+        if( _handler->getFillRule() == VG_EVEN_ODD ) {
             winding = TESS_WINDING_ODD;
             //			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD );
-        } else if( MKContext::instance().getFillRule() == VG_NON_ZERO ) {
+        } else if( _handler->getFillRule() == VG_NON_ZERO ) {
             winding = TESS_WINDING_NONZERO;
             //			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO );
         }
@@ -581,7 +364,7 @@ namespace MonkVG {
                     VGfloat cp1y = 2.0f * cp2y - p3y;
                     
                     
-                    VGfloat increment = 1.0f / MKContext::instance().getTessellationIterations();
+                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
                     //printf("\tcubic: ");
                     for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
                         v3_t c;
@@ -617,7 +400,7 @@ namespace MonkVG {
                         p3y += prev.y;
                     }
                     
-                    VGfloat increment = 1.0f / MKContext::instance().getTessellationIterations();
+                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
                     //printf("\tcubic: ");
                     for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
                         v3_t c;
@@ -649,7 +432,7 @@ namespace MonkVG {
                         py += prev.y;
                     }
                     
-                    VGfloat increment = 1.0f / MKContext::instance().getTessellationIterations();
+                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
                     for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
                         v3_t c;
                         c.x = calcQuadBezier1d( coords.x, cpx, px, t );
@@ -689,7 +472,7 @@ namespace MonkVG {
                     
                     if ( success ) {
                         // see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics
-                        const int steps = MKContext::instance().getTessellationIterations();
+                        const int steps = _handler->getTessellationIterations();
                         VGfloat beta = 0;	// angle. todo
                         VGfloat sinbeta = sinf( beta );
                         VGfloat cosbeta = cosf( beta );
@@ -763,9 +546,9 @@ namespace MonkVG {
         int result = tessTesselate(_fillTesseleator, winding, TESS_POLYGONS, nvp, nve, NULL);
         assert(result == 1);
         
-        GLdouble startVertex_[2];
-        GLdouble lastVertex_[2];
-        GLdouble v[2];
+        float startVertex_[2];
+        float lastVertex_[2];
+        float v[2];
         
         const float* verts = tessGetVertices(_fillTesseleator);
         //const int* vinds = tessGetVertexIndices(_fillTesseleator);
@@ -1194,9 +977,7 @@ namespace MonkVG {
         _strokeVertices.clear();
         
         // get the native OpenGL context
-        MKContext& glContext = (MonkVG::MKContext&)MKContext::instance();
-        
-        const VGfloat stroke_width = glContext.getStrokeLineWidth();
+        const VGfloat stroke_width = _handler->getStrokeLineWidth();
         
         std::vector< VGfloat >::iterator coordsIter = _fcoords->begin();
         VGbyte segment = VG_CLOSE_PATH;
@@ -1291,7 +1072,7 @@ namespace MonkVG {
                     VGfloat cp1y = 2.0f * cp2y - p3y;
                     
                     
-                    VGfloat increment = 1.0f / MKContext::instance().getTessellationIterations();
+                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
                     //printf("\tcubic: ");
                     for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
                         v2_t c;
@@ -1321,7 +1102,7 @@ namespace MonkVG {
                         py += prev.y;
                     }
                     
-                    VGfloat increment = 1.0f / MKContext::instance().getTessellationIterations();
+                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
                     
                     for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
                         v2_t c;
@@ -1355,7 +1136,7 @@ namespace MonkVG {
                     }
                     
                     
-                    VGfloat increment = 1.0f / MKContext::instance().getTessellationIterations();
+                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
                     
                     for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
                         v2_t c;
@@ -1394,7 +1175,7 @@ namespace MonkVG {
                     
                     if ( success ) {
                         // see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
-                        const int steps = MKContext::instance().getTessellationIterations();
+                        const int steps = _handler->getTessellationIterations();
                         VGfloat beta = 0;	// angle. todo
                         VGfloat sinbeta = sinf( beta );
                         VGfloat cosbeta = cosf( beta );
@@ -1469,7 +1250,7 @@ namespace MonkVG {
     }
     
     void MKPath::endOfTesselation( VGbitfield paintModes ) {
-        MKBatch* glBatch = (MKBatch*)MKContext::instance().currentBatch();
+        MKBatch* glBatch = (MKBatch*)_handler->currentBatch();
         if( glBatch && (_vertices.size() > 0 || _strokeVertices.size() > 0) ) {	// if in batch mode update the current batch
             glBatch->addPathVertexData( &_vertices[0], _vertices.size()/2, 
                                        (float*)&_strokeVertices[0], _strokeVertices.size(), 
@@ -1502,5 +1283,213 @@ namespace MonkVG {
         glDeleteBuffers( 1, &_fillVBO );
     }
     
+}
+
+
+//
+// FROM mkVGU.cpp
+//
+
+namespace MonkVG
+{
+    void MKPath::append(int numSegments, const VGubyte* segments, int numCoordinates, const VGfloat* coordinates)
+    {
+        assert(numCoordinates <= 26);
+        
+        VGPathDatatype datatype = getDataType();
+        VGfloat scale = getScale();
+        VGfloat bias = getBias();
+        
+        switch(datatype)
+        {
+            case VG_PATH_DATATYPE_S_8:
+            {
+                
+                int8_t data[26];
+                for(int i=0;i<numCoordinates;i++)
+                    data[i] = (int8_t)floor((coordinates[i] - bias) / scale + 0.5f);	//add 0.5 for correct rounding
+                appendData(numSegments, segments, data);
+                break;
+            }
+                
+            case VG_PATH_DATATYPE_S_16:
+            {
+                
+                int16_t data[26];
+                for(int i=0;i<numCoordinates;i++)
+                    data[i] = (int16_t)floor((coordinates[i] - bias) / scale + 0.5f);	//add 0.5 for correct rounding
+                appendData(numSegments, segments, data);
+                break;
+            }
+                
+            case VG_PATH_DATATYPE_S_32:
+            {
+                int32_t data[26];
+                for(int i=0;i<numCoordinates;i++)
+                    data[i] = (int32_t)floor((coordinates[i] - bias) / scale + 0.5f);	//add 0.5 for correct rounding
+                appendData(numSegments, segments, data);
+                break;
+            }
+                
+            default:
+            {
+                assert(datatype == VG_PATH_DATATYPE_F);
+                float data[26];
+                for(int i=0;i<numCoordinates;i++)
+                    data[i] = (float)((coordinates[i] - bias) / scale);
+                appendData(numSegments, segments, data);
+                break;
+            }
+        }
+    }
+    void MKPath::vguLine(VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1)
+    {
+        static const VGubyte segments[2] = {VG_MOVE_TO | VG_ABSOLUTE, VG_LINE_TO | VG_ABSOLUTE};
+        const VGfloat data[4] = {x0, y0, x1, y1};
+        append(2, segments, 4, data);
+    }
+    
+    
+    void MKPath::vguPolygon(const VGfloat * points, VGint count, VGboolean closed)
+    {
+        assert(points && !((ptrdiff_t)points) & 3 && count > 0);
+        
+        VGubyte segments[1] = {VG_MOVE_TO | VG_ABSOLUTE};
+        VGfloat data[2];
+        for(int i=0;i<count;i++)
+        {
+            data[0] = points[i*2+0];
+            data[1] = points[i*2+1];
+            append(1, segments, 2, data);
+            segments[0] = VG_LINE_TO | VG_ABSOLUTE;
+        }
+        if(closed)
+        {
+            segments[0] = VG_CLOSE_PATH;
+            append(1, segments, 0, data);
+        }
+    }
+    
+    void MKPath::vguRect(VGfloat x, VGfloat y, VGfloat width, VGfloat height)
+    {
+        assert(width > 0 && height > 0);
+        
+        static const VGubyte segments[5] = {VG_MOVE_TO | VG_ABSOLUTE,
+            VG_HLINE_TO | VG_ABSOLUTE,
+            VG_VLINE_TO | VG_ABSOLUTE,
+            VG_HLINE_TO | VG_ABSOLUTE,
+            VG_CLOSE_PATH};
+        const VGfloat data[5] = {x, y, x + width, y + height, x};
+        append(5, segments, 5, data);
+    }
+    
+    void MKPath::vguEllipse(VGfloat cx, VGfloat cy, VGfloat width, VGfloat height)
+    {
+        assert(width > 0 && height > 0);
+        
+        static const VGubyte segments[4] = {VG_MOVE_TO | VG_ABSOLUTE,
+            VG_SCCWARC_TO | VG_ABSOLUTE,
+            VG_SCCWARC_TO | VG_ABSOLUTE,
+            VG_CLOSE_PATH};
+        const VGfloat data[12] = {cx + width/2, cy,
+            width/2, height/2, 0, cx - width/2, cy,
+            width/2, height/2, 0, cx + width/2, cy};
+        append(4, segments, 12, data);
+    }
+    
+    static inline float RI_CLAMP(float a, float l, float h)       { if(a!=a) return l; return (a < l) ? l : (a > h) ? h : a; }
+    
+    void MKPath::vguRoundRect(VGfloat x, VGfloat y, VGfloat width, VGfloat height, VGfloat arcWidth, VGfloat arcHeight)
+    {
+        assert(width > 0 && height > 0);
+        
+        arcWidth = RI_CLAMP(arcWidth, 0.0f, width);
+        arcHeight = RI_CLAMP(arcHeight, 0.0f, height);
+        
+        static const VGubyte segments[10] = {VG_MOVE_TO | VG_ABSOLUTE,
+            VG_HLINE_TO | VG_ABSOLUTE,
+            VG_SCCWARC_TO | VG_ABSOLUTE,
+            VG_VLINE_TO | VG_ABSOLUTE,
+            VG_SCCWARC_TO | VG_ABSOLUTE,
+            VG_HLINE_TO | VG_ABSOLUTE,
+            VG_SCCWARC_TO | VG_ABSOLUTE,
+            VG_VLINE_TO | VG_ABSOLUTE,
+            VG_SCCWARC_TO | VG_ABSOLUTE,
+            VG_CLOSE_PATH};
+        const VGfloat data[26] = {x + arcWidth/2, y,
+            x + width - arcWidth/2,
+            arcWidth/2, arcHeight/2, 0, x + width, y + arcHeight/2,
+            y + height - arcHeight/2,
+            arcWidth/2, arcHeight/2, 0, x + width - arcWidth/2, y + height,
+            x + arcWidth/2,
+            arcWidth/2, arcHeight/2, 0, x, y + height - arcHeight/2,
+            y + arcHeight/2,
+            arcWidth/2, arcHeight/2, 0, x + arcWidth/2, y};
+        append(10, segments, 26, data);
+    }
+    
+    
+    void MKPath::vguArc(VGfloat x, VGfloat y, VGfloat width, VGfloat height, VGfloat startAngle, VGfloat angleExtent, VGUArcType arcType)
+    {
+        assert(arcType == VGU_ARC_OPEN || arcType == VGU_ARC_CHORD);
+        assert(width > 0 && height > 0);
+        
+        startAngle = MonkVG::radians(startAngle);
+        angleExtent = MonkVG::radians(angleExtent);
+        
+        VGfloat w = width/2.0f;
+        VGfloat h = height/2.0f;
+        
+        VGubyte segments[1];
+        VGfloat data[5];
+        
+        segments[0] = VG_MOVE_TO | VG_ABSOLUTE;
+        data[0] = x + w * (VGfloat)cos(startAngle);
+        data[1] = y + h * (VGfloat)sin(startAngle);
+        append(1, segments, 2, data);
+        
+        data[0] = w;
+        data[1] = h;
+        data[2] = 0.0f;
+        VGfloat endAngle = startAngle + angleExtent;
+        if(angleExtent >= 0.0f)
+        {
+            segments[0] = VG_SCCWARC_TO | VG_ABSOLUTE;
+            for(VGfloat a = startAngle + M_PI;a < endAngle; a += M_PI)
+            {
+                data[3] = x + w * (VGfloat)cos(a);
+                data[4] = y + h * (VGfloat)sin(a);
+                append(1, segments, 5, data);
+            }
+        }
+        else
+        {
+            segments[0] = VG_SCWARC_TO | VG_ABSOLUTE;
+            for(VGfloat a = startAngle - M_PI;a > endAngle; a -= M_PI)
+            {
+                data[3] = x + w * (VGfloat)cos(a);
+                data[4] = y + h * (VGfloat)sin(a);
+                append(1, segments, 5, data);
+            }
+        }
+        data[3] = x + w * (VGfloat)cos(endAngle);
+        data[4] = y + h * (VGfloat)sin(endAngle);
+        append(1, segments, 5, data);
+        
+        if(arcType == VGU_ARC_CHORD)
+        {
+            segments[0] = VG_CLOSE_PATH;
+            append(1, segments, 0, data);
+        }
+        else if(arcType == VGU_ARC_PIE)
+        {
+            segments[0] = VG_LINE_TO | VG_ABSOLUTE;
+            data[0] = x;
+            data[1] = y;
+            append(1, segments, 2, data);
+            segments[0] = VG_CLOSE_PATH;
+            append(1, segments, 0, data);
+        }
+    }
 }
 
