@@ -353,43 +353,7 @@ namespace MonkVG {
         if ( glContext.currentBatch() ) {
             return true;		// creating a batch so bail from here
         }
-        
-        
-        glContext.beginRender();
-        
-        glEnableClientState( GL_VERTEX_ARRAY );
-        glDisableClientState( GL_COLOR_ARRAY );
-        
-        // configure based on paint type
-        if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-            glDisable(GL_TEXTURE_2D);
-            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-        }
-        
-        if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 && _fillPaintForPath) {
-            // draw
-            MKContext::instance().fill();
-            glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-            if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-                glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-            }
-            glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
-            
-            // this is important to unbind the vbo when done
-            glBindBuffer( GL_ARRAY_BUFFER, 0 );
-        }
-        
-        if ( (paintModes & VG_STROKE_PATH) && _strokeVBO != -1 ) {
-            // draw
-            MKContext::instance().stroke();
-            glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-            glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-            glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
-            glBindBuffer( GL_ARRAY_BUFFER, 0 );
-        }
-        
-        glContext.endRender();
-        
+
         return true;
     }
     

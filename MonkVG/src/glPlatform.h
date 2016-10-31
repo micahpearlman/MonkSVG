@@ -10,7 +10,7 @@
 #define MonkVG_iOS_glPlatform_h
 
 #include "TargetConditionals.h"
-#include <OpenGLES/ES1/gl.h>
+#include <OpenGLES/ES2/gl.h>
 
 typedef float GLdouble;
 typedef float GLclampd;

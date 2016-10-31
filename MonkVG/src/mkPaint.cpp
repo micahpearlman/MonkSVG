@@ -167,10 +167,6 @@ namespace MonkVG {	// Internal Implementation
     }
 
     void MKPaint::setGLState() {
-        if ( isDirty() ) {
-            const VGfloat* c = getPaintColor();
-            glColor4f( c[0], c[1], c[2], c[3] );
-        }
     }
 
     void MKPaint::lerpColor(float * dst, float * stop0, float * stop1, float g) {

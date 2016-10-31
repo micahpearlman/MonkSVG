@@ -268,12 +268,6 @@ namespace MonkVG {
             case GL_INVALID_OPERATION:
                 RVAL = "GL_INVALID_OPERATION";
                 break;
-            case GL_STACK_OVERFLOW:
-                RVAL =  "GL_STACK_OVERFLOW";
-                break;
-            case GL_STACK_UNDERFLOW:
-                RVAL =  "GL_STACK_UNDERFLOW";
-                break;
             case GL_OUT_OF_MEMORY:
                 RVAL =  "GL_OUT_OF_MEMORY";
                 break;
