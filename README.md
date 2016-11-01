@@ -60,10 +60,12 @@ Use git to clone the official original versions:
 
 #### MonkVG Additional contributors
 
-- Initial Android Port: Paul Holden (Removed from SakaSVG)
-- Windows Port: Vincent Richomme (Removed from SakaSVG)
-- Android and Linux Port: Gav Wood (Removed from SakaSVG)
 - Smooth line, Miter, Cap: Sean Batson
+- OpenVG VGU extension: Khronos Group (SGI Free Software License B Version 2.0)
+- _Initial Android Port: Paul Holden (Removed from SakaSVG)_
+- _Windows Port: Vincent Richomme (Removed from SakaSVG)_
+- _Android and Linux Port: Gav Wood (Removed from SakaSVG)_
+- _math.hpp, vec.hpp: mapbox-gl-native https://github.com/mapbox/mapbox-gl-native (Removed from SakaSVG)_
 
 ### SakaSVG's third parties
 
