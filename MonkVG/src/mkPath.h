@@ -170,22 +170,7 @@ namespace MonkVG {
         ~MKPath();
         
         
-    public:
-        //
-        // From mkVGU.cpp
-        // ==============
-        //
-        void append(int numSegments, const VGubyte* segments, int numCoordinates, const VGfloat* coordinates);
-        void vguLine(VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1);
-        void vguPolygon(const VGfloat * points, VGint count, VGboolean closed);
-        void vguRect(VGfloat x, VGfloat y, VGfloat width, VGfloat height);
-        void vguEllipse(VGfloat cx, VGfloat cy, VGfloat width, VGfloat height);
-        void vguRoundRect(VGfloat x, VGfloat y, VGfloat width, VGfloat height, VGfloat arcWidth, VGfloat arcHeight);
-        void vguArc(VGfloat x, VGfloat y, VGfloat width, VGfloat height, VGfloat startAngle, VGfloat angleExtent, VGUArcType arcType);
-
-		
 	protected:
-
 		VGint				_format;		// VG_PATH_FORMAT
 		VGPathDatatype		_datatype;		// VG_PATH_DATATYPE
 		VGfloat				_scale;			// VG_PATH_SCALE

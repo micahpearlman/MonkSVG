@@ -1143,7 +1143,14 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::onPathRect( float x, float y, float w, float h ) {
-        _current_group->current_path->path->vguRect( x, y, w, h );
+        static const VGubyte segments[5] = {
+            VG_MOVE_TO | VG_ABSOLUTE,
+            VG_HLINE_TO | VG_ABSOLUTE,
+            VG_VLINE_TO | VG_ABSOLUTE,
+            VG_HLINE_TO | VG_ABSOLUTE,
+            VG_CLOSE_PATH};
+        const VGfloat data[5] = {x, y, x + w, y + h, x};
+        _current_group->current_path->path->appendData(5, segments, data);
     }
     
     
