@@ -226,7 +226,7 @@ namespace MonkVG {
         _b->trianglesToAdd.clear();
     }
     
-    void MKBatch::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, VGbitfield paintModes ) {
+    void MKBatch::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes ) {
         
         // get the current transform
         const Matrix33& transform = *_handler->getActiveMatrix();
@@ -236,7 +236,7 @@ namespace MonkVG {
         if ( paintModes & VG_FILL_PATH) {
             // get the paint color
             MKPaint* paint = _handler->getFillPaint();
-            const VGfloat* fc = paint->getPaintColor();
+            const float* fc = paint->getPaintColor();
             
             const GLuint color =
             ( GLuint(fc[3] * 255.0f) << 24 )	// a
@@ -265,7 +265,7 @@ namespace MonkVG {
         if ( paintModes & VG_STROKE_PATH) {
             // get the paint color
             MKPaint* paint = _handler->getStrokePaint();
-            const VGfloat* fc = paint->getPaintColor();
+            const float* fc = paint->getPaintColor();
             
             const GLuint color =
             ( GLuint(fc[3] * 255.0f) << 24 )	// a

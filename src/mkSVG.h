@@ -18,7 +18,7 @@
 #include <list>
 #include "mkTransform2d.h"
 #include "mkMath.h"
-#include <VG/openvg.h>
+#include "vgCompat.h"
 
 namespace tinyxml2
 {
@@ -191,7 +191,7 @@ namespace MonkSVG {
             MKPaint*		fill;
             VGFillRule	fill_rule;
             MKPaint*		stroke;
-            VGfloat		stroke_width;
+            float		stroke_width;
             
         };
         
@@ -202,7 +202,7 @@ namespace MonkSVG {
         vector<Transform2d>		_transform_stack;
         Transform2d				_root_transform;
         Transform2d				_use_transform;
-        VGfloat					_use_opacity;
+        float					_use_opacity;
         
         enum mode {
             kGroupParseMode = 1,
@@ -251,33 +251,25 @@ namespace MonkSVG {
         }
         
         //// drawing context ////
-        inline VGint getWidth() const {
+        inline int getWidth() const {
             return _width;
         }
-        inline void setWidth( VGint w ) {
+        inline void setWidth( int w ) {
             _width = w;
         }
         
-        inline VGint getHeight() const {
+        inline int getHeight() const {
             return _height;
         }
-        inline void setHeight( VGint h ) {
+        inline void setHeight( int h ) {
             _height = h;
         }
         
-        //// parameters ////
-        void set( VGuint type, VGfloat f );
-        void set( VGuint type, const VGfloat * values );
-        void set( VGuint type, VGint i );
-        void get( VGuint type, VGfloat &f ) const;
-        void get( VGuint type, VGfloat *fv ) const;
-        void get( VGuint type, VGint &i ) const;
-        
         //// stroke parameters ////
-        inline void setStrokeLineWidth( VGfloat w ) {
+        inline void setStrokeLineWidth( float w ) {
             _stroke_line_width = w;
         }
-        inline VGfloat getStrokeLineWidth() const {
+        inline float getStrokeLineWidth() const {
             return _stroke_line_width;
         }
         
@@ -292,18 +284,6 @@ namespace MonkSVG {
             return _active_matrix;
         }
         
-        //// error handling ////
-        inline VGErrorCode getError() const {
-            return _error;
-        }
-        inline void setError( const VGErrorCode e ) {
-            _error = e;
-        }
-        
-        /// rendering quality
-        inline VGRenderingQuality getRenderingQuality() const { return _renderingQuality; }
-        inline void setRenderingQuality( VGRenderingQuality rc ) { _renderingQuality = rc; }
-        
         inline int32_t getTessellationIterations() const { return _tessellationIterations; }
         inline void setTessellationIterations( int32_t i ) { _tessellationIterations = i; }
         
@@ -314,13 +294,11 @@ namespace MonkSVG {
         // matrix transforms
         Matrix33			_path_user_to_surface;
         Matrix33			*_active_matrix;
-        VGMatrixMode		_matrixMode;
         
         // stroke properties
-        VGfloat				_stroke_line_width;			// VG_STROKE_LINE_WIDTH
+        float				_stroke_line_width;			// VG_STROKE_LINE_WIDTH
         
         // rendering quality
-        VGRenderingQuality	_renderingQuality;
         int32_t				_tessellationIterations;
         
         // paints
@@ -331,16 +309,13 @@ namespace MonkSVG {
         // batch
         MKBatch*				_currentBatch;
         
-        // error
-        VGErrorCode			_error;
-        
     public:
         bool Initialize();
         bool Terminate();
         
         //// factories ////
         MKPaint* createPaint();
-        MKPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities );
+        MKPath* createPath();
         MKBatch* createBatch();
         
         //// platform specific execution of stroke and fill ////
@@ -348,18 +323,18 @@ namespace MonkSVG {
         void fill();
         
         //// platform specific execution of Masking and Clearing ////
-        void clear(VGint x, VGint y, VGint width, VGint height);
+        void clear(int x, int y, int width, int height);
         
         //// platform specific implementation of transform ////
         void setIdentity();
-        void transform( VGfloat* t );
-        void scale( VGfloat sx, VGfloat sy );
-        void translate( VGfloat x, VGfloat y );
+        void transform( float* t );
+        void scale( float sx, float sy );
+        void translate( float x, float y );
         float angle ();
-        void rotate( VGfloat angle );
-        void rotate( VGfloat angle , VGfloat x, VGfloat y, VGfloat z);
-        void setTransform( const VGfloat* t ) ;
-        void multiply( const VGfloat* t );
+        void rotate( float angle );
+        void rotate( float angle , float x, float y, float z);
+        void setTransform( const float* t ) ;
+        void multiply( const float* t );
         void loadGLMatrix();
         
         void beginRender();

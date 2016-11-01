@@ -19,7 +19,7 @@
 #include "mkBatch.h"
 #include "mkMath.h"
 #include "mkPaint.h"
-#include <VG/vgext.h>
+#include "vgCompat.h"
 #include <OpenGLES/ES2/gl.h>
 #include <glm/gtx/matrix_transform_2d.hpp>
 
@@ -852,22 +852,19 @@ namespace MonkSVG {
     ,	_use_opacity( 1 )
     ,   _has_transparent_colors( false )
 
-    ,	_error( VG_NO_ERROR )
     ,	_stroke_line_width( 1.0f )
     ,	_stroke_paint( 0 )
     ,	_fill_paint( 0 )
     ,	_active_matrix( &_path_user_to_surface )
     ,	_fill_rule( VG_EVEN_ODD )
-    ,	_renderingQuality( VG_RENDERING_QUALITY_BETTER )
     ,	_tessellationIterations( 16 )
-    ,	_matrixMode( VG_MATRIX_PATH_USER_TO_SURFACE )
     ,	_currentBatch( 0 )
 
     {
         disableAutomaticCleanup();
 
         _blackBackFill = createPaint();
-        VGfloat fcolor[4] = { 0,0,0,1 };
+        float fcolor[4] = { 0,0,0,1 };
         _blackBackFill->setPaintColor(fcolor);
         _use_transform.setIdentity();
         
@@ -929,7 +926,7 @@ namespace MonkSVG {
             
             if ( po.stroke ) {
                 setStrokePaint( po.stroke );
-                set( VG_STROKE_LINE_WIDTH, po.stroke_width );
+                setStrokeLineWidth(po.stroke_width);
                 draw_params |= VG_STROKE_PATH;
             }
             
@@ -939,7 +936,7 @@ namespace MonkSVG {
             }
             
             // set the fill rule
-            set( VG_FILL_RULE, po.fill_rule );
+            setFillRule(po.fill_rule);
             // trasnform
             pushTransform( po.transform );	setTransform( topTransform().m );
             po.path->draw( draw_params );
@@ -1009,8 +1006,7 @@ namespace MonkSVG {
     void MKSVGHandler::onPathBegin() {
         _mode = kPathParseMode;
         _current_group->current_path = new path_object_t();
-        _current_group->current_path->path = createPath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,
-                                                          1,0,0,0, VG_PATH_CAPABILITY_ALL);
+        _current_group->current_path->path = createPath();
         // inherit group settings
         _current_group->current_path->fill			= _current_group->fill;
         _current_group->current_path->stroke		= _current_group->stroke;
@@ -1026,7 +1022,7 @@ namespace MonkSVG {
         _current_group->path_objects.push_back( *_current_group->current_path );
         
         //		// build up the bounds
-        //		VGfloat minX, minY, width, height;
+        //		float minX, minY, width, height;
         //		vgPathBounds( _current_group->current_path->path, &minX, &minY, &width, &height );
         //		if ( minX < _minX ) {
         //			_minX = minX;
@@ -1044,8 +1040,8 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::onPathMoveTo( float x, float y ) {
-        VGubyte seg = VG_MOVE_TO | openVGRelative();
-        VGfloat data[2];
+        unsigned char seg = VG_MOVE_TO | openVGRelative();
+        float data[2];
         
         data[0] = x; data[1] = y;
         _current_group->current_path->path->appendData( 1, &seg, data );
@@ -1053,14 +1049,14 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::onPathClose(){
-        VGubyte seg = VG_CLOSE_PATH;
-        VGfloat data = 0.0f;
+        unsigned char seg = VG_CLOSE_PATH;
+        float data = 0.0f;
         _current_group->current_path->path->appendData( 1, &seg, &data );
         
     }
     void MKSVGHandler::onPathLineTo( float x, float y ) {
-        VGubyte seg = VG_LINE_TO | openVGRelative();
-        VGfloat data[2];
+        unsigned char seg = VG_LINE_TO | openVGRelative();
+        float data[2];
         
         data[0] = x; data[1] = y;
         _current_group->current_path->path->appendData( 1, &seg, data );
@@ -1068,23 +1064,23 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::onPathHorizontalLine( float x ) {
-        VGubyte seg = VG_HLINE_TO | openVGRelative();
-        VGfloat data[1];
+        unsigned char seg = VG_HLINE_TO | openVGRelative();
+        float data[1];
         data[0] = x;
         _current_group->current_path->path->appendData( 1, &seg, data );
         
     }
     void MKSVGHandler::onPathVerticalLine( float y ) {
-        VGubyte seg = VG_VLINE_TO | openVGRelative();
-        VGfloat data[1];
+        unsigned char seg = VG_VLINE_TO | openVGRelative();
+        float data[1];
         data[0] = y;
         _current_group->current_path->path->appendData( 1, &seg, data );
         
     }
     
     void MKSVGHandler::onPathCubic( float x1, float y1, float x2, float y2, float x3, float y3 ) {
-        VGubyte seg = VG_CUBIC_TO | openVGRelative();
-        VGfloat data[6];
+        unsigned char seg = VG_CUBIC_TO | openVGRelative();
+        float data[6];
         
         data[0] = x1; data[1] = y1;
         data[2] = x2; data[3] = y2;
@@ -1094,8 +1090,8 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::onPathSCubic( float x2, float y2, float x3, float y3 ) {
-        VGubyte seg = VG_SCUBIC_TO | openVGRelative();
-        VGfloat data[4];
+        unsigned char seg = VG_SCUBIC_TO | openVGRelative();
+        float data[4];
         
         data[0] = x2; data[1] = y2;
         data[2] = x3; data[3] = y3;
@@ -1104,8 +1100,8 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::onPathQuad( float x1, float y1, float x2, float y2) {
-        VGubyte seg = VG_QUAD_TO | openVGRelative();
-        VGfloat data[4];
+        unsigned char seg = VG_QUAD_TO | openVGRelative();
+        float data[4];
         data[0] = x1; data[1] = y1;
         data[2] = x2; data[3] = y2;
         _current_group->current_path->path->appendData( 1, &seg, data);
@@ -1113,7 +1109,7 @@ namespace MonkSVG {
     
     void MKSVGHandler::onPathArc( float rx, float ry, float x_axis_rotation, int large_arc_flag, int sweep_flag, float x, float y ) {
         
-        VGubyte seg = openVGRelative();
+        unsigned char seg = openVGRelative();
         if ( large_arc_flag ) {
             if (sweep_flag) {
                 seg |= VG_LCCWARC_TO;
@@ -1128,7 +1124,7 @@ namespace MonkSVG {
             }
             
         }
-        VGfloat data[5];
+        float data[5];
         
         
         
@@ -1143,13 +1139,13 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::onPathRect( float x, float y, float w, float h ) {
-        static const VGubyte segments[5] = {
+        static const unsigned char segments[5] = {
             VG_MOVE_TO | VG_ABSOLUTE,
             VG_HLINE_TO | VG_ABSOLUTE,
             VG_VLINE_TO | VG_ABSOLUTE,
             VG_HLINE_TO | VG_ABSOLUTE,
             VG_CLOSE_PATH};
-        const VGfloat data[5] = {x, y, x + w, y + h, x};
+        const float data[5] = {x, y, x + w, y + h, x};
         _current_group->current_path->path->appendData(5, segments, data);
     }
     
@@ -1157,28 +1153,28 @@ namespace MonkSVG {
     void MKSVGHandler::onPathFillColor( unsigned int color ) {
         if( _mode == kGroupParseMode ) {
             _current_group->fill = createPaint();
-            VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f,
-                VGfloat( (color & 0x00ff0000) >> 16)/255.0f,
-                VGfloat( (color & 0x0000ff00) >> 8)/255.0f,
+            float fcolor[4] = { float( (color & 0xff000000) >> 24)/255.0f,
+                float( (color & 0x00ff0000) >> 16)/255.0f,
+                float( (color & 0x0000ff00) >> 8)/255.0f,
                 _use_opacity };
             _current_group->fill->setPaintColor(fcolor);
             
         } else {
             _current_group->current_path->fill = createPaint();
-            VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f,
-                VGfloat( (color & 0x00ff0000) >> 16)/255.0f,
-                VGfloat( (color & 0x0000ff00) >> 8)/255.0f,
+            float fcolor[4] = { float( (color & 0xff000000) >> 24)/255.0f,
+                float( (color & 0x00ff0000) >> 16)/255.0f,
+                float( (color & 0x0000ff00) >> 8)/255.0f,
                 _use_opacity  };
             _current_group->current_path->fill->setPaintColor(fcolor);
         }
     }
     
     void MKSVGHandler::onPathFillOpacity( float o ) {
-        VGfloat fcolor[4];
+        float fcolor[4];
         if( _mode == kGroupParseMode ) {
             if( _current_group->fill == 0 ) {	// if no fill create a black fill
                 _current_group->fill = createPaint();
-                VGfloat fcolor[4] = { 0,0,0,1 };
+                float fcolor[4] = { 0,0,0,1 };
                 _current_group->fill->setPaintColor(fcolor);
             }
             _current_group->fill->getPaintColor( &fcolor[0] );
@@ -1189,7 +1185,7 @@ namespace MonkSVG {
         } else if( _mode == kPathParseMode ) {
             if( _current_group->current_path->fill == 0 ) {	// if no fill create a black fill
                 _current_group->current_path->fill = createPaint();
-                VGfloat fcolor[4] = { 0,0,0,1 };
+                float fcolor[4] = { 0,0,0,1 };
                 _current_group->fill->setPaintColor(fcolor);
             }
             
@@ -1201,7 +1197,7 @@ namespace MonkSVG {
             _use_opacity = o;
             if( _current_group->fill == 0 ) {	// if no fill create a black fill
                 _current_group->fill = createPaint();
-                VGfloat fcolor[4] = { 0,0,0,1 };
+                float fcolor[4] = { 0,0,0,1 };
                 _current_group->fill->setPaintColor(fcolor);
             }
             _current_group->fill->getPaintColor( &fcolor[0] );
@@ -1216,22 +1212,22 @@ namespace MonkSVG {
     void MKSVGHandler::onPathStrokeColor( unsigned int color ) {
         if( _mode == kGroupParseMode ) {
             _current_group->stroke = createPaint();
-            VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f,
-                VGfloat( (color & 0x00ff0000) >> 16)/255.0f,
-                VGfloat( (color & 0x0000ff00) >> 8)/255.0f,
+            float fcolor[4] = { float( (color & 0xff000000) >> 24)/255.0f,
+                float( (color & 0x00ff0000) >> 16)/255.0f,
+                float( (color & 0x0000ff00) >> 8)/255.0f,
                 _use_opacity };
             _current_group->stroke->setPaintColor(fcolor);
         } else {
             _current_group->current_path->stroke = createPaint();
-            VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f,
-                VGfloat( (color & 0x00ff0000) >> 16)/255.0f,
-                VGfloat( (color & 0x0000ff00) >> 8)/255.0f,
+            float fcolor[4] = { float( (color & 0xff000000) >> 24)/255.0f,
+                float( (color & 0x00ff0000) >> 16)/255.0f,
+                float( (color & 0x0000ff00) >> 8)/255.0f,
                 _use_opacity };
             _current_group->current_path->stroke->setPaintColor(fcolor);
         }
     }
     void MKSVGHandler::onPathStrokeOpacity( float o ) {
-        VGfloat fcolor[4];
+        float fcolor[4];
         if( _mode == kGroupParseMode ) {
             _current_group->stroke->getPaintColor( &fcolor[0] );
             // set the opacity
@@ -1325,65 +1321,6 @@ namespace MonkSVG {
         _use_transform.setIdentity();
         _use_opacity = 1.0;
     }
-
-    
-    //// parameters ////
-    void MKSVGHandler::set( VGuint type, VGfloat f ) {
-        switch ( type ) {
-            case VG_STROKE_LINE_WIDTH:
-                setStrokeLineWidth( f );
-                break;
-            default:
-                assert(false);
-                break;
-        }
-    }
-    
-    void MKSVGHandler::set( VGuint type, VGint i ) {
-        
-        switch ( type ) {
-            case VG_FILL_RULE:
-                setFillRule( (VGFillRule)i );
-                break;
-            case VG_TESSELLATION_ITERATIONS_MNK:
-                setTessellationIterations( i );
-                break;
-            default:
-                assert(false);
-                break;
-        }
-        
-    }
-    void MKSVGHandler::get( VGuint type, VGfloat &f ) const {
-        switch ( type ) {
-            case VG_STROKE_LINE_WIDTH:
-                f = getStrokeLineWidth();
-                break;
-            default:
-                break;
-        }
-    }
-    void MKSVGHandler::get( VGuint type, VGint& i ) const {
-        i = -1;
-        
-        switch ( type ) {
-            case VG_FILL_RULE:
-                i =  getFillRule( );
-                break;
-            case VG_TESSELLATION_ITERATIONS_MNK:
-                i = getTessellationIterations( );
-                break;
-            case VG_SURFACE_WIDTH_MNK:
-                i = getWidth();
-                break;
-            case VG_SURFACE_HEIGHT_MNK:
-                i = getHeight();
-                break;
-                
-            default:
-                break;
-        }
-    }
 }
 
 #include "mkPath.h"
@@ -1459,9 +1396,9 @@ namespace MonkSVG {
     
     /// factories
     
-    MKPath* MKSVGHandler::createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {
+    MKPath* MKSVGHandler::createPath( ) {
         
-        MKPath *path = new MKPath(this, pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL);
+        MKPath *path = new MKPath(this);
         assert( path );
         return (MKPath*)path;
     }
@@ -1538,7 +1475,7 @@ namespace MonkSVG {
     }
     
     
-    void MKSVGHandler::clear(VGint x, VGint y, VGint width, VGint height) {
+    void MKSVGHandler::clear(int x, int y, int width, int height) {
         // TODO:
     }
     
@@ -1554,7 +1491,7 @@ namespace MonkSVG {
         *active = Matrix33();
     }
     
-    void MKSVGHandler::transform( VGfloat* t ) {
+    void MKSVGHandler::transform( float* t ) {
         // a	b	0
         // c	d	0
         // tx	ty	1
@@ -1564,7 +1501,7 @@ namespace MonkSVG {
         
     }
     
-    void MKSVGHandler::setTransform( const VGfloat* t )  {
+    void MKSVGHandler::setTransform( const float* t )  {
         //	OpenVG:
         //	sh	shx	tx
         //	shy	sy	ty
@@ -1580,17 +1517,17 @@ namespace MonkSVG {
     }
     
     
-    void MKSVGHandler::multiply( const VGfloat* t ) {
+    void MKSVGHandler::multiply( const float* t ) {
         Matrix33 m = glm::make_mat3(t);
         Matrix33* active = getActiveMatrix();
         (*active) *= m;
     }
     
-    void MKSVGHandler::scale( VGfloat sx, VGfloat sy ) {
+    void MKSVGHandler::scale( float sx, float sy ) {
         Matrix33* active = getActiveMatrix();
         *active = glm::scale(*active, v2_t(sx, sy));
     }
-    void MKSVGHandler::translate( VGfloat x, VGfloat y ) {
+    void MKSVGHandler::translate( float x, float y ) {
         Matrix33* active = getActiveMatrix();
         *active = glm::translate(*active, v2_t(x, y));
     }
@@ -1601,12 +1538,12 @@ namespace MonkSVG {
         return std::acosf((*active)[0][0]);
     }
     
-    void MKSVGHandler::rotate( VGfloat angle ) {
+    void MKSVGHandler::rotate( float angle ) {
         Matrix33* active = getActiveMatrix();
         *active = glm::rotate(*active, angle);
     }
     
-    void MKSVGHandler::rotate(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) {
+    void MKSVGHandler::rotate(float angle, float x, float y, float z) {
         
         translate(x, y);
         rotate(angle);

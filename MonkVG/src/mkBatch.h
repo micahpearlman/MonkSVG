@@ -10,7 +10,7 @@
 
 #include <stdlib.h>
 #include <OpenGLES/ES2/gl.h>
-#include <VG/openvg.h>
+#include "vgCompat.h"
 #include <cpp_btree/btree_map.h>
 #include <map>
 #include <deque>
@@ -28,7 +28,7 @@ namespace MonkVG {
         void draw();
         void finalize();
         
-        void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, VGbitfield paintModes );
+        void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes );
         
     private:
         MonkSVG::MKSVGHandler* _handler;

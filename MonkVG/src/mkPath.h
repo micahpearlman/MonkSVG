@@ -17,7 +17,6 @@
 #include <list>
 #include <vector>
 #include <Tess2/tesselator.h>
-#include <VG/vgu.h>
 #include <OpenGLES/ES2/gl.h>
 
 
@@ -28,55 +27,20 @@ namespace MonkSVG {
 namespace MonkVG {
     class MKPath {
 	public:
-        void clear( VGbitfield caps );
-
-		inline VGint getFormat() const {
-			return _format;
-		}
-		inline void setFormat( const VGint f ) {
-			_format = f;
-		}
+        void clear( GLbitfield caps );
 		
-		inline VGPathDatatype getDataType() const {
-			return _datatype;
-		}
-		inline void setDataType( const VGPathDatatype d ) {
-			_datatype = d;
-		}
-		
-		inline VGfloat getScale() const {
-			return _scale;
-		}
-		inline void setScale( const VGfloat s ) {
-			_scale = s;
-		}
-		
-		inline VGfloat getBias() const {
-			return _bias;
-		}
-		inline void setBias( const VGfloat b ) {
-			_bias = b;
-		}
-		
-		inline VGint getNumSegments() const {
+		inline int getNumSegments() const {
 			return _numSegments;
 		}
-		inline void setNumSegments( const VGint ns ) {
+		inline void setNumSegments( const int ns ) {
 			_numSegments = ns;
 		}
 		
-		inline VGint getNumCoords() const {
+		inline int getNumCoords() const {
 			return _numCoords;
 		}
-		inline void setNumCoords( const VGint nc ) {
+		inline void setNumCoords( const int nc ) {
 			_numCoords = nc;
-		}
-		
-		inline VGbitfield getCapabilities( ) const {
-			return _capabilities;
-		}
-		inline void setCapabilities( const VGbitfield c ) {
-			_capabilities = c;
 		}
 		
 		inline bool getIsDirty() {
@@ -87,7 +51,7 @@ namespace MonkVG {
 			_isStrokeDirty = b;
 		}
 		
-        inline VGfloat  getMiterlimit ()
+        inline float  getMiterlimit ()
         {
             return getJoinStyle() == VG_JOIN_BEVEL ? 1.05f : _stroke_miterlimit;
         }
@@ -100,7 +64,7 @@ namespace MonkVG {
             return _capStyle;
         }
         
-        inline void setMiterlimit (VGfloat m)
+        inline void setMiterlimit (float m)
         {
             _stroke_miterlimit = m;
         }
@@ -116,82 +80,64 @@ namespace MonkVG {
         }
 
 		// bounds
-		inline VGfloat getMinX() {
+		inline float getMinX() {
 			return _minX;
 		}
-		inline VGfloat getMinY() {
+		inline float getMinY() {
 			return _minY;
 		}
-		inline VGfloat getWidth() {
+		inline float getWidth() {
 			return _width;
 		}
-		inline VGfloat getHeight() {
+		inline float getHeight() {
 			return _height;
 		}
 		
 		//// internal data manipulators ////
-        bool draw( VGbitfield paintModes );
-		void appendData( const VGint numSegments, const VGubyte * pathSegments, const void * pathData ) ;
+        bool draw( GLbitfield paintModes );
+		void appendData( const int numSegments, const unsigned char * pathSegments, const float * pathData ) ;
 		int32_t segmentToNumCoordinates(VGPathSegment segment);
 		void copy( const MKPath& src, const Matrix33& transform );
 		void buildFillIfDirty();
 		
 
-        MKPath( MonkSVG::MKSVGHandler* h, VGint f, VGPathDatatype dt, VGfloat s, VGfloat b, VGint ns, VGint nc, VGbitfield cap )
+        MKPath( MonkSVG::MKSVGHandler* h )
 		:   _handler(h)
-        ,   _format( f )
-		,	_datatype( dt )
-		,	_scale( s )
-		,	_bias( b )
-		,	_numSegments( ns )
-		,	_numCoords( nc )
-		,	_capabilities( cap )
+		,	_numSegments( 0 )
+		,	_numCoords( 0 )
 		,	_isFillDirty( true )
 		,	_isStrokeDirty( true )
-		,	_minX( VG_MAX_FLOAT )
-		,	_minY( VG_MAX_FLOAT )
-		,	_width( -VG_MAX_FLOAT )
-		,	_height( -VG_MAX_FLOAT )
+        ,	_minX( std::numeric_limits<float>::max() )
+		,	_minY( std::numeric_limits<float>::max() )
+		,	_width( -1 )
+		,	_height( -1 )
         ,	_fillTesseleator( 0 )
         ,	_strokeVBO(-1)
         ,	_fillVBO(-1)
+        ,   _fcoords(new std::vector<float>)
 		{
-			switch (_datatype) {
-				case VG_PATH_DATATYPE_F:
-					_fcoords = new std::vector<float>( _numCoords );
-					break;
-				default:
-					// error 
-					break;
-			}
-			
 		}
 		
         ~MKPath();
         
         
 	protected:
-		VGint				_format;		// VG_PATH_FORMAT
-		VGPathDatatype		_datatype;		// VG_PATH_DATATYPE
-		VGfloat				_scale;			// VG_PATH_SCALE
-		VGfloat				_bias;			// VG_PATH_BIAS
-		VGint				_numSegments;	// VG_PATH_NUM_SEGMENTS
-		VGint				_numCoords;		// VG_PATH_NUM_COORDS
-		VGbitfield			_capabilities;
+		int				_numSegments;	// VG_PATH_NUM_SEGMENTS
+		int				_numCoords;		// VG_PATH_NUM_COORDS
 		
 		// data
-		std::vector< VGubyte >	_segments;
-		std::vector< VGfloat >	*_fcoords;
+		std::vector< unsigned char >	_segments;
+		std::vector< float >	*_fcoords;
 		bool				_isFillDirty;
 		bool				_isStrokeDirty;
 		
 		// bounds
-		VGfloat				_minX;
-		VGfloat				_minY;
-		VGfloat				_height;
-		VGfloat				_width;
+		float				_minX;
+		float				_minY;
+		float				_height;
+		float				_width;
 
-        VGfloat     _stroke_miterlimit;
+        float     _stroke_miterlimit;
         VGJoinStyle _joinStyle;
         VGCapStyle  _capStyle;
 
@@ -219,7 +165,7 @@ namespace MonkVG {
 
         
     private:		// tesseleator callbacks
-        void endOfTesselation( VGbitfield paintModes );
+        void endOfTesselation( GLbitfield paintModes );
         
     private:	// utility methods
         
@@ -242,8 +188,8 @@ namespace MonkVG {
         }
         
         void addVertex( float* v ) {
-            VGfloat x = (VGfloat)v[0];
-            VGfloat y = (VGfloat)v[1];
+            float x = (float)v[0];
+            float y = (float)v[1];
             updateBounds(x, y);
             _vertices.push_back(x);
             _vertices.push_back(y);
@@ -260,7 +206,7 @@ namespace MonkVG {
         void buildFatLineSegment( std::vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
         
         // stroke styles
-        void applyLineStyles( std::vector<v2_t>& vertices, VGCapStyle style, VGJoinStyle join, VGfloat miter, VGfloat stroke_width );
+        void applyLineStyles( std::vector<v2_t>& vertices, VGCapStyle style, VGJoinStyle join, float miter, float stroke_width );
         size_t numberOfvertices( std::vector<v2_t>& vertices );
         
         int32_t e1;

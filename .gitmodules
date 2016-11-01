@@ -1,6 +1,3 @@
-[submodule "thirdparty/OpenVG"]
-	path = thirdparty/OpenVG
-	url = https://github.com/sakamura/OpenVG.git
 [submodule "thirdparty/StyleSheet"]
 	path = thirdparty/StyleSheet
 	url = https://github.com/sakamura/StyleSheet.git
@@ -13,7 +10,6 @@
 [submodule "thirdparty/cpp-btree"]
 	path = thirdparty/cpp-btree
 	url = https://github.com/sakamura/cpp-btree
-
 [submodule "thirdparty/glm/glm"]
 	path = thirdparty/glm/glm
 	url = https://github.com/g-truc/glm.git

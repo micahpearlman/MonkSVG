@@ -10,7 +10,7 @@
 #ifndef __mkPaint_h__
 #define __mkPaint_h__
 
-#include <VG/openvg.h>
+#include "vgCompat.h"
 #include <vector>
 
 namespace MonkVG {
@@ -21,7 +21,7 @@ namespace MonkVG {
         MKPaint();
         ~MKPaint();
 	
-		const VGfloat* getPaintColor() const {
+		const float* getPaintColor() const {
 			return _paintColor;
 		}
 		
@@ -49,16 +49,16 @@ namespace MonkVG {
 	protected:
 		
 		VGPaintType				_paintType;
-		VGfloat					_paintColor[4];
+		float					_paintColor[4];
 		VGColorRampSpreadMode	_colorRampSpreadMode;
-		VGboolean				_colorRampPremultiplied;
-		VGfloat					_paintLinearGradient[4];
-		VGfloat					_paintRadialGradient[5];
-		VGfloat					_paint2x3Gradient[6];
+		bool				_colorRampPremultiplied;
+		float					_paintLinearGradient[4];
+		float					_paintRadialGradient[5];
+		float					_paint2x3Gradient[6];
 		VGTilingMode			_patternTilingMode;
 
 		struct Stop_t {
-			VGfloat a[5];
+			float a[5];
 		};
 		std::vector<Stop_t>		_colorRampStops;
 

@@ -9,7 +9,7 @@
 
 #include "mkPath.h"
 #include "mkSVG.h"
-#include <VG/vgext.h>
+#include "vgCompat.h"
 #include <cassert>
 
 namespace MonkVG {	// Internal Implementation
@@ -20,7 +20,7 @@ namespace MonkVG {	// Internal Implementation
 		return coords[(int32_t)segment >> 1];
 	}
 	
-	void MKPath::appendData( const VGint numSegments, const VGubyte * pathSegments, const void * pathData ) 
+	void MKPath::appendData( const int numSegments, const unsigned char * pathSegments, const float * pathData )
 	{
 		int numCoords = 0;
 		for( int i = 0; i < numSegments; i++ ) {
@@ -32,15 +32,7 @@ namespace MonkVG {	// Internal Implementation
 		_numCoords += numCoords;
 		
 		for( int i = 0; i < numCoords; i++ ) {
-			switch (_datatype) {
-				case VG_PATH_DATATYPE_F:
-					_fcoords->push_back( *(((VGfloat*)(pathData)) + i) );
-					break;
-				default:
-					// error
-					assert( !"unsupported path data type" );
-					break;
-			}
+            _fcoords->push_back( pathData[i] );
 		}
 		
 		setIsDirty( true );
@@ -65,21 +57,12 @@ namespace MonkVG {
     
     
     
-    void MKPath::clear( VGbitfield caps ) {
+    void MKPath::clear( GLbitfield caps ) {
         _segments.clear();
         _numSegments = 0;
         _numCoords = 0;
         
-        switch (_datatype) {
-            case VG_PATH_DATATYPE_F:
-                _fcoords->clear();
-                break;
-            default:
-                // error
-                assert( !"unsupported path data type" );
-                break;
-        }
-       
+        _fcoords->clear();
         _vertices.clear();
         
         // delete vbo buffers
@@ -114,7 +97,7 @@ namespace MonkVG {
         }
     }
     
-    bool MKPath::draw( VGbitfield paintModes ) {
+    bool MKPath::draw( GLbitfield paintModes ) {
         
         if ( paintModes == 0 )
             return false;
@@ -139,17 +122,17 @@ namespace MonkVG {
         return true;
     }
     
-    static inline VGfloat calcCubicBezier1d( VGfloat x0, VGfloat x1, VGfloat x2, VGfloat x3, VGfloat t ) {
+    static inline float calcCubicBezier1d( float x0, float x1, float x2, float x3, float t ) {
         // see openvg 1.0 spec section 8.3.2 Cubic Bezier Curves
-        VGfloat oneT = 1.0f - t;
-        VGfloat x =		x0 * (oneT * oneT * oneT)
+        float oneT = 1.0f - t;
+        float x =		x0 * (oneT * oneT * oneT)
         +	3.0f * x1 * (oneT * oneT) * t
         +	3.0f * x2 * oneT * (t * t)
         +	x3 * (t * t * t);
         return x;
     }
     
-    static inline VGfloat calcQuadBezier1d( VGfloat start, VGfloat control, VGfloat end, VGfloat time ) {
+    static inline float calcQuadBezier1d( float start, float control, float end, float time ) {
         float inverseTime = 1.0f - time;
         return (powf(inverseTime, 2.0f) * start) + (2.0f * inverseTime * time * control) + (powf(time, 2.0f) * end);
     }
@@ -160,22 +143,22 @@ namespace MonkVG {
     // Given: Points (x0, y0) and (x1, y1)
     // Return: TRUE if a solution exists, FALSE otherwise
     //	Circle centers are written to (cx0, cy0) and (cx1, cy1)
-    static VGboolean findUnitCircles(VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1,
-                                     VGfloat *cx0, VGfloat *cy0, VGfloat *cx1, VGfloat *cy1) {
+    static bool findUnitCircles(float x0, float y0, float x1, float y1,
+                                     float *cx0, float *cy0, float *cx1, float *cy1) {
         
         // Compute differences and averages
-        VGfloat dx = x0 - x1;
-        VGfloat dy = y0 - y1;
-        VGfloat xm = (x0 + x1)/2;
-        VGfloat ym = (y0 + y1)/2;
-        VGfloat dsq, disc, s, sdx, sdy;
+        float dx = x0 - x1;
+        float dy = y0 - y1;
+        float xm = (x0 + x1)/2;
+        float ym = (y0 + y1)/2;
+        float dsq, disc, s, sdx, sdy;
         // Solve for intersecting unit circles
         dsq = dx*dx + dy*dy;
         if (dsq == 0.0)
-            return VG_FALSE; // Points are coincident
+            return false; // Points are coincident
         disc = 1.0f/dsq - 1.0f/4.0f;
         if (disc < 0.0)
-            return VG_FALSE; // Points are too far apart
+            return false; // Points are too far apart
         
         s = sqrt(disc);
         sdx = s*dx;
@@ -185,17 +168,17 @@ namespace MonkVG {
         *cx1 = xm - sdy;
         *cy1 = ym + sdx;
         
-        return VG_TRUE;
+        return true;
     }
     
     //Given:
     //Return:
     //Ellipse parameters rh, rv, rot (in degrees), endpoints (x0, y0) and (x1, y1) TRUE if a solution exists, FALSE otherwise. Ellipse centers are written to (cx0, cy0) and (cx1, cy1)
     
-    static VGboolean findEllipses(VGfloat rh, VGfloat rv, VGfloat rot,
-                                  VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1,
-                                  VGfloat *cx0, VGfloat *cy0, VGfloat *cx1, VGfloat *cy1) {
-        VGfloat COS, SIN, x0p, y0p, x1p, y1p, pcx0, pcy0, pcx1, pcy1;
+    static bool findEllipses(float rh, float rv, float rot,
+                                  float x0, float y0, float x1, float y1,
+                                  float *cx0, float *cy0, float *cx1, float *cy1) {
+        float COS, SIN, x0p, y0p, x1p, y1p, pcx0, pcy0, pcx1, pcy1;
         // Convert rotation angle from degrees to radians
         rot *= M_PI/180.0;
         // Pre-compute rotation matrix entries
@@ -208,7 +191,7 @@ namespace MonkVG {
         x1p = (x1*COS + y1*SIN)/rh;
         y1p = (-x1*SIN + y1*COS)/rv;
         if (!findUnitCircles(x0p, y0p, x1p, y1p, &pcx0, &pcy0, &pcx1, &pcy1)) {
-            return VG_FALSE;
+            return false;
         }
         // Transform back to original coordinate space
         // using (forward) scale followed by (forward) rotate
@@ -221,7 +204,7 @@ namespace MonkVG {
         *cx1 = pcx1*COS - pcy1*SIN;
         *cy1 = pcx1*SIN + pcy1*COS;
         
-        return VG_TRUE;
+        return true;
     }
     
     
@@ -230,56 +213,28 @@ namespace MonkVG {
         _vertices.clear();
         
         // reset the bounds
-        _minX = VG_MAX_FLOAT;
-        _minY = VG_MAX_FLOAT;
-        _width = -VG_MAX_FLOAT;
-        _height = -VG_MAX_FLOAT;
+        _minX = std::numeric_limits<float>::max();
+        _minY = std::numeric_limits<float>::max();
+        _width = -1;
+        _height = -1;
         
         _fillTesseleator = tessNewTess(NULL);
         
-        //		gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (APIENTRY *) ( )) &MKPath::tessBegin );
-        //		gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (APIENTRY *) ( )) &MKPath::tessEnd );
-        //		gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (APIENTRY *) ( )) &MKPath::tessVertex );
-        //		gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (APIENTRY *) ( )) &MKPath::tessCombine );
-        //		gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (APIENTRY *)())&MKPath::tessError );
         TessWindingRule winding = TESS_WINDING_POSITIVE;
         if( _handler->getFillRule() == VG_EVEN_ODD ) {
             winding = TESS_WINDING_ODD;
-            //			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD );
         } else if( _handler->getFillRule() == VG_NON_ZERO ) {
             winding = TESS_WINDING_NONZERO;
-            //			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO );
         }
-        //		gluTessProperty( _fillTesseleator, GLU_TESS_TOLERANCE, 0.5f );
         
-        //		tessBeginPolygon( _fillTesseleator, this );
-        
-        
-        std::vector< VGfloat >::iterator coordsIter = _fcoords->begin();
-        VGbyte segment = VG_CLOSE_PATH;
+        std::vector< float >::iterator coordsIter = _fcoords->begin();
+        unsigned char segment = VG_CLOSE_PATH;
         v3_t coords(0,0,0);
         v3_t prev(0,0,0);
         int num_contours = 0;
         
-        for ( std::vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
+        for ( std::vector< unsigned char >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
             segment = (*segmentIter);
-            //int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
-            //segment = segment >> 1;
-            
-            
-            //			VG_CLOSE_PATH                               = ( 0 << 1),
-            //			VG_MOVE_TO                                  = ( 1 << 1),
-            //			VG_LINE_TO                                  = ( 2 << 1),
-            //			VG_HLINE_TO                                 = ( 3 << 1),
-            //			VG_VLINE_TO                                 = ( 4 << 1),
-            //			VG_QUAD_TO                                  = ( 5 << 1),
-            //			VG_CUBIC_TO                                 = ( 6 << 1),
-            //			VG_SQUAD_TO                                 = ( 7 << 1),
-            //			VG_SCUBIC_TO                                = ( 8 << 1),
-            //			VG_SCCWARC_TO                               = ( 9 << 1),
-            //			VG_SCWARC_TO                                = (10 << 1),
-            //			VG_LCCWARC_TO                               = (11 << 1),
-            //			VG_LCWARC_TO                                = (12 << 1),
             
             // todo: deal with relative move
             bool isRelative = segment & VG_RELATIVE;
@@ -287,7 +242,6 @@ namespace MonkVG {
                 case (VG_CLOSE_PATH >> 1):
                 {
                     if ( num_contours ) {
-                        //						gluTessEndContour( _fillTesseleator );
                         num_contours--;
                     }
                     
@@ -295,7 +249,6 @@ namespace MonkVG {
                 case (VG_MOVE_TO >> 1):
                 {
                     if ( num_contours ) {
-                        //						gluTessEndContour( _fillTesseleator );
                         num_contours--;
                     }
                     
@@ -346,10 +299,10 @@ namespace MonkVG {
                 case (VG_SCUBIC_TO >> 1):
                 {
                     prev = coords;
-                    VGfloat cp2x = *coordsIter; coordsIter++;
-                    VGfloat cp2y = *coordsIter; coordsIter++;
-                    VGfloat p3x = *coordsIter; coordsIter++;
-                    VGfloat p3y = *coordsIter; coordsIter++;
+                    float cp2x = *coordsIter; coordsIter++;
+                    float cp2y = *coordsIter; coordsIter++;
+                    float p3x = *coordsIter; coordsIter++;
+                    float p3y = *coordsIter; coordsIter++;
                     
                     
                     if ( isRelative ) {
@@ -359,13 +312,13 @@ namespace MonkVG {
                         p3y += prev.y;
                     }
                     
-                    VGfloat cp1x = 2.0f * cp2x - p3x;
-                    VGfloat cp1y = 2.0f * cp2y - p3y;
+                    float cp1x = 2.0f * cp2x - p3x;
+                    float cp1y = 2.0f * cp2y - p3y;
                     
                     
-                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
+                    float increment = 1.0f / _handler->getTessellationIterations();
                     //printf("\tcubic: ");
-                    for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+                    for ( float t = increment; t < 1.0f + increment; t+=increment ) {
                         v3_t c;
                         c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
                         c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
@@ -383,12 +336,12 @@ namespace MonkVG {
                 case (VG_CUBIC_TO >> 1):
                 {
                     prev = coords;
-                    VGfloat cp1x = *coordsIter; coordsIter++;
-                    VGfloat cp1y = *coordsIter; coordsIter++;
-                    VGfloat cp2x = *coordsIter; coordsIter++;
-                    VGfloat cp2y = *coordsIter; coordsIter++;
-                    VGfloat p3x = *coordsIter; coordsIter++;
-                    VGfloat p3y = *coordsIter; coordsIter++;
+                    float cp1x = *coordsIter; coordsIter++;
+                    float cp1y = *coordsIter; coordsIter++;
+                    float cp2x = *coordsIter; coordsIter++;
+                    float cp2y = *coordsIter; coordsIter++;
+                    float p3x = *coordsIter; coordsIter++;
+                    float p3y = *coordsIter; coordsIter++;
                     
                     if ( isRelative ) {
                         cp1x += prev.x;
@@ -399,9 +352,9 @@ namespace MonkVG {
                         p3y += prev.y;
                     }
                     
-                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
+                    float increment = 1.0f / _handler->getTessellationIterations();
                     //printf("\tcubic: ");
-                    for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+                    for ( float t = increment; t < 1.0f + increment; t+=increment ) {
                         v3_t c;
                         c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
                         c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
@@ -419,10 +372,10 @@ namespace MonkVG {
                 case (VG_QUAD_TO >> 1):
                 {
                     prev = coords;
-                    VGfloat cpx = *coordsIter; coordsIter++;
-                    VGfloat cpy = *coordsIter; coordsIter++;
-                    VGfloat px = *coordsIter; coordsIter++;
-                    VGfloat py = *coordsIter; coordsIter++;
+                    float cpx = *coordsIter; coordsIter++;
+                    float cpy = *coordsIter; coordsIter++;
+                    float px = *coordsIter; coordsIter++;
+                    float py = *coordsIter; coordsIter++;
                     
                     if ( isRelative ) {
                         cpx += prev.x;
@@ -431,8 +384,8 @@ namespace MonkVG {
                         py += prev.y;
                     }
                     
-                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
-                    for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+                    float increment = 1.0f / _handler->getTessellationIterations();
+                    for ( float t = increment; t < 1.0f + increment; t+=increment ) {
                         v3_t c;
                         c.x = calcQuadBezier1d( coords.x, cpx, px, t );
                         c.y = calcQuadBezier1d( coords.y, cpy, py, t );
@@ -452,29 +405,29 @@ namespace MonkVG {
                 case (VG_LCWARC_TO >> 1):
                     
                 {
-                    VGfloat rh = *coordsIter; coordsIter++;
-                    VGfloat rv = *coordsIter; coordsIter++;
-                    VGfloat rot = *coordsIter; coordsIter++;
-                    VGfloat cp1x = *coordsIter; coordsIter++;
-                    VGfloat cp1y = *coordsIter; coordsIter++;
+                    float rh = *coordsIter; coordsIter++;
+                    float rv = *coordsIter; coordsIter++;
+                    float rot = *coordsIter; coordsIter++;
+                    float cp1x = *coordsIter; coordsIter++;
+                    float cp1y = *coordsIter; coordsIter++;
                     if ( isRelative ) {
                         cp1x += prev.x;
                         cp1y += prev.y;
                     }
                     
                     // convert to Center Parameterization (see OpenVG Spec Apendix A)
-                    VGfloat cx0[2];
-                    VGfloat cx1[2];
-                    VGboolean success = findEllipses( rh, rv, rot,
+                    float cx0[2];
+                    float cx1[2];
+                    bool success = findEllipses( rh, rv, rot,
                                                      coords.x, coords.y, cp1x, cp1y,
                                                      &cx0[0], &cx0[1], &cx1[0], &cx1[1] );
                     
                     if ( success ) {
                         // see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics
                         const int steps = _handler->getTessellationIterations();
-                        VGfloat beta = 0;	// angle. todo
-                        VGfloat sinbeta = sinf( beta );
-                        VGfloat cosbeta = cosf( beta );
+                        float beta = 0;	// angle. todo
+                        float sinbeta = sinf( beta );
+                        float cosbeta = cosf( beta );
                         
                         // calculate the start and end angles
                         v2_t center;
@@ -483,7 +436,7 @@ namespace MonkVG {
                         v2_t norm[2];
                         norm[0].x = center.x - coords.x;
                         norm[0].y = center.y - coords.y;
-                        VGfloat inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
+                        float inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
                         norm[0].x *= inverse_len;
                         norm[0].y *= inverse_len;
                         
@@ -492,28 +445,28 @@ namespace MonkVG {
                         inverse_len = 1.0f/sqrtf( (norm[1].x * norm[1].x) + (norm[1].y * norm[1].y) );
                         norm[1].x *= inverse_len;
                         norm[1].y *= inverse_len;
-                        VGfloat startAngle = degrees( acosf( -norm[0].x ) );
-                        VGfloat endAngle = degrees( acosf( -norm[1].x ) );
+                        float startAngle = degrees( acosf( -norm[0].x ) );
+                        float endAngle = degrees( acosf( -norm[1].x ) );
                         
-                        VGfloat cross = norm[0].x;
+                        float cross = norm[0].x;
                         
                         if ( cross >= 0  ) {
                             startAngle = 360 - startAngle;
                             endAngle = 360 - endAngle;
                         }
                         if ( startAngle > endAngle ) {
-                            VGfloat tmp = startAngle;
+                            float tmp = startAngle;
                             startAngle = endAngle;
                             endAngle = tmp;
                             startAngle = startAngle - 90;
                             endAngle = endAngle - 90;
                         }
-                        for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
+                        for ( float g = startAngle; g < endAngle; g+=360/steps ) {
                             v3_t c;
                             
-                            VGfloat alpha = g * (M_PI / 180.0f);
-                            VGfloat sinalpha = sinf( alpha );
-                            VGfloat cosalpha = cosf( alpha );
+                            float alpha = g * (M_PI / 180.0f);
+                            float sinalpha = sinf( alpha );
+                            float cosalpha = cosf( alpha );
                             c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
                             c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
                             c.z = 0;
@@ -534,7 +487,6 @@ namespace MonkVG {
         }	// foreach segment
         
         if ( num_contours ) {
-            //			gluTessEndContour( _fillTesseleator );
             num_contours--;
         }
         
@@ -550,9 +502,7 @@ namespace MonkVG {
         float v[2];
         
         const float* verts = tessGetVertices(_fillTesseleator);
-        //const int* vinds = tessGetVertexIndices(_fillTesseleator);
         const int* elems = tessGetElements(_fillTesseleator);
-        //const int nverts = tessGetVertexCount(_fillTesseleator);
         const int nelems = tessGetElementCount(_fillTesseleator);
         
         for (int i = 0; i < nelems; ++i)
@@ -582,8 +532,6 @@ namespace MonkVG {
                 }
             }
         }
-        
-        //		gluTessEndPolygon( _fillTesseleator );
         
         tessDeleteTess(_fillTesseleator);
         _fillTesseleator = 0;
@@ -648,7 +596,7 @@ namespace MonkVG {
     }
 
     
-    void MKPath::applyLineStyles( std::vector<v2_t> &vertices, VGCapStyle style, VGJoinStyle join, VGfloat miterLimit, VGfloat stroke_width) {
+    void MKPath::applyLineStyles( std::vector<v2_t> &vertices, VGCapStyle style, VGJoinStyle join, float miterLimit, float stroke_width) {
         size_t len = numberOfvertices(vertices);
         
         const v2_t firstVertex = vertices.front();
@@ -984,32 +932,15 @@ namespace MonkVG {
         _strokeVertices.clear();
         
         // get the native OpenGL context
-        const VGfloat stroke_width = _handler->getStrokeLineWidth();
+        const float stroke_width = _handler->getStrokeLineWidth();
         
-        std::vector< VGfloat >::iterator coordsIter = _fcoords->begin();
-        VGbyte segment = VG_CLOSE_PATH;
+        std::vector< float >::iterator coordsIter = _fcoords->begin();
+        unsigned char segment = VG_CLOSE_PATH;
         v2_t coords = v2_t(0,0);
         v2_t prev = v2_t(0,0);
         v2_t closeTo = v2_t(0,0);
-        for ( std::vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
+        for ( std::vector< unsigned char >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
             segment = (*segmentIter);
-            //int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
-            //segment = segment >> 1;
-            
-            
-            //			VG_CLOSE_PATH                               = ( 0 << 1),
-            //			VG_MOVE_TO                                  = ( 1 << 1),
-            //			VG_LINE_TO                                  = ( 2 << 1),
-            //			VG_HLINE_TO                                 = ( 3 << 1),
-            //			VG_VLINE_TO                                 = ( 4 << 1),
-            //			VG_QUAD_TO                                  = ( 5 << 1),
-            //			VG_CUBIC_TO                                 = ( 6 << 1),
-            //			VG_SQUAD_TO                                 = ( 7 << 1),
-            //			VG_SCUBIC_TO                                = ( 8 << 1),
-            //			VG_SCCWARC_TO                               = ( 9 << 1),
-            //			VG_SCWARC_TO                                = (10 << 1),
-            //			VG_LCCWARC_TO                               = (11 << 1),
-            //			VG_LCWARC_TO                                = (12 << 1),
             
             // todo: deal with relative move
             bool isRelative = segment & VG_RELATIVE;
@@ -1062,10 +993,10 @@ namespace MonkVG {
                 case (VG_SCUBIC_TO >> 1):
                 {
                     prev = coords;
-                    VGfloat cp2x = *coordsIter; coordsIter++;
-                    VGfloat cp2y = *coordsIter; coordsIter++;
-                    VGfloat p3x = *coordsIter; coordsIter++;
-                    VGfloat p3y = *coordsIter; coordsIter++;
+                    float cp2x = *coordsIter; coordsIter++;
+                    float cp2y = *coordsIter; coordsIter++;
+                    float p3x = *coordsIter; coordsIter++;
+                    float p3y = *coordsIter; coordsIter++;
                     
                     
                     if ( isRelative ) {
@@ -1075,13 +1006,13 @@ namespace MonkVG {
                         p3y += prev.y;
                     }
                     
-                    VGfloat cp1x = 2.0f * cp2x - p3x;
-                    VGfloat cp1y = 2.0f * cp2y - p3y;
+                    float cp1x = 2.0f * cp2x - p3x;
+                    float cp1y = 2.0f * cp2y - p3y;
                     
                     
-                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
+                    float increment = 1.0f / _handler->getTessellationIterations();
                     //printf("\tcubic: ");
-                    for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+                    for ( float t = increment; t < 1.0f + increment; t+=increment ) {
                         v2_t c;
                         c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
                         c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
@@ -1097,10 +1028,10 @@ namespace MonkVG {
                 case (VG_QUAD_TO >> 1):     // added by rhcad
                 {
                     prev = coords;
-                    VGfloat cpx = *coordsIter; coordsIter++;
-                    VGfloat cpy = *coordsIter; coordsIter++;
-                    VGfloat px = *coordsIter; coordsIter++;
-                    VGfloat py = *coordsIter; coordsIter++;
+                    float cpx = *coordsIter; coordsIter++;
+                    float cpy = *coordsIter; coordsIter++;
+                    float px = *coordsIter; coordsIter++;
+                    float py = *coordsIter; coordsIter++;
                     
                     if ( isRelative ) {
                         cpx += prev.x;
@@ -1109,9 +1040,9 @@ namespace MonkVG {
                         py += prev.y;
                     }
                     
-                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
+                    float increment = 1.0f / _handler->getTessellationIterations();
                     
-                    for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+                    for ( float t = increment; t < 1.0f + increment; t+=increment ) {
                         v2_t c;
                         c.x = calcQuadBezier1d( coords.x, cpx, px, t );
                         c.y = calcQuadBezier1d( coords.y, cpy, py, t );
@@ -1126,12 +1057,12 @@ namespace MonkVG {
                 case (VG_CUBIC_TO >> 1):	// todo
                 {
                     prev = coords;
-                    VGfloat cp1x = *coordsIter; coordsIter++;
-                    VGfloat cp1y = *coordsIter; coordsIter++;
-                    VGfloat cp2x = *coordsIter; coordsIter++;
-                    VGfloat cp2y = *coordsIter; coordsIter++;
-                    VGfloat p3x = *coordsIter; coordsIter++;
-                    VGfloat p3y = *coordsIter; coordsIter++;
+                    float cp1x = *coordsIter; coordsIter++;
+                    float cp1y = *coordsIter; coordsIter++;
+                    float cp2x = *coordsIter; coordsIter++;
+                    float cp2y = *coordsIter; coordsIter++;
+                    float p3x = *coordsIter; coordsIter++;
+                    float p3y = *coordsIter; coordsIter++;
                     
                     if ( isRelative ) {
                         cp1x += prev.x;
@@ -1143,9 +1074,9 @@ namespace MonkVG {
                     }
                     
                     
-                    VGfloat increment = 1.0f / _handler->getTessellationIterations();
+                    float increment = 1.0f / _handler->getTessellationIterations();
                     
-                    for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+                    for ( float t = increment; t < 1.0f + increment; t+=increment ) {
                         v2_t c;
                         c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
                         c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
@@ -1162,11 +1093,11 @@ namespace MonkVG {
                 case (VG_LCWARC_TO >> 1):	
                     
                 {
-                    VGfloat rh = *coordsIter; coordsIter++;
-                    VGfloat rv = *coordsIter; coordsIter++;
-                    VGfloat rot = *coordsIter; coordsIter++;
-                    VGfloat cp1x = *coordsIter; coordsIter++;
-                    VGfloat cp1y = *coordsIter; coordsIter++;
+                    float rh = *coordsIter; coordsIter++;
+                    float rv = *coordsIter; coordsIter++;
+                    float rot = *coordsIter; coordsIter++;
+                    float cp1x = *coordsIter; coordsIter++;
+                    float cp1y = *coordsIter; coordsIter++;
                     if ( isRelative ) {
                         cp1x += prev.x;
                         cp1y += prev.y;
@@ -1174,18 +1105,18 @@ namespace MonkVG {
                     
                     
                     // convert to Center Parameterization (see OpenVG Spec Apendix A)
-                    VGfloat cx0[2];
-                    VGfloat cx1[2];
-                    VGboolean success = findEllipses( rh, rv, rot,
+                    float cx0[2];
+                    float cx1[2];
+                    bool success = findEllipses( rh, rv, rot,
                                                      coords.x, coords.y, cp1x, cp1y,
                                                      &cx0[0], &cx0[1], &cx1[0], &cx1[1] );
                     
                     if ( success ) {
                         // see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
                         const int steps = _handler->getTessellationIterations();
-                        VGfloat beta = 0;	// angle. todo
-                        VGfloat sinbeta = sinf( beta );
-                        VGfloat cosbeta = cosf( beta );
+                        float beta = 0;	// angle. todo
+                        float sinbeta = sinf( beta );
+                        float cosbeta = cosf( beta );
                         
                         // calculate the start and end angles
                         v2_t center;
@@ -1194,7 +1125,7 @@ namespace MonkVG {
                         v2_t norm[2];
                         norm[0].x = center.x - coords.x;
                         norm[0].y = center.y - coords.y;
-                        VGfloat inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
+                        float inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
                         norm[0].x *= inverse_len;
                         norm[0].y *= inverse_len;
                         
@@ -1203,15 +1134,15 @@ namespace MonkVG {
                         inverse_len = 1.0f/sqrtf( (norm[1].x * norm[1].x) + (norm[1].y * norm[1].y) );
                         norm[1].x *= inverse_len;
                         norm[1].y *= inverse_len;
-                        VGfloat startAngle = degrees( acosf( -norm[0].x ) );
-                        VGfloat endAngle = degrees( acosf( -norm[1].x ) );
-                        VGfloat cross = norm[0].x;
+                        float startAngle = degrees( acosf( -norm[0].x ) );
+                        float endAngle = degrees( acosf( -norm[1].x ) );
+                        float cross = norm[0].x;
                         if ( cross >= 0 ) {
                             startAngle = 360 - startAngle;
                             endAngle = 360 - endAngle;
                         }
                         if ( startAngle > endAngle ) {
-                            VGfloat tmp = startAngle;
+                            float tmp = startAngle;
                             startAngle = endAngle;
                             endAngle = tmp;
                             startAngle = startAngle - 90;
@@ -1220,12 +1151,12 @@ namespace MonkVG {
                         
                         
                         prev = coords;
-                        for ( VGfloat g = startAngle; g < endAngle + (360/steps); g+=360/steps ) {
+                        for ( float g = startAngle; g < endAngle + (360/steps); g+=360/steps ) {
                             v2_t c;
                             
-                            VGfloat alpha = g * (M_PI / 180.0f);
-                            VGfloat sinalpha = sinf( alpha );
-                            VGfloat cosalpha = cosf( alpha );
+                            float alpha = g * (M_PI / 180.0f);
+                            float sinalpha = sinf( alpha );
+                            float cosalpha = cosf( alpha );
                             c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
                             c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
                             //printf( "(%f, %f)\n", c[0], c[1] );
@@ -1256,7 +1187,7 @@ namespace MonkVG {
         
     }
     
-    void MKPath::endOfTesselation( VGbitfield paintModes ) {
+    void MKPath::endOfTesselation( GLbitfield paintModes ) {
         MKBatch* glBatch = (MKBatch*)_handler->currentBatch();
         if( glBatch && (_vertices.size() > 0 || _strokeVertices.size() > 0) ) {	// if in batch mode update the current batch
             glBatch->addPathVertexData( &_vertices[0], _vertices.size()/2, 
@@ -1271,16 +1202,9 @@ namespace MonkVG {
     }
   
     MKPath::~MKPath() {
-        switch (_datatype) {
-            case VG_PATH_DATATYPE_F:
-                _fcoords->clear();
-                delete _fcoords;
-                _fcoords = 0;
-                break;
-            default:
-                // error 
-                break;
-        }
+        _fcoords->clear();
+        delete _fcoords;
+        _fcoords = 0;
 
         if ( _fillTesseleator ) {
             tessDeleteTess( _fillTesseleator );
