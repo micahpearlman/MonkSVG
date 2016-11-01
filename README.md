@@ -64,7 +64,18 @@ Use git to clone the official original versions:
 - Windows Port: Vincent Richomme (Removed from SakaSVG)
 - Android and Linux Port: Gav Wood (Removed from SakaSVG)
 - Smooth line, Miter, Cap: Sean Batson
-- math.hpp, vec.hpp: mapbox-gl-native https://github.com/mapbox/mapbox-gl-native
+
+### SakaSVG's third parties
+
+SakaSVG uses the following 3rd party libraries:
+- __cpp_btree__ https://github.com/sakamura/cpp-btree (Apache 2.0 License)
+- __glm__ https://github.com/g-truc/glm (Happy Bunny License / MIT License)
+- __libTess2__ https://github.com/sakamura/libtess2 (SGI Free Software License B Version 2.0)
+- __OpenVG Headers__ https://github.com/sakamura/OpenVG (MIT License)
+- __StyleSheet__ https://github.com/sakamura/StyleSheet (Clean room implementation using the MIT License)
+- __TinyXML2__ https://github.com/sakamura/tinyxml2 (ZLib License)
+
+__Please inform yourself on the different third parties licensing before using SakaSVG! Please abide by their rules!__
 
 ## Warning & Caveat Emptor
 
