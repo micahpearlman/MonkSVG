@@ -10,82 +10,97 @@
 		9649536C1DC2E0E700838988 /* mkBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9649535D1DC2E0E700838988 /* mkBatch.cpp */; };
 		9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953641DC2E0E700838988 /* mkPaint.cpp */; };
 		964953711DC2E0E700838988 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953671DC2E0E700838988 /* mkPath.cpp */; };
-		96874F391DC7ABE4002B18FE /* libcpp_btree.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96BB2E041DC4FB41003079AC /* libcpp_btree.a */; };
-		96874F3A1DC7ABE4002B18FE /* libOpenVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87D51D71CE87006528A1 /* libOpenVG.a */; };
-		96874F3B1DC7ABE4002B18FE /* libStyleSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87DB1D71CE93006528A1 /* libStyleSheet.a */; };
-		96874F3C1DC7ABE4002B18FE /* libTess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96BB2E0A1DC4FB57003079AC /* libTess2.a */; };
-		96874F3D1DC7ABE4002B18FE /* libtinyxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FA87E71D71CF0F006528A1 /* libtinyxml2.a */; };
 		96874F3F1DC7BC21002B18FE /* mkMath.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96874F3E1DC7BBEA002B18FE /* mkMath.h */; };
+		968751BD1DC80A8C002B18FE /* libcpp_btree.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F491DC7FD7D002B18FE /* libcpp_btree.a */; };
+		968751BE1DC80A8C002B18FE /* libglm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F731DC7FDE9002B18FE /* libglm.a */; };
+		968751BF1DC80A8C002B18FE /* libOpenVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F581DC7FDA5002B18FE /* libOpenVG.a */; };
+		968751C01DC80A8C002B18FE /* libStyleSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F531DC7FD97002B18FE /* libStyleSheet.a */; };
+		968751C11DC80A8C002B18FE /* libTess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F441DC7FD70002B18FE /* libTess2.a */; };
+		968751C21DC80A8C002B18FE /* libtinyxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F4E1DC7FD8B002B18FE /* libtinyxml2.a */; };
 		96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043C1D6A11F20081408C /* mkSVG.h */; };
 		96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043D1D6A11F20081408C /* mkTransform2d.h */; };
 		96F7043E1D6A11F20081408C /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96F7043B1D6A11F20081408C /* mkSVG.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		96BB2E031DC4FB41003079AC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 96161F761DB5CB9D005A2034;
-			remoteInfo = cpp_btree;
-		};
-		96BB2E091DC4FB57003079AC /* PBXContainerItemProxy */ = {
+		96874F431DC7FD70002B18FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 96FF989A1D65E54800404BDA;
 			remoteInfo = Tess2;
 		};
-		96BB2E0B1DC4FE3F003079AC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 96FF98991D65E54800404BDA;
-			remoteInfo = Tess2;
-		};
-		96BB2E0D1DC4FE3F003079AC /* PBXContainerItemProxy */ = {
+		96874F481DC7FD7D002B18FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 96161F751DB5CB9D005A2034;
+			proxyType = 2;
+			remoteGlobalIDString = 96161F761DB5CB9D005A2034;
 			remoteInfo = cpp_btree;
 		};
-		96FA87D41D71CE87006528A1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 96199CFF1D65F97C00AAAAF1;
-			remoteInfo = OpenVG;
-		};
-		96FA87DA1D71CE93006528A1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 96EF25071D662D2E00F95C51;
-			remoteInfo = StyleSheet;
-		};
-		96FA87E61D71CF0F006528A1 /* PBXContainerItemProxy */ = {
+		96874F4D1DC7FD8B002B18FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 96F704161D69D3AA0081408C;
 			remoteInfo = tinyxml2;
 		};
-		96FA87E91D71D003006528A1 /* PBXContainerItemProxy */ = {
+		96874F521DC7FD97002B18FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96EF25071D662D2E00F95C51;
+			remoteInfo = StyleSheet;
+		};
+		96874F571DC7FDA5002B18FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96199CFF1D65F97C00AAAAF1;
+			remoteInfo = OpenVG;
+		};
+		96874F721DC7FDE9002B18FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 96874F621DC7FDE8002B18FE;
+			remoteInfo = glm;
+		};
+		968751B11DC80A82002B18FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96874F611DC7FDE8002B18FE;
+			remoteInfo = glm;
+		};
+		968751B31DC80A82002B18FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96FF98991D65E54800404BDA;
+			remoteInfo = Tess2;
+		};
+		968751B51DC80A82002B18FE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96161F751DB5CB9D005A2034;
+			remoteInfo = cpp_btree;
+		};
+		968751B71DC80A82002B18FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 96F704151D69D3AA0081408C;
 			remoteInfo = tinyxml2;
 		};
-		96FA87EB1D71D003006528A1 /* PBXContainerItemProxy */ = {
+		968751B91DC80A82002B18FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 96EF25061D662D2E00F95C51;
 			remoteInfo = StyleSheet;
 		};
-		96FA87ED1D71D003006528A1 /* PBXContainerItemProxy */ = {
+		968751BB1DC80A82002B18FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */;
 			proxyType = 1;
@@ -110,24 +125,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9649535A1DC2E0E700838988 /* math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = math.hpp; path = src/math.hpp; sourceTree = "<group>"; };
 		9649535D1DC2E0E700838988 /* mkBatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBatch.cpp; path = src/mkBatch.cpp; sourceTree = "<group>"; };
 		9649535E1DC2E0E700838988 /* mkBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBatch.h; path = src/mkBatch.h; sourceTree = "<group>"; };
 		964953641DC2E0E700838988 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPaint.cpp; path = src/mkPaint.cpp; sourceTree = "<group>"; };
 		964953651DC2E0E700838988 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPaint.h; path = src/mkPaint.h; sourceTree = "<group>"; };
 		964953671DC2E0E700838988 /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = src/mkPath.cpp; sourceTree = "<group>"; };
 		964953681DC2E0E700838988 /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = src/mkPath.h; sourceTree = "<group>"; };
-		9649536A1DC2E0E700838988 /* vec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vec.hpp; path = src/vec.hpp; sourceTree = "<group>"; };
 		96874F3E1DC7BBEA002B18FE /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkMath.h; path = src/mkMath.h; sourceTree = "<group>"; };
-		96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "thirdparty/cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
-		96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess2.xcodeproj; path = thirdparty/libtess2/Tess2.xcodeproj; sourceTree = "<group>"; };
+		96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = glm.xcodeproj; path = glm/glm.xcodeproj; sourceTree = "<group>"; };
+		96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
+		96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess2.xcodeproj; path = libtess2/Tess2.xcodeproj; sourceTree = "<group>"; };
 		96F7042F1D69D4490081408C /* libSakaSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSakaSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F7043B1D6A11F20081408C /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkSVG.cpp; path = src/mkSVG.cpp; sourceTree = "<group>"; };
 		96F7043C1D6A11F20081408C /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkSVG.h; path = src/mkSVG.h; sourceTree = "<group>"; };
 		96F7043D1D6A11F20081408C /* mkTransform2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkTransform2d.h; path = src/mkTransform2d.h; sourceTree = "<group>"; };
-		96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpenVG.xcodeproj; path = thirdparty/OpenVG/OpenVG.xcodeproj; sourceTree = "<group>"; };
-		96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = StyleSheet.xcodeproj; path = thirdparty/StyleSheet/StyleSheet.xcodeproj; sourceTree = "<group>"; };
-		96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = tinyxml2.xcodeproj; path = thirdparty/tinyxml2/tinyxml2.xcodeproj; sourceTree = "<group>"; };
+		96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpenVG.xcodeproj; path = OpenVG/OpenVG.xcodeproj; sourceTree = "<group>"; };
+		96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = StyleSheet.xcodeproj; path = StyleSheet/StyleSheet.xcodeproj; sourceTree = "<group>"; };
+		96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = tinyxml2.xcodeproj; path = tinyxml2/tinyxml2.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,11 +149,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96874F391DC7ABE4002B18FE /* libcpp_btree.a in Frameworks */,
-				96874F3A1DC7ABE4002B18FE /* libOpenVG.a in Frameworks */,
-				96874F3B1DC7ABE4002B18FE /* libStyleSheet.a in Frameworks */,
-				96874F3C1DC7ABE4002B18FE /* libTess2.a in Frameworks */,
-				96874F3D1DC7ABE4002B18FE /* libtinyxml2.a in Frameworks */,
+				968751BD1DC80A8C002B18FE /* libcpp_btree.a in Frameworks */,
+				968751BE1DC80A8C002B18FE /* libglm.a in Frameworks */,
+				968751BF1DC80A8C002B18FE /* libOpenVG.a in Frameworks */,
+				968751C01DC80A8C002B18FE /* libStyleSheet.a in Frameworks */,
+				968751C11DC80A8C002B18FE /* libTess2.a in Frameworks */,
+				968751C21DC80A8C002B18FE /* libtinyxml2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,30 +164,60 @@
 		964953581DC2E0B600838988 /* MonkVG */ = {
 			isa = PBXGroup;
 			children = (
-				9649535A1DC2E0E700838988 /* math.hpp */,
 				9649535D1DC2E0E700838988 /* mkBatch.cpp */,
 				9649535E1DC2E0E700838988 /* mkBatch.h */,
 				964953641DC2E0E700838988 /* mkPaint.cpp */,
 				964953651DC2E0E700838988 /* mkPaint.h */,
 				964953671DC2E0E700838988 /* mkPath.cpp */,
 				964953681DC2E0E700838988 /* mkPath.h */,
-				9649536A1DC2E0E700838988 /* vec.hpp */,
 			);
 			path = MonkVG;
 			sourceTree = "<group>";
 		};
-		96BB2E001DC4FB41003079AC /* Products */ = {
+		96874F401DC7FD70002B18FE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				96BB2E041DC4FB41003079AC /* libcpp_btree.a */,
+				96874F441DC7FD70002B18FE /* libTess2.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		96BB2E061DC4FB57003079AC /* Products */ = {
+		96874F451DC7FD7D002B18FE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				96BB2E0A1DC4FB57003079AC /* libTess2.a */,
+				96874F491DC7FD7D002B18FE /* libcpp_btree.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96874F4A1DC7FD8B002B18FE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96874F4E1DC7FD8B002B18FE /* libtinyxml2.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96874F4F1DC7FD97002B18FE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96874F531DC7FD97002B18FE /* libStyleSheet.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96874F541DC7FDA5002B18FE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96874F581DC7FDA5002B18FE /* libOpenVG.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96874F6F1DC7FDE8002B18FE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96874F731DC7FDE9002B18FE /* libglm.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,8 +226,8 @@
 			isa = PBXGroup;
 			children = (
 				964953581DC2E0B600838988 /* MonkVG */,
-				96FA87CF1D71CE75006528A1 /* ThirdParty */,
 				96FA87CE1D71CE36006528A1 /* SakaSVG */,
+				96FA87CF1D71CE75006528A1 /* ThirdParty */,
 				96F704301D69D4490081408C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -209,6 +254,7 @@
 		96FA87CF1D71CE75006528A1 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */,
 				96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */,
 				96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */,
 				96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */,
@@ -216,30 +262,7 @@
 				96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */,
 			);
 			name = ThirdParty;
-			sourceTree = "<group>";
-		};
-		96FA87D11D71CE87006528A1 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				96FA87D51D71CE87006528A1 /* libOpenVG.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		96FA87D71D71CE93006528A1 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				96FA87DB1D71CE93006528A1 /* libStyleSheet.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		96FA87E31D71CF0F006528A1 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				96FA87E71D71CF0F006528A1 /* libtinyxml2.a */,
-			);
-			name = Products;
+			path = thirdparty;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -256,11 +279,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				96BB2E0C1DC4FE3F003079AC /* PBXTargetDependency */,
-				96BB2E0E1DC4FE3F003079AC /* PBXTargetDependency */,
-				96FA87EA1D71D003006528A1 /* PBXTargetDependency */,
-				96FA87EC1D71D003006528A1 /* PBXTargetDependency */,
-				96FA87EE1D71D003006528A1 /* PBXTargetDependency */,
+				968751B21DC80A82002B18FE /* PBXTargetDependency */,
+				968751B41DC80A82002B18FE /* PBXTargetDependency */,
+				968751B61DC80A82002B18FE /* PBXTargetDependency */,
+				968751B81DC80A82002B18FE /* PBXTargetDependency */,
+				968751BA1DC80A82002B18FE /* PBXTargetDependency */,
+				968751BC1DC80A82002B18FE /* PBXTargetDependency */,
 			);
 			name = SakaSVG;
 			productName = MonkSVG;
@@ -296,23 +320,27 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 96BB2E001DC4FB41003079AC /* Products */;
+					ProductGroup = 96874F451DC7FD7D002B18FE /* Products */;
 					ProjectRef = 96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */;
 				},
 				{
-					ProductGroup = 96FA87D11D71CE87006528A1 /* Products */;
+					ProductGroup = 96874F6F1DC7FDE8002B18FE /* Products */;
+					ProjectRef = 96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */;
+				},
+				{
+					ProductGroup = 96874F541DC7FDA5002B18FE /* Products */;
 					ProjectRef = 96FA87D01D71CE87006528A1 /* OpenVG.xcodeproj */;
 				},
 				{
-					ProductGroup = 96FA87D71D71CE93006528A1 /* Products */;
+					ProductGroup = 96874F4F1DC7FD97002B18FE /* Products */;
 					ProjectRef = 96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */;
 				},
 				{
-					ProductGroup = 96BB2E061DC4FB57003079AC /* Products */;
+					ProductGroup = 96874F401DC7FD70002B18FE /* Products */;
 					ProjectRef = 96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */;
 				},
 				{
-					ProductGroup = 96FA87E31D71CF0F006528A1 /* Products */;
+					ProductGroup = 96874F4A1DC7FD8B002B18FE /* Products */;
 					ProjectRef = 96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */;
 				},
 			);
@@ -324,39 +352,46 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		96BB2E041DC4FB41003079AC /* libcpp_btree.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libcpp_btree.a;
-			remoteRef = 96BB2E031DC4FB41003079AC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		96BB2E0A1DC4FB57003079AC /* libTess2.a */ = {
+		96874F441DC7FD70002B18FE /* libTess2.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libTess2.a;
-			remoteRef = 96BB2E091DC4FB57003079AC /* PBXContainerItemProxy */;
+			remoteRef = 96874F431DC7FD70002B18FE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		96FA87D51D71CE87006528A1 /* libOpenVG.a */ = {
+		96874F491DC7FD7D002B18FE /* libcpp_btree.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libOpenVG.a;
-			remoteRef = 96FA87D41D71CE87006528A1 /* PBXContainerItemProxy */;
+			path = libcpp_btree.a;
+			remoteRef = 96874F481DC7FD7D002B18FE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		96FA87DB1D71CE93006528A1 /* libStyleSheet.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libStyleSheet.a;
-			remoteRef = 96FA87DA1D71CE93006528A1 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		96FA87E71D71CF0F006528A1 /* libtinyxml2.a */ = {
+		96874F4E1DC7FD8B002B18FE /* libtinyxml2.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libtinyxml2.a;
-			remoteRef = 96FA87E61D71CF0F006528A1 /* PBXContainerItemProxy */;
+			remoteRef = 96874F4D1DC7FD8B002B18FE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		96874F531DC7FD97002B18FE /* libStyleSheet.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libStyleSheet.a;
+			remoteRef = 96874F521DC7FD97002B18FE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		96874F581DC7FDA5002B18FE /* libOpenVG.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libOpenVG.a;
+			remoteRef = 96874F571DC7FDA5002B18FE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		96874F731DC7FDE9002B18FE /* libglm.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libglm.a;
+			remoteRef = 96874F721DC7FDE9002B18FE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -376,30 +411,35 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		96BB2E0C1DC4FE3F003079AC /* PBXTargetDependency */ = {
+		968751B21DC80A82002B18FE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = glm;
+			targetProxy = 968751B11DC80A82002B18FE /* PBXContainerItemProxy */;
+		};
+		968751B41DC80A82002B18FE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Tess2;
-			targetProxy = 96BB2E0B1DC4FE3F003079AC /* PBXContainerItemProxy */;
+			targetProxy = 968751B31DC80A82002B18FE /* PBXContainerItemProxy */;
 		};
-		96BB2E0E1DC4FE3F003079AC /* PBXTargetDependency */ = {
+		968751B61DC80A82002B18FE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = cpp_btree;
-			targetProxy = 96BB2E0D1DC4FE3F003079AC /* PBXContainerItemProxy */;
+			targetProxy = 968751B51DC80A82002B18FE /* PBXContainerItemProxy */;
 		};
-		96FA87EA1D71D003006528A1 /* PBXTargetDependency */ = {
+		968751B81DC80A82002B18FE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = tinyxml2;
-			targetProxy = 96FA87E91D71D003006528A1 /* PBXContainerItemProxy */;
+			targetProxy = 968751B71DC80A82002B18FE /* PBXContainerItemProxy */;
 		};
-		96FA87EC1D71D003006528A1 /* PBXTargetDependency */ = {
+		968751BA1DC80A82002B18FE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = StyleSheet;
-			targetProxy = 96FA87EB1D71D003006528A1 /* PBXContainerItemProxy */;
+			targetProxy = 968751B91DC80A82002B18FE /* PBXContainerItemProxy */;
 		};
-		96FA87EE1D71D003006528A1 /* PBXTargetDependency */ = {
+		968751BC1DC80A82002B18FE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = OpenVG;
-			targetProxy = 96FA87ED1D71D003006528A1 /* PBXContainerItemProxy */;
+			targetProxy = 968751BB1DC80A82002B18FE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

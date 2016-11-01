@@ -21,6 +21,7 @@
 #include "mkPaint.h"
 #include <VG/vgext.h>
 #include <OpenGLES/ES2/gl.h>
+#include <glm/gtx/matrix_transform_2d.hpp>
 
 namespace MonkSVG {
     MKSVGHandler::path_object_t::~path_object_t() {
@@ -863,9 +864,6 @@ namespace MonkSVG {
     ,	_currentBatch( 0 )
 
     {
-        _path_user_to_surface.setIdentity();
-        _active_matrix->setIdentity();
-        
         disableAutomaticCleanup();
 
         _blackBackFill = createPaint();
@@ -1539,23 +1537,6 @@ namespace MonkSVG {
     
     void MKSVGHandler::loadGLMatrix() {
         Matrix33& active = *getActiveMatrix();
-         GLfloat mat44[4][4];
-         for( int x = 0; x < 4; x++ )
-         for( int y = 0; y < 4; y++ )
-         mat44[x][y] = 0;
-         mat44[0][0] = 1.0f;
-         mat44[1][1] = 1.0f;
-         mat44[2][2] = 1.0f;
-         mat44[3][3]	= 1.0f;
-         
-        
-         //		a, c, e,			// cos(a) -sin(a) tx
-         //		b, d, f,			// sin(a) cos(a)  ty
-         //		ff0, ff1, ff2;		// 0      0       1
-         
-         mat44[0][0] = active.a;	mat44[0][1] = active.b;
-         mat44[1][0] = active.c;	mat44[1][1] = active.d;
-         mat44[3][0] = active.e;	mat44[3][1] = active.f;
 // TODO send as uniform to shader         glLoadMatrixf( &mat44[0][0] );
     }
     
@@ -1563,16 +1544,16 @@ namespace MonkSVG {
     
     void MKSVGHandler::setIdentity() {
         Matrix33* active = getActiveMatrix();
-        active->setIdentity();
+        *active = Matrix33();
     }
     
     void MKSVGHandler::transform( VGfloat* t ) {
         // a	b	0
         // c	d	0
         // tx	ty	1
-        Matrix33* active = getActiveMatrix();
+        const Matrix33::value_type* active = glm::value_ptr(*getActiveMatrix());
         for( int i = 0; i < 9; i++ )
-            t[i] = active->m[i];
+            t[i] = active[i];
         
     }
     
@@ -1588,56 +1569,34 @@ namespace MonkSVG {
         // tx	ty	1
         
         Matrix33* active = getActiveMatrix();
-        for( int i = 0; i < 9; i++ )
-            active->m[i] = t[i];
+        *active = glm::make_mat3(t);
     }
     
     
     void MKSVGHandler::multiply( const VGfloat* t ) {
-        Matrix33 m;
-        for ( int x = 0; x < 3; x++ ) {
-            for ( int y = 0; y < 3; y++ ) {
-                m.set( y, x, t[(y*3)+x] );
-            }
-        }
+        Matrix33 m = glm::make_mat3(t);
         Matrix33* active = getActiveMatrix();
-        active->postMultiply( m );
+        (*active) *= m;
     }
     
     void MKSVGHandler::scale( VGfloat sx, VGfloat sy ) {
         Matrix33* active = getActiveMatrix();
-        Matrix33 scale;
-        scale.setIdentity();
-        scale.setScale( sx, sy );
-        Matrix33 tmp;
-        Matrix33::multiply( tmp, scale, *active );
-        active->copy( tmp );
+        *active = glm::scale(*active, v2_t(sx, sy));
     }
     void MKSVGHandler::translate( VGfloat x, VGfloat y ) {
-        
         Matrix33* active = getActiveMatrix();
-        Matrix33 translate;
-        translate.setTranslate( x, y );
-        Matrix33 tmp;
-        tmp.setIdentity();
-        Matrix33::multiply( tmp, translate, *active );
-        active->copy( tmp );
+        *active = glm::translate(*active, v2_t(x, y));
     }
     float MKSVGHandler::angle()
     {
         Matrix33* active = getActiveMatrix();
         
-        return active->angle();
+        return std::acosf((*active)[0][0]);
     }
     
     void MKSVGHandler::rotate( VGfloat angle ) {
         Matrix33* active = getActiveMatrix();
-        Matrix33 rotate;
-        rotate.setRotation( radians( angle ) );
-        Matrix33 tmp;
-        tmp.setIdentity();
-        Matrix33::multiply( tmp, rotate, *active );
-        active->copy( tmp );
+        *active = glm::rotate(*active, angle);
     }
     
     void MKSVGHandler::rotate(VGfloat angle, VGfloat x, VGfloat y, VGfloat z) {

@@ -59,7 +59,6 @@ namespace MonkVG {	// Internal Implementation
 
 #include "mkBatch.h"
 #include <cassert>
-#include "vec.hpp"
 #include <vector>
 
 namespace MonkVG {
@@ -638,11 +637,22 @@ namespace MonkVG {
         
     }
     
+    template <typename T>
+    inline T perp(const T& a) {
+        return T(-a.y, a.x);
+    }
+    
+    template <typename T>
+    inline typename T::value_type mag(const T& v) {
+        return glm::sqrt(glm::dot(v, v));
+    }
+
+    
     void MKPath::applyLineStyles( std::vector<v2_t> &vertices, VGCapStyle style, VGJoinStyle join, VGfloat miterLimit, VGfloat stroke_width) {
         size_t len = numberOfvertices(vertices);
         
-        const Coordinate firstVertex = vertices.front();
-        const Coordinate lastVertex = vertices[len - 1];
+        const v2_t firstVertex = vertices.front();
+        const v2_t lastVertex = vertices[len - 1];
         const bool closed = firstVertex == lastVertex;
         
         if (len == 2 && closed)return;
@@ -654,16 +664,15 @@ namespace MonkVG {
         double distance = 0;
         bool startOfLine = true;
         
-        Coordinate currentVertex = Coordinate::null(), prevVertex = Coordinate::null(),
-        nextVertex = Coordinate::null();
-        vec2<double> prevNormal = vec2<double>::null(), nextNormal = vec2<double>::null();
+        v2_t currentVertex, prevVertex, nextVertex;
+        v2_t prevNormal, nextNormal;
         
         // the last three vertices added
         e1 = e2 = e3 = -1;
         
         if (closed) {
             currentVertex = vertices[len - 2];
-            nextNormal = util::perp(util::unit(vec2<double>(firstVertex - currentVertex)));
+            nextNormal = perp(glm::normalize(firstVertex - currentVertex));
         }
         
         const int32_t startVertex = 0;
@@ -679,42 +688,41 @@ namespace MonkVG {
                 nextVertex = vertices[i + 1];
             } else {
                 // there is no next vertex
-                nextVertex = Coordinate::null();
+                nextVertex = v2_t();
             }
             
             // if two consecutive vertices exist, skip the current one
-            if (nextVertex && vertices[i] == nextVertex) {
+            if (nextVertex != v2_t() && vertices[i] == nextVertex) {
                 continue;
             }
             
-            if (nextNormal) {
+            if (nextNormal != v2_t()) {
                 prevNormal = nextNormal;
             }
-            if (currentVertex) {
+            if (currentVertex != v2_t()) {
                 prevVertex = currentVertex;
             }
             
             currentVertex = vertices[i];
             
             // Calculate how far along the line the currentVertex is
-            if (prevVertex)
-                distance += util::dist<double>(currentVertex, prevVertex);
+            if (prevVertex != v2_t())
+                distance += glm::distance(currentVertex, prevVertex);
             
             // Calculate the normal towards the next vertex in this line. In case
             // there is no next vertex, pretend that the line is continuing straight,
             // meaning that we are just using the previous normal.
-            nextNormal = nextVertex ? util::perp(util::unit(vec2<double>(nextVertex - currentVertex)))
-            : prevNormal;
+            nextNormal = nextVertex != v2_t() ? perp(glm::normalize(nextVertex - currentVertex)) : prevNormal;
             
             // If we still don't have a previous normal, this is the beginning of a
             // non-closed line, so we're doing a straight "join".
-            if (!prevNormal) {
+            if (prevNormal == v2_t()) {
                 prevNormal = nextNormal;
             }
             
             // Determine the normal of the join extrusion. It is the angle bisector
             // of the segments between the previous line and the next line.
-            vec2<double> joinNormal = util::unit(prevNormal + nextNormal);
+            v2_t joinNormal = glm::normalize(prevNormal + nextNormal);
             
             /*  joinNormal     prevNormal
              *             ↖      ↑
@@ -733,9 +741,9 @@ namespace MonkVG {
             const float miterLength = cosHalfAngle != 0 ? 1 / cosHalfAngle: 1;
             
             // The join if a middle vertex, otherwise the cap
-            const bool middleVertex = prevVertex && nextVertex;
+            const bool middleVertex = prevVertex != v2_t() && nextVertex != v2_t();
             VGJoinStyle currentJoin = join;
-            const VGCapStyle currentCap = nextVertex ? beginCap : endCap;
+            const VGCapStyle currentCap = nextVertex != v2_t() ? beginCap : endCap;
             
             if (middleVertex) {
                 if (currentJoin == VG_JOIN_ROUND) {
@@ -778,9 +786,8 @@ namespace MonkVG {
                     joinNormal = nextNormal;
                 } else {
                     const float direction = prevNormal.x * nextNormal.y - prevNormal.y * nextNormal.x > 0 ? -1 : 1;
-                    const float bevelLength = miterLength * util::mag(prevNormal + nextNormal) /
-                    util::mag(prevNormal - nextNormal);
-                    joinNormal = util::perp(joinNormal) * bevelLength * direction;
+                    const float bevelLength = miterLength * mag(prevNormal + nextNormal) / mag(prevNormal - nextNormal);
+                    joinNormal = perp(joinNormal) * bevelLength * direction;
                 }
                 
                 addCurrentVertex(currentVertex, flip, distance, joinNormal, 0, 0, false, startVertex,
@@ -818,20 +825,20 @@ namespace MonkVG {
                     const int n = std::floor((0.5 - (cosHalfAngle - 0.5)) * 8);
                     
                     for (int m = 0; m < n; m++) {
-                        auto approxFractionalJoinNormal = util::unit(nextNormal * ((m + 1.0f) / (n + 1.0f)) + prevNormal);
+                        auto approxFractionalJoinNormal = glm::normalize(nextNormal * ((m + 1.0f) / (n + 1.0f)) + prevNormal);
                         addPieSliceVertex(currentVertex, flip, distance, approxFractionalJoinNormal, lineTurnsLeft, startVertex, triangleStore, vertices);
                     }
                     
                     addPieSliceVertex(currentVertex, flip, distance, joinNormal, lineTurnsLeft, startVertex, triangleStore, vertices);
                     
                     for (int k = n - 1; k >= 0; k--) {
-                        auto approxFractionalJoinNormal = util::unit(prevNormal * ((k + 1.0f) / (n + 1.0f)) + nextNormal);
+                        auto approxFractionalJoinNormal = glm::normalize(prevNormal * ((k + 1.0f) / (n + 1.0f)) + nextNormal);
                         addPieSliceVertex(currentVertex, flip, distance, approxFractionalJoinNormal, lineTurnsLeft, startVertex, triangleStore, vertices);
                     }
                 }
                 
                 // Start next segment
-                if (nextVertex) {
+                if (nextVertex != v2_t()) {
                     addCurrentVertex(currentVertex, flip, distance, nextNormal, -offsetA, -offsetB,
                                      false, startVertex, triangleStore, vertices);
                 }
@@ -844,7 +851,7 @@ namespace MonkVG {
                 }
                 
                 // Start next segment with a butt
-                if (nextVertex) {
+                if (nextVertex != v2_t()) {
                     addCurrentVertex(currentVertex, flip, distance, nextNormal, 0, 0, false,
                                      startVertex, triangleStore, vertices);
                 }
@@ -861,7 +868,7 @@ namespace MonkVG {
                 }
                 
                 // Start next segment
-                if (nextVertex) {
+                if (nextVertex != v2_t()) {
                     addCurrentVertex(currentVertex, flip, distance, nextNormal, -1, -1, false,
                                      startVertex, triangleStore, vertices);
                 }
@@ -882,7 +889,7 @@ namespace MonkVG {
                 }
                 
                 // Start next segment with a butt
-                if (nextVertex) {
+                if (nextVertex != v2_t()) {
                     // Add round cap before first segment
                     addCurrentVertex(currentVertex, flip, distance, nextNormal, -1, -1, true,
                                      startVertex, triangleStore, vertices);
@@ -901,7 +908,7 @@ namespace MonkVG {
     void MKPath::addCurrentVertex(const Coordinate& currentVertex,
                                       float flip,
                                       double distance,
-                                      const vec2<double>& normal,
+                                      const v2_t& normal,
                                       float endLeft,
                                       float endRight,
                                       bool round,
@@ -909,9 +916,9 @@ namespace MonkVG {
                                       std::vector<TriangleElement>& triangleStore, std::vector<v2_t> &vertices) {
         int8_t tx = round ? 1 : 0;
         
-        vec2<double> extrude = normal * flip;
+        v2_t extrude = normal * flip;
         if (endLeft)
-            extrude = extrude - (util::perp(normal) * endLeft);
+            extrude = extrude - (perp(normal) * endLeft);
         e3 = (int32_t)addVertix(vertices, currentVertex.x, currentVertex.y, extrude.x, extrude.y, tx, 0,
                                 distance) - startVertex;
         if (e1 >= 0 && e2 >= 0) {
@@ -922,7 +929,7 @@ namespace MonkVG {
         
         extrude = normal * (-flip);
         if (endRight)
-            extrude = extrude - (util::perp(normal) * endRight);
+            extrude = extrude - (perp(normal) * endRight);
         e3 = (int32_t)addVertix(vertices, currentVertex.x, currentVertex.y, extrude.x, extrude.y, tx, 1,
                                 distance) - startVertex;
         if (e1 >= 0 && e2 >= 0) {
@@ -935,7 +942,7 @@ namespace MonkVG {
     void MKPath::addPieSliceVertex(const Coordinate& currentVertex,
                                        float flip,
                                        double distance,
-                                       const vec2<double>& extrude,
+                                       const v2_t& extrude,
                                        bool lineTurnsLeft,
                                        int32_t startVertex,
                                        std::vector<TriangleElement>& triangleStore, std::vector<v2_t> &vertices) {

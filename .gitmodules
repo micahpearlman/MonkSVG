@@ -14,3 +14,7 @@
 	path = thirdparty/cpp-btree
 	url = https://github.com/sakamura/cpp-btree
 
+[submodule "thirdparty/glm/glm"]
+	path = thirdparty/glm/glm
+	url = https://github.com/g-truc/glm.git
+	branch = 0.9.8

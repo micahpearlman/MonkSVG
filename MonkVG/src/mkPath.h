@@ -16,8 +16,6 @@
 #include "mkPaint.h"
 #include <list>
 #include <vector>
-#include "vec.hpp"
-#include "math.hpp"
 #include <Tess2/tesselator.h>
 #include <VG/vgu.h>
 #include <OpenGLES/ES2/gl.h>
@@ -28,8 +26,7 @@ namespace MonkSVG {
 }
 
 namespace MonkVG {
-	
-	class MKPath {
+    class MKPath {
 	public:
         void clear( VGbitfield caps );
 
@@ -216,10 +213,6 @@ namespace MonkVG {
     private:
         MonkSVG::MKSVGHandler* _handler;
         
-        typedef vec2<GLfloat> v2_t;
-        
-        typedef vec3<float> v3_t;
-        
         struct textured_vertex_t {
             GLfloat		v[2];
             GLfloat		uv[2];
@@ -293,11 +286,12 @@ namespace MonkVG {
             TriangleElement(uint16_t a_, uint16_t b_, uint16_t c_) : a(a_), b(b_), c(c_) {}
             uint16_t a, b, c;
         };
+        
         void addCurrentVertex(const Coordinate& currentVertex, float flip, double distance,
-                              const vec2<double>& normal, float endLeft, float endRight, bool round,
+                              const v2_t& normal, float endLeft, float endRight, bool round,
                               int32_t startVertex, std::vector<TriangleElement>& triangleStore, std::vector<v2_t> &vertices);
         void addPieSliceVertex(const Coordinate& currentVertex, float flip, double distance,
-                               const vec2<double>& extrude, bool lineTurnsLeft, int32_t startVertex,
+                               const v2_t& extrude, bool lineTurnsLeft, int32_t startVertex,
                                std::vector<TriangleElement>& triangleStore, std::vector<v2_t> &vertices);
         size_t addVertix(std::vector<v2_t> &vertices, int8_t x, int8_t y, float ex, float ey, int8_t tx, int8_t ty, int32_t linesofar);
         

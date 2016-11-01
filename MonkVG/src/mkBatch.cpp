@@ -246,14 +246,14 @@ namespace MonkVG {
             
             // get vertices and transform them
             for ( int i = 0; i < (int)fillVertCnt * 2 - 4; i+=6 ) {
-                GLfloat affine[2];
-                affineTransform(affine, transform, &fillVerts[i + 0] );
+                v2_t affine;
+                affine = affineTransform(transform, &fillVerts[i + 0]);
                 v[0] = static_cast<int32_t>(affine[0]*precisionMult);
                 v[1] = static_cast<int32_t>(affine[1]*precisionMult);
-                affineTransform(affine, transform, &fillVerts[i + 2] );
+                affine = affineTransform(transform, &fillVerts[i + 2]);
                 v[2] = static_cast<int32_t>(affine[0]*precisionMult);
                 v[3] = static_cast<int32_t>(affine[1]*precisionMult);
-                affineTransform(affine, transform, &fillVerts[i + 4] );
+                affine = affineTransform(transform, &fillVerts[i + 4]);
                 v[4] = static_cast<int32_t>(affine[0]*precisionMult);
                 v[5] = static_cast<int32_t>(affine[1]*precisionMult);
                 
@@ -280,10 +280,7 @@ namespace MonkVG {
 
             int vertcnt = 0;
             for ( int i = 0; i < strokeVertCnt * 2; i+=2, vertcnt++ ) {
-                GLfloat affine[2];
-                affineTransform(affine, transform, &strokeVerts[i] );
-                affine[0] *= precisionMult;
-                affine[1] *= precisionMult;
+                v2_t affine = affineTransform(transform, &strokeVerts[i]) * precisionMult;
 
                 // for stroke we need to convert from a strip to triangle
                 switch ( vertcnt ) {
