@@ -18,6 +18,7 @@
 #include <list>
 #include "mkMath.h"
 #include "vgCompat.h"
+#include "mkBatch.h"
 
 namespace tinyxml2
 {
@@ -26,7 +27,6 @@ namespace tinyxml2
 }
 
 namespace MonkVG {
-    class MKBatch;
     class MKPaint;
     class MKPath;
 }
@@ -375,14 +375,11 @@ namespace MonkSVG {
 	};
 }
 
-class SakaSVG
+class SakaSVG : public MonkVG::MKBatch
 {
 public:
-    MonkVG::MKBatch* batch;
-    
     SakaSVG(const char* const svgFile);
     ~SakaSVG();
-    void draw();
 };
 
 #endif // __mkSVG_h__

@@ -1455,7 +1455,6 @@ namespace MonkSVG {
 
 SakaSVG::SakaSVG(const char* const svgFile)
 {
-    batch = new MonkVG::MKBatch;
     MonkSVG::MKSVGHandler handler;
     handler.Initialize();
     
@@ -1465,15 +1464,7 @@ SakaSVG::SakaSVG(const char* const svgFile)
         svg_parser.read( svgFile );
     }
     
-    handler.optimize(batch);
+    handler.optimize(this);
     handler.Terminate();
-}
-SakaSVG::~SakaSVG()
-{
-    delete batch;
-}
-void SakaSVG::draw()
-{
-    batch->draw();
 }
 

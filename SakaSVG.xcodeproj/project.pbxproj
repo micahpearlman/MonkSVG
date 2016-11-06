@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		96091AA71DCF8E12007EB32A /* mkBatch.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9649535E1DC2E0E700838988 /* mkBatch.h */; };
 		9649536C1DC2E0E700838988 /* mkBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9649535D1DC2E0E700838988 /* mkBatch.cpp */; };
 		9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953641DC2E0E700838988 /* mkPaint.cpp */; };
 		964953711DC2E0E700838988 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953671DC2E0E700838988 /* mkPath.cpp */; };
@@ -101,6 +102,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				96091AA71DCF8E12007EB32A /* mkBatch.h in CopyFiles */,
 				968751C41DC84003002B18FE /* vgCompat.h in CopyFiles */,
 				96874F3F1DC7BC21002B18FE /* mkMath.h in CopyFiles */,
 				96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */,
@@ -147,8 +149,6 @@
 		964953581DC2E0B600838988 /* MonkVG */ = {
 			isa = PBXGroup;
 			children = (
-				9649535D1DC2E0E700838988 /* mkBatch.cpp */,
-				9649535E1DC2E0E700838988 /* mkBatch.h */,
 				964953641DC2E0E700838988 /* mkPaint.cpp */,
 				964953651DC2E0E700838988 /* mkPaint.h */,
 				964953671DC2E0E700838988 /* mkPath.cpp */,
@@ -218,6 +218,8 @@
 		96FA87CE1D71CE36006528A1 /* SakaSVG */ = {
 			isa = PBXGroup;
 			children = (
+				9649535D1DC2E0E700838988 /* mkBatch.cpp */,
+				9649535E1DC2E0E700838988 /* mkBatch.h */,
 				968751C31DC835D4002B18FE /* vgCompat.h */,
 				96874F3E1DC7BBEA002B18FE /* mkMath.h */,
 				96F7043B1D6A11F20081408C /* mkSVG.cpp */,
