@@ -827,7 +827,7 @@ namespace MonkVG {
     void MKPath::endOfTesselation( GLbitfield paintModes ) {
         MKBatch* glBatch = (MKBatch*)_handler->currentBatch();
         if( glBatch && (_vertices.size() > 0 || _strokeVertices.size() > 0) ) {	// if in batch mode update the current batch
-            glBatch->addPathVertexData( &_vertices[0], _vertices.size()/2, 
+            glBatch->addPathVertexData( _handler->_active_matrix, _handler->getFillPaint(), _handler->getStrokePaint(), &_vertices[0], _vertices.size()/2,
                                        (float*)&_strokeVertices[0], _strokeVertices.size(), 
                                        paintModes );
             

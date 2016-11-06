@@ -26,8 +26,8 @@ namespace tinyxml2
 }
 
 namespace MonkVG {
-    class MKPaint;
     class MKBatch;
+    class MKPaint;
     class MKPath;
 }
 
@@ -44,8 +44,7 @@ namespace MonkSVG {
         MKSVGHandler();
         ~MKSVGHandler();
 
-        void draw();
-        void optimize();
+        void optimize(MKBatch* batch);
         
         const Matrix33& rootTransform() { return _root_transform; }
         void setRootTransform( const Matrix33& t ) { _root_transform = t; }
@@ -212,11 +211,7 @@ namespace MonkSVG {
         
         MKPaint*	_blackBackFill;		// if a path doesn't have a stroke or a fill then use this fill
         
-        
-        /// optimized batch monkvg batch object
-        MKBatch*	_batch;
-        
-        // flag indicating if any of the fills or strokes in the image use transparent colors 
+        // flag indicating if any of the fills or strokes in the image use transparent colors
         // if there are no transparent colors in the image, blending can be disabled in open gl 
         // to improve rendering performance
         bool _has_transparent_colors;
@@ -302,7 +297,6 @@ namespace MonkSVG {
         //// factories ////
         MKPaint* createPaint();
         MKPath* createPath();
-        MKBatch* createBatch();
         
         //// platform specific execution of stroke and fill ////
         void stroke();
@@ -384,11 +378,10 @@ namespace MonkSVG {
 class SakaSVG
 {
 public:
-    MonkSVG::MKSVGHandler handler;
+    MonkVG::MKBatch* batch;
     
-    SakaSVG(float width, float height, const char* const svgFile);
+    SakaSVG(const char* const svgFile);
     ~SakaSVG();
-    void resize(float width, float height);
     void draw();
 };
 

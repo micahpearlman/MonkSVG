@@ -848,7 +848,6 @@ namespace MonkSVG {
     ,	_mode( kGroupParseMode )
     ,	_current_group( &_root_group )
     ,	_blackBackFill( 0 )
-    ,	_batch( 0 )
     ,	_use_opacity( 1 )
     ,   _has_transparent_colors( false )
 
@@ -872,39 +871,8 @@ namespace MonkSVG {
     
     MKSVGHandler::~MKSVGHandler() {
         delete _blackBackFill;
-        
-        if( _batch ) delete _batch;
     }
     
-    
-    void MKSVGHandler::draw() {
-        // clear out the transform stack
-        _transform_stack.clear();
-        
-        Matrix33 m = getTransform();
-        Matrix33 top = m * rootTransform();
-        pushTransform( top );
-        
-        // SVG is origin at the top, left (openvg is origin at the bottom, left)
-        // so need to flip
-        //		Matrix33 flip;
-        //		flip.setScale( 1, -1 );
-        //		pushTransform( flip );
-        
-        if( _batch ) {
-            setTransform( topTransform() );
-            loadGLMatrix();
-
-            _batch->draw();
-        } else {
-            draw_recursive( _root_group );
-        }
-        
-        setTransform( m );	// restore matrix
-        loadGLMatrix();
-
-        _transform_stack.clear();
-    }
     
     void MKSVGHandler::draw_recursive( group_t& group ) {
         
@@ -945,18 +913,8 @@ namespace MonkSVG {
         popTransform();	setTransform( topTransform() );
     }
     
-    void MKSVGHandler::optimize() {
-        
-        if( _batch )
-        {
-            delete _batch;
-            _batch = 0;
-        }
-        // use the monkvg batch extension to greatly optimize rendering.  don't need this for
-        // other OpenVG implementations
-        _batch = createBatch();
-        
-        startBatch( _batch ); { // draw
+    void MKSVGHandler::optimize(MKBatch* batch) {
+        startBatch( batch ); { // draw
             
             // clear out the transform stack
             _transform_stack.clear();
@@ -977,7 +935,7 @@ namespace MonkSVG {
             _transform_stack.clear();
             
             
-        } endBatch( _batch );
+        } endBatch( batch );
         
     }
         
@@ -1384,12 +1342,6 @@ namespace MonkSVG {
         return (MKPaint*)paint;
     }
     
-    MKBatch* MKSVGHandler::createBatch() {
-        MKBatch *batch = new MKBatch(this);
-        assert( batch );
-        return (MKBatch*)batch;
-    }
-    
     /// state
     void MKSVGHandler::setStrokePaint( MKPaint* paint ) {
         if ( paint != _stroke_paint ) {
@@ -1501,10 +1453,10 @@ namespace MonkSVG {
     }
 }
 
-SakaSVG::SakaSVG(float width, float height, const char* const svgFile)
+SakaSVG::SakaSVG(const char* const svgFile)
 {
-    handler.setWidth( width );
-    handler.setHeight( height );
+    batch = new MonkVG::MKBatch;
+    MonkSVG::MKSVGHandler handler;
     handler.Initialize();
     
     {
@@ -1513,20 +1465,15 @@ SakaSVG::SakaSVG(float width, float height, const char* const svgFile)
         svg_parser.read( svgFile );
     }
     
-    handler.optimize();
+    handler.optimize(batch);
+    handler.Terminate();
 }
 SakaSVG::~SakaSVG()
 {
-    handler.Terminate();
-}
-void SakaSVG::resize(float width, float height)
-{
-    handler.setWidth(width);
-    handler.setHeight(height);
-    handler.resize();
+    delete batch;
 }
 void SakaSVG::draw()
 {
-    handler.draw();
+    batch->draw();
 }
 

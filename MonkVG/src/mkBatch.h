@@ -21,19 +21,19 @@ namespace MonkSVG {
 }
 
 namespace MonkVG {
+    class MKPaint;
+    
 	class MKBatch {
 	public:
-        MKBatch(MonkSVG::MKSVGHandler* handler);
+        MKBatch();
         ~MKBatch();
         
         void draw();
         void finalize();
         
-        void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes );
+        void addPathVertexData( const Matrix33& transform, MKPaint* fillPaint, MKPaint* strokePaint, GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes );
         
     private:
-        MonkSVG::MKSVGHandler* _handler;
-        
         GLuint _vao;
         GLuint _vbo;
         GLuint _ebo;
@@ -55,7 +55,7 @@ namespace MonkVG {
             MonkVG::Pos r;       // Clockwise next point
             MonkVG::Color color;       // Color being used
             
-            inline triangle_t(const int& _id, const MonkVG::Pos& _min, const MonkVG::Pos& _max, const MonkVG::Pos& _p, const MonkVG::Pos& _q, const MonkVG::Pos& _r, const MonkVG::Color& _color) :
+            inline triangle_t( const int& _id, const MonkVG::Pos& _min, const MonkVG::Pos& _max, const MonkVG::Pos& _p, const MonkVG::Pos& _q, const MonkVG::Pos& _r, const MonkVG::Color& _color) :
                 id(_id), min(_min), max(_max), p(_p), q(_q), r(_r), color(_color)
             {
             }

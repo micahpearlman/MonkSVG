@@ -58,9 +58,8 @@ template <> struct std::hash<MonkVG::vertexData_t>
 
 namespace MonkVG {
     
-    MKBatch::MKBatch(MonkSVG::MKSVGHandler* h) :
-        _handler(h)
-    ,   _vao(-1)
+    MKBatch::MKBatch() :
+       _vao(-1)
     ,	_vbo(-1)
     ,   _ebo(-1)
     ,   _batchMinX(0)
@@ -228,17 +227,14 @@ namespace MonkVG {
         _b->trianglesToAdd.clear();
     }
     
-    void MKBatch::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes ) {
+    void MKBatch::addPathVertexData( const Matrix33& transform, MKPaint* fillPaint, MKPaint* strokePaint, GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes ) {
         
-        // get the current transform
-        const Matrix33& transform = _handler->_active_matrix;
         int32_t v[6];
         
         //printf("Adding %d fill %d stroke\n", (int)fillVertCnt, (int)strokeVertCnt);
         if ( paintModes & VG_FILL_PATH) {
             // get the paint color
-            MKPaint* paint = _handler->getFillPaint();
-            const float* fc = paint->getPaintColor();
+            const float* fc = fillPaint->getPaintColor();
             
             const MonkVG::Color color(
                                       GLuint(fc[0] * 255.0f),
@@ -266,8 +262,7 @@ namespace MonkVG {
         
         if ( paintModes & VG_STROKE_PATH) {
             // get the paint color
-            MKPaint* paint = _handler->getStrokePaint();
-            const float* fc = paint->getPaintColor();
+            const float* fc = strokePaint->getPaintColor();
             
             const MonkVG::Color color(
                                       GLuint(fc[0] * 255.0f),
@@ -389,29 +384,12 @@ namespace MonkVG {
     }
     
     void MKBatch::draw() {
-        // get the native OpenGL context
-        _handler->beginRender();
-
         glBindVertexArrayOES(_vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
         glDrawElements(GL_TRIANGLES, _numEboIndices, GL_UNSIGNED_INT, NULL);
 
         glBindVertexArrayOES(0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        
-/*        GL->glDisable( GL_TEXTURE_2D );
-        GL->glEnableClientState( GL_VERTEX_ARRAY );
-        GL->glEnableClientState( GL_COLOR_ARRAY );
-        GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-        
-        // draw
-        GL->glBindBuffer( GL_ARRAY_BUFFER, _vbo );
-        GL->glVertexPointer( 2, GL_FLOAT, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, v) );
-        GL->glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, color) );
-        GL->glDrawArrays( GL_TRIANGLES, 0, (GLsizei)_vertexCount );
-        GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
-*/       
-        _handler->endRender();
     }
     
     void MKBatch::reset()
