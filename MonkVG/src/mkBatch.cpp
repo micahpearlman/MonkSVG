@@ -16,18 +16,22 @@
 
 namespace MonkVG {
     struct vertexData_t {
-        int32_t x;
-        int32_t y;
-        uint32_t color;
+        MonkVG::Pos pos;
+        MonkVG::Color color;
         
+        vertexData_t(MonkVG::Pos::value_type x, MonkVG::Pos::value_type y, MonkVG::Color _color) :
+            pos(x, y),
+            color(_color)
+        {
+        }
         bool operator==(const vertexData_t& other) const
         {
-            return x == other.x && y == other.y && color == other.color;
+            return pos == other.pos && color == other.color;
         }
     };
     struct __attribute__((packed)) gpuVertexData_t {
-        GLushort pos[2];
-        GLuint color;
+        MonkVG::GpuPos pos;
+        MonkVG::Color color;
     };
 }
 template <> struct std::hash<MonkVG::vertexData_t>
@@ -41,9 +45,8 @@ template <> struct std::hash<MonkVG::vertexData_t>
     std::size_t operator()(const MonkVG::vertexData_t& key) const
     {
         return
-            std::hash<int32_t>()(key.x) ^
-            rotate_left(std::hash<int32_t>()(key.y), 1) ^
-            rotate_left(std::hash<uint32_t>()(key.color), 2);
+            std::hash<MonkVG::Pos>()(key.pos) ^
+            rotate_left(std::hash<MonkVG::Color>()(key.color), 1);
     }
 };
 
@@ -120,7 +123,7 @@ namespace MonkVG {
     static const GLfloat precisionMult = 1.f/precision;
     std::map<int, int> stat;
     
-    void MKBatch::addTriangle(int32_t v[6], GLuint color)
+    void MKBatch::addTriangle(int32_t v[6], const MonkVG::Color& color)
     {
         int32_t* p = &v[0];
         int32_t* q = &v[2];
@@ -203,13 +206,12 @@ namespace MonkVG {
         */
         
         // Add triangle to deque
-        _b->trianglesDb.push_back(
-        {
-            (int)_b->trianglesDb.size(), // id
-            {xmin, ymin}, {xmax, ymax}, // min, max
-            {p[0], p[1]}, {q[0], q[1]}, {r[0], r[1]}, // p,q,r
-            color
-        });
+        _b->trianglesDb.push_back(triangle_t(
+                                  (int)_b->trianglesDb.size(), // id
+                                  MonkVG::Pos(xmin, ymin), MonkVG::Pos(xmax, ymax), // min, max
+                                  MonkVG::Pos(p[0], p[1]), MonkVG::Pos(q[0], q[1]), MonkVG::Pos(r[0], r[1]), // p,q,r
+                                  color
+                                  ));
         _b->trianglesToAdd.push_back(&_b->trianglesDb.back());
         _b->newMaxSizeX = std::max(_b->newMaxSizeX, xmax - xmin);
         _b->newMaxSizeY = std::max(_b->newMaxSizeY, ymax - ymin);
@@ -229,7 +231,7 @@ namespace MonkVG {
     void MKBatch::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes ) {
         
         // get the current transform
-        const Matrix33& transform = *_handler->getActiveMatrix();
+        const Matrix33& transform = _handler->_active_matrix;
         int32_t v[6];
         
         //printf("Adding %d fill %d stroke\n", (int)fillVertCnt, (int)strokeVertCnt);
@@ -238,11 +240,11 @@ namespace MonkVG {
             MKPaint* paint = _handler->getFillPaint();
             const float* fc = paint->getPaintColor();
             
-            const GLuint color =
-            ( GLuint(fc[3] * 255.0f) << 24 )	// a
-            |	( GLuint(fc[2] * 255.0f) << 16 )	// b
-            |	( GLuint(fc[1] * 255.0f) << 8 )	// g
-            |	( GLuint(fc[0] * 255.0f) << 0 );	// r
+            const MonkVG::Color color(
+                                      GLuint(fc[0] * 255.0f),
+                                      GLuint(fc[1] * 255.0f),
+                                      GLuint(fc[2] * 255.0f),
+                                      GLuint(fc[3] * 255.0f));
             
             // get vertices and transform them
             for ( int i = 0; i < (int)fillVertCnt * 2 - 4; i+=6 ) {
@@ -267,11 +269,11 @@ namespace MonkVG {
             MKPaint* paint = _handler->getStrokePaint();
             const float* fc = paint->getPaintColor();
             
-            const GLuint color =
-            ( GLuint(fc[3] * 255.0f) << 24 )	// a
-            |	( GLuint(fc[2] * 255.0f) << 16 )	// b
-            |	( GLuint(fc[1] * 255.0f) << 8 )	// g
-            |	( GLuint(fc[0] * 255.0f) << 0 );	// r
+            const MonkVG::Color color(
+                                      GLuint(fc[0] * 255.0f),
+                                      GLuint(fc[1] * 255.0f),
+                                      GLuint(fc[2] * 255.0f),
+                                      GLuint(fc[3] * 255.0f));
             
             // get vertices and transform them
             int32_t* firstV = &v[0];    // Don't use a,b,c as these need to keep in order
@@ -325,15 +327,15 @@ namespace MonkVG {
         GLfloat xSize = _batchMaxX - _batchMinX;
         GLfloat ySize = _batchMaxY - _batchMinY;
         
-        auto addVertex = [&](int32_t x, int32_t y, uint32_t color) -> GLuint
+        auto addVertex = [&](int32_t x, int32_t y, MonkVG::Color color) -> GLuint
         {
-            vertexData_t toAdd({x, y, color});
+            vertexData_t toAdd(x, y, color);
             auto found = vertexToId.find(toAdd);
             if (found == vertexToId.end())
             {
                 auto id = vbo.size();
                 GLushort xNorm = (GLushort)( ((GLfloat)x / precisionMult - _batchMinX) / xSize * 65535 );
-                GLushort yNorm = (GLushort)( ((GLfloat)y / precisionMult - _batchMinY) / ySize * 65535 );
+                GLushort yNorm = 65535 - (GLushort)( ((GLfloat)y / precisionMult - _batchMinY) / ySize * 65535 );
                 vbo.push_back({{xNorm, yNorm}, color});
                 vertexToId.insert({toAdd, id});
                 return (GLuint)id;

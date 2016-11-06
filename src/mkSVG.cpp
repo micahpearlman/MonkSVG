@@ -21,7 +21,7 @@
 #include "mkPaint.h"
 #include "vgCompat.h"
 #include <OpenGLES/ES2/gl.h>
-#include <glm/gtx/matrix_transform_2d.hpp>
+
 
 namespace MonkSVG {
     MKSVGHandler::path_object_t::~path_object_t() {
@@ -51,7 +51,7 @@ namespace MonkSVG {
 		recursive_parse( root );        
         
         // get bounds information from the svg file, ignoring non-pixel values
-        
+
         const char* inCString;
         string numberWithUnitString;
         regex numberWithUnitPattern( "^(-?\\d+)(px)?$" );
@@ -107,7 +107,7 @@ namespace MonkSVG {
             }
             
         }
-        
+ 
 		return true;
 		
 	}
@@ -855,7 +855,6 @@ namespace MonkSVG {
     ,	_stroke_line_width( 1.0f )
     ,	_stroke_paint( 0 )
     ,	_fill_paint( 0 )
-    ,	_active_matrix( &_path_user_to_surface )
     ,	_fill_rule( VG_EVEN_ODD )
     ,	_tessellationIterations( 16 )
     ,	_currentBatch( 0 )
@@ -866,7 +865,6 @@ namespace MonkSVG {
         _blackBackFill = createPaint();
         float fcolor[4] = { 0,0,0,1 };
         _blackBackFill->setPaintColor(fcolor);
-        _use_transform.setIdentity();
         
         //_root_transform.setScale( 1, -1 );
         
@@ -883,21 +881,18 @@ namespace MonkSVG {
         // clear out the transform stack
         _transform_stack.clear();
         
-        float m[9];
-        transform( m );
-        // assume the current openvg matrix is like the camera matrix and should always be applied first
-        Transform2d top;
-        Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
+        Matrix33 m = getTransform();
+        Matrix33 top = m * rootTransform();
         pushTransform( top );
         
         // SVG is origin at the top, left (openvg is origin at the bottom, left)
         // so need to flip
-        //		Transform2d flip;
+        //		Matrix33 flip;
         //		flip.setScale( 1, -1 );
         //		pushTransform( flip );
         
         if( _batch ) {
-            setTransform( topTransform().m );
+            setTransform( topTransform() );
             loadGLMatrix();
 
             _batch->draw();
@@ -914,7 +909,7 @@ namespace MonkSVG {
     void MKSVGHandler::draw_recursive( group_t& group ) {
         
         // push the group matrix onto the stack
-        pushTransform( group.transform ); setTransform( topTransform().m );
+        pushTransform( group.transform ); setTransform( topTransform() );
         
         for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
             path_object_t& po = *it;
@@ -938,16 +933,16 @@ namespace MonkSVG {
             // set the fill rule
             setFillRule(po.fill_rule);
             // trasnform
-            pushTransform( po.transform );	setTransform( topTransform().m );
+            pushTransform( po.transform );	setTransform( topTransform() );
             po.path->draw( draw_params );
-            popTransform();	setTransform( topTransform().m );
+            popTransform();	setTransform( topTransform() );
         }
         
         for ( list<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
             draw_recursive( *it );
         }
         
-        popTransform();	setTransform( topTransform().m );
+        popTransform();	setTransform( topTransform() );
     }
     
     void MKSVGHandler::optimize() {
@@ -966,16 +961,13 @@ namespace MonkSVG {
             // clear out the transform stack
             _transform_stack.clear();
             
-            float m[9];
-            transform( m );
-            // assume the current openvg matrix is like the camera matrix and should always be applied first
-            Transform2d top;
-            Transform2d::multiply( top, Transform2d(m), rootTransform() );	// multiply by the root transform
+            Matrix33 m = getTransform();
+            Matrix33 top = m * rootTransform();
             pushTransform( top );
             
             // SVG is origin at the top, left (openvg is origin at the bottom, left)
             // so need to flip
-            //		Transform2d flip;
+            //		Matrix33 flip;
             //		flip.setScale( 1, -1 );
             //		pushTransform( flip );
             
@@ -1020,23 +1012,6 @@ namespace MonkSVG {
         // onPathClose()
         
         _current_group->path_objects.push_back( *_current_group->current_path );
-        
-        //		// build up the bounds
-        //		float minX, minY, width, height;
-        //		vgPathBounds( _current_group->current_path->path, &minX, &minY, &width, &height );
-        //		if ( minX < _minX ) {
-        //			_minX = minX;
-        //		}
-        //		if ( minY < _minY ) {
-        //			_minY = minY;
-        //		}
-        //		if ( width > _width ) {
-        //			_width = width;
-        //		}
-        //		if ( height > _height ) {
-        //			_height = height;
-        //		}
-        
     }
     
     void MKSVGHandler::onPathMoveTo( float x, float y ) {
@@ -1186,7 +1161,7 @@ namespace MonkSVG {
             if( _current_group->current_path->fill == 0 ) {	// if no fill create a black fill
                 _current_group->current_path->fill = createPaint();
                 float fcolor[4] = { 0,0,0,1 };
-                _current_group->fill->setPaintColor(fcolor);
+                _current_group->current_path->fill->setPaintColor(fcolor);
             }
             
             _current_group->current_path->fill->getPaintColor( &fcolor[0] );
@@ -1270,32 +1245,32 @@ namespace MonkSVG {
     
     void MKSVGHandler::onTransformTranslate( float x, float y ) {
         if( _mode == kGroupParseMode ) {
-            _current_group->transform.setTranslate( x, y );
-        } else if( kPathParseMode ) {	// 
-            _current_group->current_path->transform.setTranslate( x, y );
+            MonkVG::translate(_current_group->transform, x, y );
+        } else if( kPathParseMode ) {	//
+            
+            MonkVG::translate(_current_group->current_path->transform, x, y );
         }
     }
     void MKSVGHandler::onTransformScale( float s ) {
         if( _mode == kGroupParseMode ) {
-            _current_group->transform.setScale( s, s );
+            MonkVG::scale(_current_group->transform, s, s );
         } else if( _mode == kPathParseMode ) { // kPathParseMode
-            _current_group->current_path->transform.setScale( s, s );
+            MonkVG::scale(_current_group->current_path->transform, s, s );
         } else if( _mode == kUseParseMode ) {
-            _use_transform.setScale( s, s );
+            MonkVG::scale(_use_transform, s, s);
         }
     }
     void MKSVGHandler::onTransformRotate( float r ) {
         if( _mode == kGroupParseMode ) {
-            _current_group->transform.setRotation( r );	// ?? radians or degrees ??
-        } else if( _mode == kPathParseMode ) { // kPathParseMode
-            _current_group->current_path->transform.setRotation( r );	// ?? radians or degrees ??
+            MonkVG::rotate(_current_group->transform, r );
+        } else if( _mode == kPathParseMode ) {
+            MonkVG::rotate(_current_group->current_path->transform, r );
         } else if( _mode == kUseParseMode ) {
-            _use_transform.setRotation( r );
+            MonkVG::rotate(_use_transform, r );
         }
     }
     void MKSVGHandler::onTransformMatrix( float a, float b, float c, float d, float e, float f ) {
-        Transform2d t;
-        t.a = a; t.b = b; t.c = c; t.d = d; t.e = e; t.f = f;
+        Matrix33 t(a, b, c, d, e, f, 0.f, 0.f, 1.f);
         if( _mode == kGroupParseMode ) {
             _current_group->transform = t;
         } else if( _mode == kPathParseMode ) { // kPathParseMode
@@ -1318,7 +1293,7 @@ namespace MonkSVG {
         _use_opacity = 1.0;
     }
     void MKSVGHandler::onUseEnd() {
-        _use_transform.setIdentity();
+        _use_transform = Matrix33();
         _use_opacity = 1.0;
     }
 }
@@ -1480,67 +1455,42 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::loadGLMatrix() {
-        Matrix33& active = *getActiveMatrix();
+        //const Matrix33& active = _active_matrix;
 // TODO send as uniform to shader         glLoadMatrixf( &mat44[0][0] );
     }
     
     
     
     void MKSVGHandler::setIdentity() {
-        Matrix33* active = getActiveMatrix();
-        *active = Matrix33();
+        _active_matrix = Matrix33();
     }
     
-    void MKSVGHandler::transform( float* t ) {
-        // a	b	0
-        // c	d	0
-        // tx	ty	1
-        const Matrix33::value_type* active = glm::value_ptr(*getActiveMatrix());
-        for( int i = 0; i < 9; i++ )
-            t[i] = active[i];
-        
+    const Matrix33& MKSVGHandler::getTransform( ) const {
+        return _active_matrix;
     }
     
-    void MKSVGHandler::setTransform( const float* t )  {
-        //	OpenVG:
-        //	sh	shx	tx
-        //	shy	sy	ty
-        //	0	0	1
-        //
-        // OpenGL
-        // a	b	0
-        // c	d	0
-        // tx	ty	1
-        
-        Matrix33* active = getActiveMatrix();
-        *active = glm::make_mat3(t);
+    void MKSVGHandler::setTransform( const Matrix33& t )  {
+        _active_matrix = t;
     }
     
     
-    void MKSVGHandler::multiply( const float* t ) {
-        Matrix33 m = glm::make_mat3(t);
-        Matrix33* active = getActiveMatrix();
-        (*active) *= m;
+    void MKSVGHandler::multiply( const Matrix33& t ) {
+        _active_matrix *= t;
     }
     
     void MKSVGHandler::scale( float sx, float sy ) {
-        Matrix33* active = getActiveMatrix();
-        *active = glm::scale(*active, v2_t(sx, sy));
+        _active_matrix = glm::scale(_active_matrix, v2_t(sx, sy));
     }
     void MKSVGHandler::translate( float x, float y ) {
-        Matrix33* active = getActiveMatrix();
-        *active = glm::translate(*active, v2_t(x, y));
+        _active_matrix = glm::translate(_active_matrix, v2_t(x, y));
     }
     float MKSVGHandler::angle()
     {
-        Matrix33* active = getActiveMatrix();
-        
-        return std::acosf((*active)[0][0]);
+        return std::acosf((_active_matrix)[0][0]);
     }
     
     void MKSVGHandler::rotate( float angle ) {
-        Matrix33* active = getActiveMatrix();
-        *active = glm::rotate(*active, angle);
+        _active_matrix = glm::rotate(_active_matrix, angle);
     }
     
     void MKSVGHandler::rotate(float angle, float x, float y, float z) {
@@ -1557,9 +1507,11 @@ SakaSVG::SakaSVG(float width, float height, const char* const svgFile)
     handler.setHeight( height );
     handler.Initialize();
     
-    MonkSVG::SVG svg_parser;
-    svg_parser.initialize( &handler );
-    svg_parser.read( svgFile );
+    {
+        MonkSVG::SVG svg_parser;
+        svg_parser.initialize( &handler );
+        svg_parser.read( svgFile );
+    }
     
     handler.optimize();
 }

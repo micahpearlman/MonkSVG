@@ -8,6 +8,7 @@
 #ifndef __mkBatch_h__
 #define __mkBatch_h__
 
+#include "mkMath.h"
 #include <stdlib.h>
 #include <OpenGLES/ES2/gl.h>
 #include "vgCompat.h"
@@ -45,14 +46,19 @@ namespace MonkVG {
         struct triangle_t {
             // Indexes & helpers
             int id;             // incremental ID, playback order (-1 if it got deleted)
-            int32_t min[2];     // smallest x,y from p,q,r
-            int32_t max[2];     // biggest x,y from p,q,r
+            MonkVG::Pos min;     // smallest x,y from p,q,r
+            MonkVG::Pos max;     // biggest x,y from p,q,r
             
             // Data
-            int32_t p[2];       // Leftmost point
-            int32_t q[2];       // Counterclockwise next point
-            int32_t r[2];       // Clockwise next point
-            GLuint color;       // Color being used
+            MonkVG::Pos p;       // Leftmost point
+            MonkVG::Pos q;       // Counterclockwise next point
+            MonkVG::Pos r;       // Clockwise next point
+            MonkVG::Color color;       // Color being used
+            
+            inline triangle_t(const int& _id, const MonkVG::Pos& _min, const MonkVG::Pos& _max, const MonkVG::Pos& _p, const MonkVG::Pos& _q, const MonkVG::Pos& _r, const MonkVG::Color& _color) :
+                id(_id), min(_min), max(_max), p(_p), q(_q), r(_r), color(_color)
+            {
+            }
         };
 
         struct build_t
@@ -70,7 +76,7 @@ namespace MonkVG {
             }
         }* _b;
         
-        void addTriangle(int32_t v[6], GLuint color);
+        void addTriangle(int32_t v[6], const MonkVG::Color& color);
         void finalizeTriangleBatch();
         void reset();
     };

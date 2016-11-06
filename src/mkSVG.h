@@ -16,7 +16,6 @@
 #include <cmath>
 #include <memory>
 #include <list>
-#include "mkTransform2d.h"
 #include "mkMath.h"
 #include "vgCompat.h"
 
@@ -48,8 +47,8 @@ namespace MonkSVG {
         void draw();
         void optimize();
         
-        const Transform2d& rootTransform() { return _root_transform; }
-        void setRootTransform( const Transform2d& t ) { _root_transform = t; }
+        const Matrix33& rootTransform() { return _root_transform; }
+        void setRootTransform( const Matrix33& t ) { _root_transform = t; }
         
         const bool hasTransparentColors() { return _has_transparent_colors; }
 
@@ -107,13 +106,12 @@ namespace MonkSVG {
         }
         
         
-        void pushTransform( const Transform2d& t ) {
-            Transform2d top_transform;
+        void pushTransform( const Matrix33& t ) {
             if ( _transform_stack.size() == 0 ) {	// nothing on the stack so push the identity onto the stack
                 _transform_stack.push_back( t );
             } else {
-                const Transform2d& current_tranform = topTransform();
-                Transform2d::multiply( top_transform, current_tranform, t );
+                const Matrix33& current_transform = topTransform();
+                Matrix33 top_transform = current_transform * t;
                 _transform_stack.push_back( top_transform );
             }
         }
@@ -122,7 +120,7 @@ namespace MonkSVG {
             _transform_stack.pop_back();
         }
         
-        const Transform2d& topTransform() {
+        const Matrix33& topTransform() {
             return _transform_stack.back();
         }
 		
@@ -164,7 +162,7 @@ namespace MonkSVG {
             VGFillRule	fill_rule;
             MKPaint*		stroke;
             float		stroke_width;
-            Transform2d transform;
+            Matrix33 transform;
             std::string id;
             
             path_object_t() : path( nullptr ), fill( nullptr ), stroke( nullptr ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
@@ -181,7 +179,7 @@ namespace MonkSVG {
             {
                 
             }
-            Transform2d			transform;
+            Matrix33			transform;
             group_t*			parent;
             list<group_t>		children;
             list<path_object_t> path_objects;
@@ -199,9 +197,9 @@ namespace MonkSVG {
         group_t*	_current_group;
         
         
-        vector<Transform2d>		_transform_stack;
-        Transform2d				_root_transform;
-        Transform2d				_use_transform;
+        vector<Matrix33>		_transform_stack;
+        Matrix33				_root_transform;
+        Matrix33				_use_transform;
         float					_use_opacity;
         
         enum mode {
@@ -274,26 +272,14 @@ namespace MonkSVG {
         }
         
         //// transforms ////
-        inline Matrix33& getPathUserToSurface() {
-            return _path_user_to_surface;
-        }
-        inline void setPathUserToSurface( const Matrix33& m ) {
-            _path_user_to_surface = m;
-        }
-        inline Matrix33* getActiveMatrix() {
-            return _active_matrix;
-        }
-        
         inline int32_t getTessellationIterations() const { return _tessellationIterations; }
         inline void setTessellationIterations( int32_t i ) { _tessellationIterations = i; }
         
         MKBatch* currentBatch() { return _currentBatch; }
         
+        Matrix33			_active_matrix;
+
     protected:
-        
-        // matrix transforms
-        Matrix33			_path_user_to_surface;
-        Matrix33			*_active_matrix;
         
         // stroke properties
         float				_stroke_line_width;			// VG_STROKE_LINE_WIDTH
@@ -327,14 +313,14 @@ namespace MonkSVG {
         
         //// platform specific implementation of transform ////
         void setIdentity();
-        void transform( float* t );
+        const Matrix33& getTransform() const;
         void scale( float sx, float sy );
         void translate( float x, float y );
         float angle ();
         void rotate( float angle );
         void rotate( float angle , float x, float y, float z);
-        void setTransform( const float* t ) ;
-        void multiply( const float* t );
+        void setTransform( const Matrix33& t ) ;
+        void multiply( const Matrix33& t );
         void loadGLMatrix();
         
         void beginRender();

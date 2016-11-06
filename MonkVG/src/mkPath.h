@@ -196,7 +196,6 @@ namespace MonkVG {
         }
         
         float * addTessVertex( const v3_t & v ) {
-            //updateBounds(v.x, v.y);
             _tessVertices.push_back( v );
             return tessVerticesBackPtr();
         }
@@ -204,36 +203,7 @@ namespace MonkVG {
         void buildFill();
         void buildStroke();
         void buildFatLineSegment( std::vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
-        
-        // stroke styles
-        void applyLineStyles( std::vector<v2_t>& vertices, VGCapStyle style, VGJoinStyle join, float miter, float stroke_width );
-        size_t numberOfvertices( std::vector<v2_t>& vertices );
-        
-        int32_t e1;
-        int32_t e2;
-        int32_t e3;
-        
-        struct TriangleElement {
-            TriangleElement(uint16_t a_, uint16_t b_, uint16_t c_) : a(a_), b(b_), c(c_) {}
-            uint16_t a, b, c;
-        };
-        
-        void addCurrentVertex(const Coordinate& currentVertex, float flip, double distance,
-                              const v2_t& normal, float endLeft, float endRight, bool round,
-                              int32_t startVertex, std::vector<TriangleElement>& triangleStore, std::vector<v2_t> &vertices);
-        void addPieSliceVertex(const Coordinate& currentVertex, float flip, double distance,
-                               const v2_t& extrude, bool lineTurnsLeft, int32_t startVertex,
-                               std::vector<TriangleElement>& triangleStore, std::vector<v2_t> &vertices);
-        size_t addVertix(std::vector<v2_t> &vertices, int8_t x, int8_t y, float ex, float ey, int8_t tx, int8_t ty, int32_t linesofar);
-        
-        /*
-         * Scale the extrusion vector so that the normal length is this value.
-         * Contains the "texture" normals (-1..1). This is distinct from the extrude
-         * normals for line joins, because the x-value remains 0 for the texture
-         * normal array, while the extrude normal actually moves the vertex to create
-         * the acute/bevelled line join.
-         */
-        static const int8_t extrudeScale = 63;
-	};
+                
+    };
 }
 #endif //__mkPath_h__

@@ -18,7 +18,6 @@
 		968751C21DC80A8C002B18FE /* libtinyxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F4E1DC7FD8B002B18FE /* libtinyxml2.a */; };
 		968751C41DC84003002B18FE /* vgCompat.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968751C31DC835D4002B18FE /* vgCompat.h */; };
 		96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043C1D6A11F20081408C /* mkSVG.h */; };
-		96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96F7043D1D6A11F20081408C /* mkTransform2d.h */; };
 		96F7043E1D6A11F20081408C /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96F7043B1D6A11F20081408C /* mkSVG.cpp */; };
 /* End PBXBuildFile section */
 
@@ -105,7 +104,6 @@
 				968751C41DC84003002B18FE /* vgCompat.h in CopyFiles */,
 				96874F3F1DC7BC21002B18FE /* mkMath.h in CopyFiles */,
 				96DD69CF1DA340AF00AD0E22 /* mkSVG.h in CopyFiles */,
-				96DD69D01DA340AF00AD0E22 /* mkTransform2d.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,7 +124,6 @@
 		96F7042F1D69D4490081408C /* libSakaSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSakaSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F7043B1D6A11F20081408C /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkSVG.cpp; path = src/mkSVG.cpp; sourceTree = "<group>"; };
 		96F7043C1D6A11F20081408C /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkSVG.h; path = src/mkSVG.h; sourceTree = "<group>"; };
-		96F7043D1D6A11F20081408C /* mkTransform2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkTransform2d.h; path = src/mkTransform2d.h; sourceTree = "<group>"; };
 		96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = StyleSheet.xcodeproj; path = StyleSheet/StyleSheet.xcodeproj; sourceTree = "<group>"; };
 		96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = tinyxml2.xcodeproj; path = tinyxml2/tinyxml2.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -225,7 +222,6 @@
 				96874F3E1DC7BBEA002B18FE /* mkMath.h */,
 				96F7043B1D6A11F20081408C /* mkSVG.cpp */,
 				96F7043C1D6A11F20081408C /* mkSVG.h */,
-				96F7043D1D6A11F20081408C /* mkTransform2d.h */,
 			);
 			name = SakaSVG;
 			sourceTree = "<group>";
@@ -417,7 +413,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -464,7 +460,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
