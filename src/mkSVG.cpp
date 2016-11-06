@@ -1,10 +1,5 @@
 /*
- *  mkSVG.cpp
- *  MonkSVG
- *
- *  Created by Micah Pearlman on 8/2/10.
- *  Copyright 2010 Zero Vision. All rights reserved.
- *
+ BSD 3-Clause License - Please see LICENSE file for full license
  */
 
 #include "mkSVG.h"
@@ -16,12 +11,55 @@
 #include <cstring>
 
 #include "mkPath.h"
-#include "mkBatch.h"
 #include "mkMath.h"
 #include "mkPaint.h"
 #include "vgCompat.h"
 #include <OpenGLES/ES2/gl.h>
 
+#include <set>
+#include <unordered_map>
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#include <tess2/tesselator.h>
+
+#include "SakaSVG.h"
+
+
+namespace MonkVG {
+    struct vertexData_t {
+        MonkVG::Pos pos;
+        MonkVG::Color color;
+        
+        vertexData_t(MonkVG::Pos::value_type x, MonkVG::Pos::value_type y, MonkVG::Color _color) :
+        pos(x, y),
+        color(_color)
+        {
+        }
+        bool operator==(const vertexData_t& other) const
+        {
+            return pos == other.pos && color == other.color;
+        }
+    };
+    struct __attribute__((packed)) gpuVertexData_t {
+        MonkVG::GpuPos pos;
+        MonkVG::Color color;
+    };
+}
+template <> struct std::hash<MonkVG::vertexData_t>
+{
+    template <typename T> constexpr static
+    T rotate_left(T val, size_t len)
+    {
+        return (val << len) | ((unsigned) val >> (-len & (sizeof(T) * CHAR_BIT - 1)));
+    }
+    
+    std::size_t operator()(const MonkVG::vertexData_t& key) const
+    {
+        return
+        std::hash<MonkVG::Pos>()(key.pos) ^
+        rotate_left(std::hash<MonkVG::Color>()(key.color), 1);
+    }
+};
 
 namespace MonkSVG {
     MKSVGHandler::path_object_t::~path_object_t() {
@@ -845,6 +883,15 @@ namespace MonkSVG {
     ,	_minY( MAXFLOAT )
     ,	_width( -MAXFLOAT )
     ,	_height( -MAXFLOAT )
+    ,   _batchMinX(INT_MAX)
+    ,   _batchMinY(INT_MAX)
+    ,   _batchMaxX(INT_MIN)
+    ,   _batchMaxY(INT_MIN)
+    ,   maxSizeX(0)
+    ,   maxSizeY(0)
+    ,   newMaxSizeX(0)
+    ,   newMaxSizeY(0)
+    ,   numDeletedId(0)
     ,	_mode( kGroupParseMode )
     ,	_current_group( &_root_group )
     ,	_blackBackFill( 0 )
@@ -856,7 +903,6 @@ namespace MonkSVG {
     ,	_fill_paint( 0 )
     ,	_fill_rule( VG_EVEN_ODD )
     ,	_tessellationIterations( 16 )
-    ,	_currentBatch( 0 )
 
     {
         disableAutomaticCleanup();
@@ -913,30 +959,24 @@ namespace MonkSVG {
         popTransform();	setTransform( topTransform() );
     }
     
-    void MKSVGHandler::optimize(MKBatch* batch) {
-        startBatch( batch ); { // draw
-            
-            // clear out the transform stack
-            _transform_stack.clear();
-            
-            Matrix33 m = getTransform();
-            Matrix33 top = m * rootTransform();
-            pushTransform( top );
-            
-            // SVG is origin at the top, left (openvg is origin at the bottom, left)
-            // so need to flip
-            //		Matrix33 flip;
-            //		flip.setScale( 1, -1 );
-            //		pushTransform( flip );
-            
-            draw_recursive( _root_group );
-            
-            setTransform( m );	// restore matrix
-            _transform_stack.clear();
-            
-            
-        } endBatch( batch );
+    void MKSVGHandler::optimize() {
+        // clear out the transform stack
+        _transform_stack.clear();
         
+        Matrix33 m = getTransform();
+        Matrix33 top = m * rootTransform();
+        pushTransform( top );
+        
+        // SVG is origin at the top, left (openvg is origin at the bottom, left)
+        // so need to flip
+        //		Matrix33 flip;
+        //		flip.setScale( 1, -1 );
+        //		pushTransform( flip );
+        
+        draw_recursive( _root_group );
+        
+        setTransform( m );	// restore matrix
+        _transform_stack.clear();
     }
         
     void MKSVGHandler::onGroupBegin() {
@@ -1256,77 +1296,8 @@ namespace MonkSVG {
     }
 }
 
-#include "mkPath.h"
-#include "mkPaint.h"
-#include "mkBatch.h"
-
 
 namespace MonkSVG {
-    void MKSVGHandler::checkGLError() {
-        
-        int err = glGetError();
-        
-        
-        const char* RVAL = "GL_UNKNOWN_ERROR";
-        
-        switch( err )
-        {
-            case GL_NO_ERROR:
-                RVAL =  "GL_NO_ERROR";
-                break;
-            case GL_INVALID_ENUM:
-                RVAL =  "GL_INVALID_ENUM";
-                break;
-            case GL_INVALID_VALUE:
-                RVAL =  "GL_INVALID_VALUE";
-                break;
-            case GL_INVALID_OPERATION:
-                RVAL = "GL_INVALID_OPERATION";
-                break;
-            case GL_OUT_OF_MEMORY:
-                RVAL =  "GL_OUT_OF_MEMORY";
-                break;
-            default:
-                break;
-        }
-        
-        if( err != GL_NO_ERROR ) {
-            printf("GL_ERROR: %s\n", RVAL );
-            assert(false);
-        }
-    }
-    
-    bool MKSVGHandler::Initialize() {
-        glGetIntegerv(GL_VIEWPORT, _viewport);
-        resize();
-        glDisable(GL_CULL_FACE);
-        glEnable(GL_BLEND);
-        
-        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_DEPTH_TEST);
-        
-        return true;
-    }
-    
-    void MKSVGHandler::resize() {
-        // setup GL projection
-        glViewport(0,0, _width, _height);
-    }
-    
-    
-    bool MKSVGHandler::Terminate() {
-        _stroke_paint = NULL;
-        _fill_paint = NULL;
-        return true;
-    }
-    
-    
-    void MKSVGHandler::beginRender() {
-    }
-    void MKSVGHandler::endRender() {
-    }
-    
-    
     /// factories
     
     MKPath* MKSVGHandler::createPath( ) {
@@ -1392,26 +1363,9 @@ namespace MonkSVG {
         }
     }
     
-    void MKSVGHandler::startBatch( MKBatch* batch ) {
-        assert( _currentBatch == 0 );	// can't have multiple batches going on at once
-        _currentBatch = batch;
-    }
-    void MKSVGHandler::endBatch( MKBatch* batch ) {
-        _currentBatch->finalize();
-        _currentBatch = 0;
-    }
-    
-    
     void MKSVGHandler::clear(int x, int y, int width, int height) {
         // TODO:
     }
-    
-    void MKSVGHandler::loadGLMatrix() {
-        //const Matrix33& active = _active_matrix;
-// TODO send as uniform to shader         glLoadMatrixf( &mat44[0][0] );
-    }
-    
-    
     
     void MKSVGHandler::setIdentity() {
         _active_matrix = Matrix33();
@@ -1451,20 +1405,314 @@ namespace MonkSVG {
         rotate(angle);
         
     }
-}
-
-SakaSVG::SakaSVG(const char* const svgFile)
-{
-    MonkSVG::MKSVGHandler handler;
-    handler.Initialize();
     
+    // Based on https://hal.archives-ouvertes.fr/inria-00072100/document
+    static inline int32_t orientation(const int32_t a[2], const int32_t b[2], const int32_t c[2])
     {
-        MonkSVG::SVG svg_parser;
-        svg_parser.initialize( &handler );
-        svg_parser.read( svgFile );
+        int32_t result = (a[0]-c[0]) * (b[1]-c[1]) - (a[1]-c[1]) * (b[0]-c[0]);
+        return result;
+    }
+    static inline int intersectionTestVertex(const int32_t p1[2], const int32_t q1[2], const int32_t r1[2], const int32_t p2[2], const int32_t q2[2], const int32_t r2[2])
+    {
+        if (orientation(r2,p2,q1) >= 0)
+            if (orientation(r2,q2,q1) <= 0)
+                if (orientation(p1,p2,q1) > 0) return (orientation(p1,q2,q1) <= 0) ? 1 : false;
+                else if (orientation(p1,p2,r1) < 0) return false;
+                else return (orientation(q1,r1,p2) >= 0) ? 2 : false;
+                else if (orientation(p1,q2,q1) > 0) return false;
+                else if (orientation(r2,q2,r1) > 0) return false;
+                else return (orientation(q1,r1,q2) >= 0) ? 3 : false;
+                else if (orientation(r2,p2,r1) < 0) return false;
+                else if (orientation(q1,r1,r2) >= 0) return (orientation(p1,p2,r1) >= 0) ? 4 : false;
+                else if (orientation(q1,r1,q2) < 0) return false;
+                else return (orientation(r2,r1,q2) >= 0) ? 5 : false;
+    }
+    static inline int intersectionTestEdge(const int32_t p1[2], const int32_t q1[2], const int32_t r1[2], const int32_t p2[2], const int32_t q2[2], const int32_t r2[2])
+    {
+        if (orientation(r2,p2,q1) >= 0)
+            if (orientation(p1,p2,q1) >= 0) return (orientation(p1,q1,r2) >= 0) ? 1 : false;
+            else if (orientation(q1,r1,p2) < 0) return false;
+            else return (orientation(r1,p1,p2) >= 0) ? 2 : false;
+            else if (orientation(r2,p2,r1) < 0) return false;
+            else if (orientation(p1,p2,r1) < 0) return false;
+            else if (orientation(p1,r1,r2) >= 0) return 3;
+            else return (orientation(q1,r1,r2) >= 0) ? 4 : false;
+    }
+    static inline int intersection(const int32_t p1[2], const int32_t q1[2], const int32_t r1[2], const int32_t p2[2], const int32_t q2[2], const int32_t r2[2])
+    {
+        if ( orientation(p2,q2,p1) >= 0 )
+            if ( orientation(q2,r2,p1) >= 0 )
+                if ( orientation(r2,p2,p1) >= 0 ) return 1;
+                else return intersectionTestEdge(p1,q1,r1,p2,q2,r2) << 1;
+                else if ( orientation(r2,p2,p1) >= 0 ) return intersectionTestEdge(p1,q1,r1,r2,p2,q2) << 4;
+                else return intersectionTestVertex(p1,q1,r1,p2,q2,r2) << 7;
+                else if (orientation(q2,r2,p1) < 0) return intersectionTestVertex(p1,q1,r1,r2,p2,q2) << 10;
+                else if (orientation(r2,p2,p1) >= 0) return intersectionTestEdge(p1,q1,r1,q2,r2,p2) << 13;
+                else return intersectionTestVertex(p1,q1,r1,q2,r2,p2) << 16;
+    };
+    
+    static const GLfloat precision = 0.01f;
+    static const GLfloat precisionMult = 1.f/precision;
+    std::map<int, int> stat;
+    
+    void MKSVGHandler::addTriangle(int32_t v[6], const MonkVG::Color& color)
+    {
+        int32_t* p = &v[0];
+        int32_t* q = &v[2];
+        int32_t* r = &v[4];
+        
+        // Remove null triangles
+        if ((p[0] == q[0] && p[0] == r[0]) || (p[1] == q[1] && p[1] == r[1]) || (p[0] == q[0] && p[1] == q[1]) || (p[0] == r[0] && p[1] == r[1]) || (q[0] == r[0] && q[1] == r[1]))
+        {
+            return;
+        }
+        
+        // Put leftmost first
+        if (q[0] < p[0] && q[0] <= r[0])
+        {
+            std::swap(p,q); // q to the left
+        }
+        else if (r[0] < p[0] && r[0] <= q[0])
+        {
+            std::swap(p,r); // q to the left
+        }
+        
+        // Make sure triangles are counterclockwise
+        if (orientation(p, q, r) < 0)
+        {
+            std::swap(q,r);
+        }
+        
+        // Find box
+        const int32_t xmin = p[0];
+        const int32_t xmax = std::max(q[0], r[0]);
+        const int32_t ymin = std::min(p[1], std::min(q[1], r[1]));
+        const int32_t ymax = std::max(p[1], std::max(q[1], r[1]));
+        
+        _batchMinX = std::min(_batchMinX, (GLfloat)xmin/precisionMult);
+        _batchMaxX = std::max(_batchMaxX, (GLfloat)xmax/precisionMult);
+        _batchMinY = std::min(_batchMinY, (GLfloat)ymin/precisionMult);
+        _batchMaxY = std::max(_batchMaxY, (GLfloat)ymax/precisionMult);
+        
+        /*
+         bool eraseIter;
+         for (auto iter = trianglesByXMin.lower_bound(xmin - maxSizeX + 1); iter != trianglesByXMin.end();
+         eraseIter ? iter = trianglesByXMin.erase(iter) : ++iter)
+         {
+         eraseIter = false;
+         
+         auto& t1(*iter->second);
+         if (t1.max[1] <= ymin)
+         {
+         continue;
+         }
+         if (t1.min[1] >= ymax)
+         {
+         continue;
+         }
+         if (t1.max[0] <= xmin)
+         {
+         continue;
+         }
+         if (t1.min[0] >= xmax)
+         {
+         break;
+         }
+         
+         // We got an optimization contender!
+         int which = intersection(p, q, r, t1.p, t1.q, t1.r);
+         
+         auto addedStat = stat.emplace({which, 1});
+         if (!addedStat.second)
+         {
+         ++addedStat.first->second;
+         }
+         if (which != 0)
+         {
+         // Optimized! TODO: just chop it!
+         t1.id = -1;         // Please don't use it anymore (signal)
+         eraseIter = true;
+         ++numDeletedId;
+         }
+         }
+         */
+        
+        // Add triangle to deque
+        trianglesDb.push_back(triangle_t(
+                                             (int)trianglesDb.size(), // id
+                                             MonkVG::Pos(xmin, ymin), MonkVG::Pos(xmax, ymax), // min, max
+                                             MonkVG::Pos(p[0], p[1]), MonkVG::Pos(q[0], q[1]), MonkVG::Pos(r[0], r[1]), // p,q,r
+                                             color
+                                             ));
+        trianglesToAdd.push_back(&trianglesDb.back());
+        newMaxSizeX = std::max(newMaxSizeX, xmax - xmin);
+        newMaxSizeY = std::max(newMaxSizeY, ymax - ymin);
     }
     
-    handler.optimize(this);
-    handler.Terminate();
+    void MKSVGHandler::finalizeTriangleBatch()
+    {
+        for (auto triangleToAdd : trianglesToAdd)
+        {
+            trianglesByXMin.insert({triangleToAdd->min[0], triangleToAdd});
+        }
+        maxSizeX = newMaxSizeX;
+        maxSizeY = newMaxSizeY;
+        trianglesToAdd.clear();
+    }
+    
+    void MKSVGHandler::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes ) {
+        int32_t v[6];
+        
+        //printf("Adding %d fill %d stroke\n", (int)fillVertCnt, (int)strokeVertCnt);
+        if ( paintModes & VG_FILL_PATH) {
+            // get the paint color
+            const float* fc = getFillPaint()->getPaintColor();
+            
+            const MonkVG::Color color(
+                                      GLuint(fc[0] * 255.0f),
+                                      GLuint(fc[1] * 255.0f),
+                                      GLuint(fc[2] * 255.0f),
+                                      GLuint(fc[3] * 255.0f));
+            
+            // get vertices and transform them
+            for ( int i = 0; i < (int)fillVertCnt * 2 - 4; i+=6 ) {
+                v2_t affine;
+                affine = affineTransform(_active_matrix, &fillVerts[i + 0]);
+                v[0] = static_cast<int32_t>(affine[0]*precisionMult);
+                v[1] = static_cast<int32_t>(affine[1]*precisionMult);
+                affine = affineTransform(_active_matrix, &fillVerts[i + 2]);
+                v[2] = static_cast<int32_t>(affine[0]*precisionMult);
+                v[3] = static_cast<int32_t>(affine[1]*precisionMult);
+                affine = affineTransform(_active_matrix, &fillVerts[i + 4]);
+                v[4] = static_cast<int32_t>(affine[0]*precisionMult);
+                v[5] = static_cast<int32_t>(affine[1]*precisionMult);
+                
+                addTriangle(v, color);
+            }
+            finalizeTriangleBatch();
+        }
+        
+        if ( paintModes & VG_STROKE_PATH) {
+            // get the paint color
+            const float* fc = getStrokePaint()->getPaintColor();
+            
+            const MonkVG::Color color(
+                                      GLuint(fc[0] * 255.0f),
+                                      GLuint(fc[1] * 255.0f),
+                                      GLuint(fc[2] * 255.0f),
+                                      GLuint(fc[3] * 255.0f));
+            
+            // get vertices and transform them
+            int32_t* firstV = &v[0];    // Don't use a,b,c as these need to keep in order
+            int32_t* secondV = &v[2];
+            int32_t* thirdV = &v[4];
+            
+            int vertcnt = 0;
+            for ( int i = 0; i < strokeVertCnt * 2; i+=2, vertcnt++ ) {
+                v2_t affine = affineTransform(_active_matrix, &strokeVerts[i]) * precisionMult;
+                
+                // for stroke we need to convert from a strip to triangle
+                switch ( vertcnt ) {
+                    case 0:
+                        firstV[0] = static_cast<int32_t>(affine[0]);
+                        firstV[1] = static_cast<int32_t>(affine[1]);
+                        break;
+                    case 1:
+                        secondV[0] = static_cast<int32_t>(affine[0]);
+                        secondV[1] = static_cast<int32_t>(affine[1]);
+                        break;
+                    default:
+                    {
+                        thirdV[0] = static_cast<int32_t>(affine[0]);
+                        thirdV[1] = static_cast<int32_t>(affine[1]);
+                        
+                        // Next will override what was in firstV.
+                        std::swap(firstV, thirdV);
+                        std::swap(firstV, secondV);
+                        
+                        addTriangle(v, color);
+                        break;
+                    }
+                }
+            }
+            finalizeTriangleBatch();
+        }
+    }
+    
+    void MKSVGHandler::finalize(SakaSVG* dest) {
+        optimize();
+        // Move triangles to vertexes
+        int numVertices = (int)(trianglesDb.size() - numDeletedId) * 3;
+        
+        std::vector<GLuint> ebo;
+        ebo.reserve(numVertices);
+        
+        std::vector<gpuVertexData_t> vbo;
+        vbo.reserve(numVertices); // Note : numVertices is the maximum ever. It will ALWAYS be less than this.
+        
+        std::unordered_map<vertexData_t, size_t> vertexToId;
+        
+        GLfloat xSize = _batchMaxX - _batchMinX;
+        GLfloat ySize = _batchMaxY - _batchMinY;
+        
+        auto addVertex = [&](int32_t x, int32_t y, MonkVG::Color color) -> GLuint
+        {
+            vertexData_t toAdd(x, y, color);
+            auto found = vertexToId.find(toAdd);
+            if (found == vertexToId.end())
+            {
+                auto id = vbo.size();
+                GLushort xNorm = (GLushort)( ((GLfloat)x / precisionMult - _batchMinX) / xSize * 65535 );
+                GLushort yNorm = 65535 - (GLushort)( ((GLfloat)y / precisionMult - _batchMinY) / ySize * 65535 );
+                vbo.push_back({{xNorm, yNorm}, color});
+                vertexToId.insert({toAdd, id});
+                return (GLuint)id;
+            }
+            else
+            {
+                return (GLuint)found->second;
+            }
+        };
+        
+        for (auto iter : trianglesDb)
+        {
+            if (iter.id == -1)
+            {
+                continue;
+            }
+            ebo.push_back(addVertex(iter.p[0], iter.p[1], iter.color));
+            ebo.push_back(addVertex(iter.q[0], iter.q[1], iter.color));
+            ebo.push_back(addVertex(iter.r[0], iter.r[1], iter.color));
+        }
+        dest->numEboIndices = (GLsizei)(ebo.size());
+        
+        printf("numVertices = %d, numVbo = %d, numEbo = %d\n", (int)numVertices, (int)vbo.size(), (int)ebo.size());
+        
+        glGenVertexArraysOES(1, &dest->vao);
+        glBindVertexArrayOES(dest->vao);
+        
+        glGenBuffers(1, &dest->vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, dest->vbo);
+        glBufferData(GL_ARRAY_BUFFER, vbo.size() * sizeof(gpuVertexData_t), &vbo[0], GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, pos));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, color));
+        
+        glGenBuffers(1, &dest->ebo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dest->ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo.size() * sizeof(GLuint), &ebo[0], GL_STATIC_DRAW);
+        
+        glBindVertexArrayOES(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        
+        printf("\n");
+        for (auto iter : stat)
+        {
+            printf("%5d : %d\n", iter.first, iter.second);
+        }
+        cleanupDefaultAlloc();
+    }
 }
 

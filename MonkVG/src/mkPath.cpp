@@ -11,6 +11,7 @@
 #include "mkSVG.h"
 #include "vgCompat.h"
 #include <cassert>
+#include <vector>
 
 namespace MonkVG {	// Internal Implementation
 
@@ -34,8 +35,6 @@ namespace MonkVG {	// Internal Implementation
 		for( int i = 0; i < numCoords; i++ ) {
             _fcoords->push_back( pathData[i] );
 		}
-		
-		setIsDirty( true );
 	}
 	
 	void MKPath::copy( const MKPath& src, const Matrix33& transform ) {
@@ -48,10 +47,6 @@ namespace MonkVG {	// Internal Implementation
 	}
 	
 }
-
-#include "mkBatch.h"
-#include <cassert>
-#include <vector>
 
 namespace MonkVG {
     
@@ -81,13 +76,9 @@ namespace MonkVG {
         MKPaint* currentFillPaint = _handler->getFillPaint();
         if ( currentFillPaint != _fillPaintForPath ) {
             _fillPaintForPath = (MKPaint*)currentFillPaint;
-            _isFillDirty = true;
         }
         // only build the fill if dirty or we are in batch build mode
-        if ( _isFillDirty || _handler->currentBatch() ) {
-            buildFill();
-        }
-        _isFillDirty = false;
+        buildFill();
     }
     
     void printMat44( float m[4][4] ) {
@@ -107,18 +98,10 @@ namespace MonkVG {
             buildFillIfDirty();
         }
         
-        if( paintModes & VG_STROKE_PATH && (_isStrokeDirty == true || _handler->currentBatch())  ) {
-            buildStroke();
-            _isStrokeDirty = false;
-        }
+        buildStroke();
         
         endOfTesselation( paintModes );
         
-        
-        if ( _handler->currentBatch() ) {
-            return true;		// creating a batch so bail from here
-        }
-
         return true;
     }
     
@@ -825,9 +808,8 @@ namespace MonkVG {
     }
     
     void MKPath::endOfTesselation( GLbitfield paintModes ) {
-        MKBatch* glBatch = (MKBatch*)_handler->currentBatch();
-        if( glBatch && (_vertices.size() > 0 || _strokeVertices.size() > 0) ) {	// if in batch mode update the current batch
-            glBatch->addPathVertexData( _handler->_active_matrix, _handler->getFillPaint(), _handler->getStrokePaint(), &_vertices[0], _vertices.size()/2,
+        if( (_vertices.size() > 0 || _strokeVertices.size() > 0) ) {
+            _handler->addPathVertexData( &_vertices[0], _vertices.size()/2,
                                        (float*)&_strokeVertices[0], _strokeVertices.size(), 
                                        paintModes );
             

@@ -43,14 +43,6 @@ namespace MonkVG {
 			_numCoords = nc;
 		}
 		
-		inline bool getIsDirty() {
-			return _isFillDirty;
-		}
-		inline void setIsDirty( bool b ) {
-			_isFillDirty = b;
-			_isStrokeDirty = b;
-		}
-		
         inline float  getMiterlimit ()
         {
             return getJoinStyle() == VG_JOIN_BEVEL ? 1.05f : _stroke_miterlimit;
@@ -105,8 +97,6 @@ namespace MonkVG {
 		:   _handler(h)
 		,	_numSegments( 0 )
 		,	_numCoords( 0 )
-		,	_isFillDirty( true )
-		,	_isStrokeDirty( true )
         ,	_minX( std::numeric_limits<float>::max() )
 		,	_minY( std::numeric_limits<float>::max() )
 		,	_width( -1 )
@@ -128,8 +118,6 @@ namespace MonkVG {
 		// data
 		std::vector< unsigned char >	_segments;
 		std::vector< float >	*_fcoords;
-		bool				_isFillDirty;
-		bool				_isStrokeDirty;
 		
 		// bounds
 		float				_minX;

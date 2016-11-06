@@ -1,10 +1,5 @@
 /*
- *  mkSVG.h
- *  MonkSVG
- *
- *  Created by Micah Pearlman on 8/2/10.
- *  Copyright 2010 Zero Vision. All rights reserved.
- *
+ BSD 3-Clause License - Please see LICENSE file for full license
  */
 
 #ifndef __mkSVG_h__
@@ -18,7 +13,17 @@
 #include <list>
 #include "mkMath.h"
 #include "vgCompat.h"
-#include "mkBatch.h"
+
+#include "mkMath.h"
+#include <stdlib.h>
+#include "vgCompat.h"
+#include <cpp_btree/btree_map.h>
+#include <map>
+#include <deque>
+#include <OpenGLES/ES2/gl.h>
+
+
+class SakaSVG;
 
 namespace tinyxml2
 {
@@ -44,7 +49,7 @@ namespace MonkSVG {
         MKSVGHandler();
         ~MKSVGHandler();
 
-        void optimize(MKBatch* batch);
+        void optimize();
         
         const Matrix33& rootTransform() { return _root_transform; }
         void setRootTransform( const Matrix33& t ) { _root_transform = t; }
@@ -270,8 +275,6 @@ namespace MonkSVG {
         inline int32_t getTessellationIterations() const { return _tessellationIterations; }
         inline void setTessellationIterations( int32_t i ) { _tessellationIterations = i; }
         
-        MKBatch* currentBatch() { return _currentBatch; }
-        
         Matrix33			_active_matrix;
 
     protected:
@@ -287,13 +290,7 @@ namespace MonkSVG {
         MKPaint*				_fill_paint;
         VGFillRule			_fill_rule;
         
-        // batch
-        MKBatch*				_currentBatch;
-        
     public:
-        bool Initialize();
-        bool Terminate();
-        
         //// factories ////
         MKPaint* createPaint();
         MKPath* createPath();
@@ -315,19 +312,6 @@ namespace MonkSVG {
         void rotate( float angle , float x, float y, float z);
         void setTransform( const Matrix33& t ) ;
         void multiply( const Matrix33& t );
-        void loadGLMatrix();
-        
-        void beginRender();
-        void endRender();
-        
-        void resize();
-        
-        
-        static void checkGLError();
-        
-        /// batch drawing
-        void startBatch( MKBatch* batch );
-        void endBatch( MKBatch* batch );
         
     private:
         
@@ -335,6 +319,45 @@ namespace MonkSVG {
         int		_viewport[4];
         float	_projection[16];
         float	_modelview[16];
+        
+        //
+        // from mkBatch.h
+        //
+    public:
+        float _batchMinX, _batchMinY, _batchMaxX, _batchMaxY;
+        
+        void finalize(SakaSVG* dest);
+        
+        void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes );
+        
+        
+        struct triangle_t {
+            // Indexes & helpers
+            int id;             // incremental ID, playback order (-1 if it got deleted)
+            MonkVG::Pos min;     // smallest x,y from p,q,r
+            MonkVG::Pos max;     // biggest x,y from p,q,r
+            
+            // Data
+            MonkVG::Pos p;       // Leftmost point
+            MonkVG::Pos q;       // Counterclockwise next point
+            MonkVG::Pos r;       // Clockwise next point
+            MonkVG::Color color;       // Color being used
+            
+            inline triangle_t( const int& _id, const MonkVG::Pos& _min, const MonkVG::Pos& _max, const MonkVG::Pos& _p, const MonkVG::Pos& _q, const MonkVG::Pos& _r, const MonkVG::Color& _color) :
+            id(_id), min(_min), max(_max), p(_p), q(_q), r(_r), color(_color)
+            {
+            }
+        };
+        
+        std::deque<triangle_t> trianglesDb;
+        btree::btree_multimap<int32_t, triangle_t*> trianglesByXMin;
+        std::deque<triangle_t*> trianglesToAdd;
+        int32_t                 maxSizeX, maxSizeY, newMaxSizeX, newMaxSizeY;
+        int                     numDeletedId;
+                
+        void addTriangle(int32_t v[6], const MonkVG::Color& color);
+        void finalizeTriangleBatch();
+        void reset();
 	};
 	
 	class SVG  {
@@ -374,12 +397,5 @@ namespace MonkSVG {
 		void nextState( char** c, char* state );
 	};
 }
-
-class SakaSVG : public MonkVG::MKBatch
-{
-public:
-    SakaSVG(const char* const svgFile);
-    ~SakaSVG();
-};
 
 #endif // __mkSVG_h__

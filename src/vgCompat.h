@@ -1,10 +1,6 @@
-//
-//  vgCompat.h
-//  SakaSVG
-//
-//  Created by Michel Donais on 16-10-31.
-//  Copyright © 2016 Michel Donais. All rights reserved.
-//
+/*
+ BSD 3-Clause License - Please see LICENSE file for full license
+ */
 
 #ifndef vgCompat_h
 #define vgCompat_h
