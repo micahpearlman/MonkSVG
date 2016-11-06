@@ -5,25 +5,24 @@
 #ifndef __mkSVG_h__
 #define __mkSVG_h__
 
-#include <string>
+#include <memory>
 #include <vector>
 #include <map>
+#include <deque>
 #include <cmath>
-#include <memory>
 #include <list>
-#include "mkMath.h"
-#include "vgCompat.h"
-
-#include "mkMath.h"
+#include <string>
 #include <stdlib.h>
 #include "vgCompat.h"
+#include "mkMath.h"
 #include <cpp_btree/btree_map.h>
-#include <map>
-#include <deque>
 #include <OpenGLES/ES2/gl.h>
 
 
-class SakaSVG;
+namespace Saka
+{
+    class SVG;
+}
 
 namespace tinyxml2
 {
@@ -326,10 +325,9 @@ namespace MonkSVG {
     public:
         float _batchMinX, _batchMinY, _batchMaxX, _batchMaxY;
         
-        void finalize(SakaSVG* dest);
+        void finalize(Saka::SVG* dest);
         
         void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes );
-        
         
         struct triangle_t {
             // Indexes & helpers

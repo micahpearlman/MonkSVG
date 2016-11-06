@@ -1639,7 +1639,7 @@ namespace MonkSVG {
         }
     }
     
-    void MKSVGHandler::finalize(SakaSVG* dest) {
+    void MKSVGHandler::finalize(Saka::SVG* dest) {
         optimize();
         // Move triangles to vertexes
         int numVertices = (int)(trianglesDb.size() - numDeletedId) * 3;
@@ -1684,28 +1684,20 @@ namespace MonkSVG {
             ebo.push_back(addVertex(iter.q[0], iter.q[1], iter.color));
             ebo.push_back(addVertex(iter.r[0], iter.r[1], iter.color));
         }
-        dest->numEboIndices = (GLsizei)(ebo.size());
         
         printf("numVertices = %d, numVbo = %d, numEbo = %d\n", (int)numVertices, (int)vbo.size(), (int)ebo.size());
         
-        glGenVertexArraysOES(1, &dest->vao);
-        glBindVertexArrayOES(dest->vao);
-        
-        glGenBuffers(1, &dest->vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, dest->vbo);
-        glBufferData(GL_ARRAY_BUFFER, vbo.size() * sizeof(gpuVertexData_t), &vbo[0], GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, pos));
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, color));
-        
-        glGenBuffers(1, &dest->ebo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dest->ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo.size() * sizeof(GLuint), &ebo[0], GL_STATIC_DRAW);
-        
-        glBindVertexArrayOES(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        Saka::SharedVAO sVao = dest->vao = Saka::SharedVAO::make_shared();
+        Saka::SharedVBO sVbo = Saka::SharedVBO::make_shared();
+        Saka::SharedEBO sEbo = dest->ebo = Saka::SharedEBO::make_shared();
+        Saka::GLMgr::instance().bind(sVao).bind(sVbo).bind(sEbo);
+        sVbo->bufferData(vbo.size() * sizeof(gpuVertexData_t), &vbo[0], GL_STATIC_DRAW);
+        sVbo->setNumAttribs(2);
+        sVbo->addAttrib(2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, pos));
+        sVbo->addAttrib(4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, color));
+        sVbo->setupAttribs();
+        sVao->addVbo(sVbo);
+        sEbo->bufferData(ebo.size() * sizeof(GLuint), &ebo[0], GL_STATIC_DRAW, GL_TRIANGLES, (GLsizei)(ebo.size()), GL_UNSIGNED_INT);
         
         printf("\n");
         for (auto iter : stat)
