@@ -58,15 +58,11 @@ namespace MonkVG {	// Internal Implementation
 
     MKPaint::MKPaint() :
         _paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
-    ,	_isDirty( true )
     {
         
     }
 
     MKPaint::~MKPaint() {
-    }
-
-    void MKPaint::setGLState() {
     }
 
     void MKPaint::lerpColor(float * dst, float * stop0, float * stop1, float g) {

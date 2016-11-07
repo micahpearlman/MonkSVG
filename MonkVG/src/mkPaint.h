@@ -34,14 +34,7 @@ namespace MonkVG {
         void setPaintRadialGradient( const float f[5] );
         void setPaintColorRampStops( const float* f, int cnt );
 		
-		bool isDirty() { return _isDirty; }
-		void setIsDirty( bool b ) { _isDirty = b; }
-		
-        void setGLState();
-        
     private:
-        bool		_isDirty;
-        
         void calcStops(float ** stop0, float ** stop1, float g);
         void lerpColor(float * dst, float * stop0, float * stop1, float g);
 

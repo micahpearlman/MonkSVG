@@ -59,17 +59,6 @@ namespace MonkVG {
         
         _fcoords->clear();
         _vertices.clear();
-        
-        // delete vbo buffers
-        if ( _strokeVBO != -1 ) {
-            glDeleteBuffers( 1, &_strokeVBO );
-            _strokeVBO = -1;
-        }
-        
-        if ( _fillVBO != -1 ) {
-            glDeleteBuffers( 1, &_fillVBO );
-            _fillVBO = -1;
-        }
     }
     
     void MKPath::buildFillIfDirty() {
@@ -813,8 +802,6 @@ namespace MonkVG {
             tessDeleteTess( _fillTesseleator );
             _fillTesseleator = 0;
         }
-        
-        glDeleteBuffers( 1, &_fillVBO );
     }
     
 }

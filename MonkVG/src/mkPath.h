@@ -43,34 +43,6 @@ namespace MonkVG {
 			_numCoords = nc;
 		}
 		
-        inline float  getMiterlimit ()
-        {
-            return getJoinStyle() == VG_JOIN_BEVEL ? 1.05f : _stroke_miterlimit;
-        }
-        inline VGJoinStyle getJoinStyle ()
-        {
-            return  _joinStyle;
-        }
-        inline VGCapStyle  getCapStyle ()
-        {
-            return _capStyle;
-        }
-        
-        inline void setMiterlimit (float m)
-        {
-            _stroke_miterlimit = m;
-        }
-        
-        inline void setJoinStyle (VGJoinStyle s)
-        {
-            _joinStyle = s;
-        }
-        
-        inline void setCapStyle (VGCapStyle c)
-        {
-            _capStyle = c;
-        }
-
 		// bounds
 		inline float getMinX() {
 			return _minX;
@@ -102,8 +74,6 @@ namespace MonkVG {
 		,	_width( -1 )
 		,	_height( -1 )
         ,	_fillTesseleator( 0 )
-        ,	_strokeVBO(-1)
-        ,	_fillVBO(-1)
         ,   _fcoords(new std::vector<float>)
 		{
 		}
@@ -125,10 +95,6 @@ namespace MonkVG {
 		float				_height;
 		float				_width;
 
-        float     _stroke_miterlimit;
-        VGJoinStyle _joinStyle;
-        VGCapStyle  _capStyle;
-
     private:
         MonkSVG::MKSVGHandler* _handler;
         
@@ -143,9 +109,6 @@ namespace MonkVG {
         std::vector<GLfloat>		_vertices;
         std::vector<v2_t>		_strokeVertices;
         std::list<v3_t>			_tessVertices;
-        GLenum				_primType;
-        GLuint				_fillVBO;
-        GLuint				_strokeVBO;
         int					_numberFillVertices;
         int					_numberStrokeVertices;
         MKPaint*		_fillPaintForPath;
@@ -156,13 +119,6 @@ namespace MonkVG {
         void endOfTesselation( GLbitfield paintModes );
         
     private:	// utility methods
-        
-        GLenum primType() {
-            return _primType;
-        }
-        void setPrimType( GLenum t ) {
-            _primType = t;
-        }
         
         float* tessVerticesBackPtr() {
             return &(_tessVertices.back().x);

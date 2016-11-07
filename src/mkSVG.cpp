@@ -1317,55 +1317,16 @@ namespace MonkSVG {
     void MKSVGHandler::setStrokePaint( MKPaint* paint ) {
         if ( paint != _stroke_paint ) {
             _stroke_paint = paint;
-            MKPaint* glPaint = (MKPaint*)_stroke_paint;
-            //glPaint->setGLState();
-            if (glPaint)
-                glPaint->setIsDirty( true );
         }
     }
     
     void MKSVGHandler::setFillPaint( MKPaint* paint ) {
         if ( paint != _fill_paint ) {
             _fill_paint = paint;
-            MKPaint* glPaint = (MKPaint*)_fill_paint;
-            //glPaint->setGLState();
-            if (glPaint)
-                glPaint->setIsDirty( true );
         }
         
     }
     
-    
-    void MKSVGHandler::stroke() {
-        if ( _stroke_paint ) {
-            MKPaint* glPaint = (MKPaint*)_stroke_paint;
-            glPaint->setGLState();
-            glPaint->setIsDirty( false );
-            // set the fill paint to dirty
-            if ( _fill_paint ) {
-                glPaint = (MKPaint*)_fill_paint;
-                glPaint->setIsDirty( true );
-            }
-        }
-    }
-    
-    void MKSVGHandler::fill() {
-        
-        if ( _fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-            MKPaint* glPaint = (MKPaint*)_fill_paint;
-            glPaint->setGLState();
-            glPaint->setIsDirty( false );
-            // set the stroke paint to dirty
-            if ( _stroke_paint ) {
-                glPaint = (MKPaint*)_stroke_paint;
-                glPaint->setIsDirty( true );
-            }
-        }
-    }
-    
-    void MKSVGHandler::clear(int x, int y, int width, int height) {
-        // TODO:
-    }
     
     void MKSVGHandler::setIdentity() {
         _active_matrix = Matrix33();

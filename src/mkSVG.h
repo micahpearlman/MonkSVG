@@ -294,13 +294,6 @@ namespace MonkSVG {
         MKPaint* createPaint();
         MKPath* createPath();
         
-        //// platform specific execution of stroke and fill ////
-        void stroke();
-        void fill();
-        
-        //// platform specific execution of Masking and Clearing ////
-        void clear(int x, int y, int width, int height);
-        
         //// platform specific implementation of transform ////
         void setIdentity();
         const Matrix33& getTransform() const;
