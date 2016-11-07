@@ -475,14 +475,12 @@ namespace MonkVG {
         
         assert(num_contours == 0);
         
-        const int nvp = 6;
+        const int nvp = 3;
         const int nve = 2;
-        int result = tessTesselate(_fillTesseleator, winding, TESS_POLYGONS, nvp, nve, NULL);
+        int result = tessTesselate(_fillTesseleator, winding, TESS_CONSTRAINED_DELAUNAY_TRIANGLES, nvp, nve, NULL);
         assert(result == 1);
         
-        float startVertex_[2];
-        float lastVertex_[2];
-        float v[2];
+        float v[6];
         
         const float* verts = tessGetVertices(_fillTesseleator);
         const int* elems = tessGetElements(_fillTesseleator);
@@ -491,29 +489,15 @@ namespace MonkVG {
         for (int i = 0; i < nelems; ++i)
         {
             const int* p = &elems[i*nvp];
-            for (int j = 0; j < nvp && p[j] != TESS_UNDEF; ++j)
-            {
-                v[0] = verts[p[j]*2];
-                v[1] = verts[p[j]*2+1];
-                switch ( j ) {
-                    case 0:
-                        startVertex_[0] = v[0];
-                        startVertex_[1] = v[1];
-                        break;
-                    case 1:
-                        lastVertex_[0] = v[0];
-                        lastVertex_[1] = v[1];
-                        break;
-                        
-                    default:
-                        addVertex( startVertex_ );
-                        addVertex( lastVertex_ );
-                        addVertex( v );
-                        lastVertex_[0] = v[0];
-                        lastVertex_[1] = v[1];
-                        break;
-                }
-            }
+            v[0] = verts[p[0]*2];
+            v[1] = verts[p[0]*2+1];
+            v[2] = verts[p[1]*2];
+            v[3] = verts[p[1]*2+1];
+            v[4] = verts[p[2]*2];
+            v[5] = verts[p[2]*2+1];
+            addVertex( &v[0] );
+            addVertex( &v[2] );
+            addVertex( &v[4] );
         }
         
         tessDeleteTess(_fillTesseleator);
