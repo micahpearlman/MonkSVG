@@ -5,188 +5,46 @@
 #include "SakaSVG.h"
 #include "mkSVG.h"
 #include <fstream>
-#include <OpenGLES/ES2/glext.h>
+#include "mkMath.h"
+#include <glm/gtx/transform.hpp>
 
 namespace Saka
 {
-    VAO::VAO() :
-    vao(makeVao())
-    {}
-    VAO::~VAO()
+    static SharedProgram makeDefaultProgram()
     {
-        glDeleteVertexArraysOES(1, &vao);
+        SharedProgram p = SharedProgram::make_shared();
+        SharedShader v = SharedShader(new VertexShader);
+        v->compile("attribute lowp vec2 position;"
+                   "attribute lowp vec4 color;"
+                   "uniform highp mat4 projection;"
+                   "varying lowp vec4 exColor;"
+                   "void main()"
+                   "{"
+                   "gl_Position = projection * vec4(position, 0.0, 1.0);"
+                   "exColor = color;"
+                   "}");
+        p->attachShader(v);
+        SharedShader f = SharedShader(new FragmentShader);
+        f->compile(
+                   "varying lowp vec4 exColor;"
+                   "void main()"
+                   "{"
+                   "gl_FragColor = exColor;"
+                   "}");
+        p->attachShader(f);
+        p->bindAttrib("position");
+        p->bindAttrib("color");
+        p->linkProgram();
+        return p;
     }
-    GLuint VAO::makeVao()
+    static const SharedProgram& defaultSVGProgram()
     {
-        GLuint vao;
-        glGenVertexArraysOES(1, &vao);
-        return vao;
-    }
-    void VAO::bind()
-    {
-        glBindVertexArrayOES(vao);
-    }
-    void VAO::unbind()
-    {
-        assert(GLMgr::instance().getVao() == this);
-        glBindVertexArrayOES(0);
-    }
-    void VAO::addVbo(const SharedVBO& vbo)
-    {
-        assert(GLMgr::instance().getVao() == this);
-        vbos.push_back(vbo);
-        vbo->setupAttribs();
-    }
-
-    VBO::VBO() :
-    vbo(makeVbo())
-    {
-    }
-    
-    VBO::~VBO()
-    {
-        glDeleteBuffers( 1, &vbo );
-    }
-    GLuint VBO::makeVbo()
-    {
-        GLuint vbo;
-        glGenBuffers(1, &vbo);
-        return vbo;
-    }
-    void VBO::bind()
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    }
-    void VBO::unbind()
-    {
-        assert(GLMgr::instance().getVbo() == this);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-    void VBO::bufferData(GLsizeiptr size, const GLvoid* data, GLenum usage)
-    {
-        assert(GLMgr::instance().getVbo() == this);
-        glBufferData(GL_ARRAY_BUFFER, size, data, usage);
-    }
-    void VBO::setupAttribs()
-    {
-        GLuint index = 0;
-        for (const auto& attrib : attribs)
-        {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, attrib.size, attrib.type, attrib.normalized, attrib.stride, attrib.ptr);
-            ++index;
-        }
-    }
-    
-    EBO::EBO() :
-    ebo(makeEbo()),
-    beginMode(0),
-    numIndices(0),
-    dataType(0)
-    {
-        
-    }
-    EBO::~EBO()
-    {
-        glDeleteBuffers( 1, &ebo );
-    }
-    GLuint EBO::makeEbo()
-    {
-        GLuint ebo;
-        glGenBuffers(1, &ebo);
-        return ebo;
-    }
-    void EBO::bind()
-    {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    }
-    void EBO::unbind()
-    {
-        assert(GLMgr::instance().getEbo() == this);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    }
-    void EBO::bufferData(GLsizeiptr size, const GLvoid* data, GLenum usage, GLenum _beginMode, GLsizei _numIndices, GLenum _dataType)
-    {
-        assert(GLMgr::instance().getEbo() == this);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, usage);
-        beginMode = _beginMode;
-        numIndices = _numIndices;
-        dataType = _dataType;
-    }
-    void EBO::draw()
-    {
-        assert(GLMgr::instance().getEbo() == this);
-        glDrawElements(beginMode, numIndices, dataType, NULL);
-    }
-    
-    GLMgr& GLMgr::instance()
-    {
-        static GLMgr instance;
+        static SharedProgram instance = makeDefaultProgram();
         return instance;
-    }
-
-    GLMgr::GLMgr() :
-    refCount(0)
-    {}
-    GLMgr::~GLMgr()
-    {
-        
-    }
-    void GLMgr::inc()
-    {
-        refCount++;
-    }
-    void GLMgr::dec()
-    {
-        if (--refCount == 0)
-        {
-            if (vao != nextVao)
-            {
-                if (!nextVao)
-                {
-                    vao->unbind();
-                }
-                else
-                {
-                    nextVao->bind();
-                }
-            }
-            if (vbo != nextVbo)
-            {
-                if (!nextVbo)
-                {
-                    vbo->unbind();
-                }
-                else
-                {
-                    nextVbo->bind();
-                }
-            }
-            if (ebo != nextEbo)
-            {
-                if (!nextEbo)
-                {
-                    ebo->unbind();
-                }
-                else
-                {
-                    nextEbo->bind();
-                }
-            }
-            vao = nextVao;
-            vbo = nextVbo;
-            ebo = nextEbo;
-            nextVao.reset();
-            nextVbo.reset();
-            nextEbo.reset();
-        }
-    }
-    void GLMgr::reset()
-    {
-        inc(); dec();
-    }
+    };
     
     SVG::SVG(const char* const pathname) :
+    program(defaultSVGProgram()),
     batchMinX(0),
     batchMaxX(0),
     batchMinY(0),
@@ -226,7 +84,10 @@ namespace Saka
     
     void SVG::draw()
     {
-        GLMgr::instance().bind(vao).bind(ebo);
+        glm::mat4 m = glm::translate(glm::scale(glm::vec3(2.f, 2.f, 0.f)), glm::vec3(-.5f, -.5f, 0.f));
+        
+        GLMgr::instance().bind(vao).bind(ebo).bind(program);
+        glUniformMatrix4fv(0, 1, GL_FALSE,  glm::value_ptr(m));
         ebo->draw();
     }
 }

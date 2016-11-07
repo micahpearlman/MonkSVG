@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		96091AA71DCF8E12007EB32A /* SakaSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9649535E1DC2E0E700838988 /* SakaSVG.h */; };
+		96091AAC1DD00988007EB32A /* glMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96091AAB1DD00988007EB32A /* glMgr.cpp */; };
+		96091AAE1DD00ABC007EB32A /* glMgr.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96091AAD1DD009A0007EB32A /* glMgr.h */; };
 		9649536C1DC2E0E700838988 /* SakaSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9649535D1DC2E0E700838988 /* SakaSVG.cpp */; };
 		9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953641DC2E0E700838988 /* mkPaint.cpp */; };
 		964953711DC2E0E700838988 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964953671DC2E0E700838988 /* mkPath.cpp */; };
@@ -99,6 +101,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				96091AAE1DD00ABC007EB32A /* glMgr.h in CopyFiles */,
 				96091AA71DCF8E12007EB32A /* SakaSVG.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,6 +109,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		96091AAB1DD00988007EB32A /* glMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = glMgr.cpp; path = src/glMgr.cpp; sourceTree = "<group>"; };
+		96091AAD1DD009A0007EB32A /* glMgr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = glMgr.h; path = src/glMgr.h; sourceTree = "<group>"; };
 		9649535D1DC2E0E700838988 /* SakaSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SakaSVG.cpp; path = src/SakaSVG.cpp; sourceTree = "<group>"; };
 		9649535E1DC2E0E700838988 /* SakaSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SakaSVG.h; path = src/SakaSVG.h; sourceTree = "<group>"; };
 		964953641DC2E0E700838988 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPaint.cpp; path = src/mkPaint.cpp; sourceTree = "<group>"; };
@@ -212,6 +217,8 @@
 		96FA87CE1D71CE36006528A1 /* SakaSVG */ = {
 			isa = PBXGroup;
 			children = (
+				96091AAB1DD00988007EB32A /* glMgr.cpp */,
+				96091AAD1DD009A0007EB32A /* glMgr.h */,
 				9649535D1DC2E0E700838988 /* SakaSVG.cpp */,
 				9649535E1DC2E0E700838988 /* SakaSVG.h */,
 				968751C31DC835D4002B18FE /* vgCompat.h */,
@@ -361,6 +368,7 @@
 			files = (
 				964953711DC2E0E700838988 /* mkPath.cpp in Sources */,
 				96F7043E1D6A11F20081408C /* mkSVG.cpp in Sources */,
+				96091AAC1DD00988007EB32A /* glMgr.cpp in Sources */,
 				9649536C1DC2E0E700838988 /* SakaSVG.cpp in Sources */,
 				9649536F1DC2E0E700838988 /* mkPaint.cpp in Sources */,
 			);

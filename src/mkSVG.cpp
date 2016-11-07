@@ -1695,7 +1695,6 @@ namespace MonkSVG {
         sVbo->setNumAttribs(2);
         sVbo->addAttrib(2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, pos));
         sVbo->addAttrib(4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, color));
-        sVbo->setupAttribs();
         sVao->addVbo(sVbo);
         sEbo->bufferData(ebo.size() * sizeof(GLuint), &ebo[0], GL_STATIC_DRAW, GL_TRIANGLES, (GLsizei)(ebo.size()), GL_UNSIGNED_INT);
         

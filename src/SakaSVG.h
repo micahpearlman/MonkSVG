@@ -5,124 +5,16 @@
 #ifndef SakaSVG_h
 #define SakaSVG_h
 
-#include <OpenGLES/ES2/gl.h>
-#include <memory>
-#include <vector>
-#include <deque>
+#include "glMgr.h"
 
 namespace Saka
 {
-    class VBO
-    {
-    public:
-        const GLuint vbo;
-
-        struct Attrib
-        {
-            GLint size;
-            GLenum type;
-            GLboolean normalized;
-            GLsizei stride;
-            const GLvoid* ptr;
-        };
-        std::vector<Attrib> attribs;
-        
-        VBO();
-        ~VBO();
-        static GLuint makeVbo();
-        
-        void bind();
-        void unbind();
-        void bufferData(GLsizeiptr size, const GLvoid* data, GLenum usage);
-        void setNumAttribs(int num) { attribs.reserve(num); }
-        void addAttrib(GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* ptr) { attribs.push_back({size, type, normalized, stride, ptr}); }
-        void setupAttribs();
-    };
-    typedef std::shared_ptr<VBO> SharedVBO;
-
-    class VAO
-    {
-    public:
-        const GLuint vao;
-        std::deque<SharedVBO> vbos;
-        
-        VAO();
-        ~VAO();
-        static GLuint makeVao();
-        
-        void bind();
-        void unbind();
-        void addVbo(const SharedVBO& vbo);
-    };
-    typedef std::shared_ptr<VAO> SharedVAO;
-    
-    class EBO
-    {
-    public:
-        const GLuint ebo;
-        GLenum beginMode;
-        GLsizei numIndices;
-        GLenum dataType;
-        
-        EBO();
-        ~EBO();
-        static GLuint makeEbo();
-        
-        void bind();
-        void unbind();
-        void bufferData(GLsizeiptr size, const GLvoid* data, GLenum usage, GLenum beginMode, GLsizei numIndices, GLenum dataType);
-        void draw();
-    };
-    typedef std::shared_ptr<EBO> SharedEBO;
-    
-    class GLMgr
-    {
-    public:
-        static GLMgr& instance();
-        ~GLMgr();
-        
-        class Do
-        {
-        private:
-            GLMgr& glMgr;
-        public:
-            Do(GLMgr& _mgr) : glMgr(_mgr) { glMgr.inc(); }
-            ~Do() { glMgr.dec(); }
-            
-            Do bind(const SharedVAO& vao) { glMgr.nextVao = vao; return Do(glMgr); }
-            Do bind(const SharedVBO& vbo) { glMgr.nextVbo = vbo; return Do(glMgr); }
-            Do bind(const SharedEBO& ebo) { glMgr.nextEbo = ebo; return Do(glMgr); }
-        };
-        Do bind(const SharedVAO& vao) { return Do(*this).bind(vao); }
-        Do bind(const SharedVBO& vbo) { return Do(*this).bind(vbo); }
-        Do bind(const SharedEBO& ebo) { return Do(*this).bind(ebo); }
-        void reset();
-        
-        inline VAO* getVao() { return vao.get(); }
-        inline VBO* getVbo() { return vbo.get(); }
-        inline EBO* getEbo() { return ebo.get(); }
-        
-    private:
-        GLMgr();
-
-        SharedVAO nextVao;
-        SharedVBO nextVbo;
-        SharedEBO nextEbo;
-        
-        SharedVAO vao;
-        SharedVBO vbo;
-        SharedEBO ebo;
-        
-        int refCount;
-        void inc();
-        void dec();
-    };
-    
     class SVG
     {
     public:
         SharedVAO vao;
         SharedEBO ebo;
+        SharedProgram program;
         GLfloat batchMinX;
         GLfloat batchMaxX;
         GLfloat batchMinY;
