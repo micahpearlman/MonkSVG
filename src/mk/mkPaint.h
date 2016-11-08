@@ -1,10 +1,5 @@
 /*
- *  mkPaint.h
- *  MonkVG-Quartz
- *
- *  Created by Micah Pearlman on 3/3/09.
- *  Copyright 2009 Monk Games. All rights reserved.
- *
+ BSD 3-Clause License - Please see LICENSE file for full license
  */
 
 #ifndef __mkPaint_h__

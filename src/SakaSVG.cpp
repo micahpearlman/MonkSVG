@@ -3,9 +3,9 @@
  */
 
 #include "SakaSVG.h"
-#include "mkSVG.h"
+#include "mk/mkSVG.h"
 #include <fstream>
-#include "mkMath.h"
+#include "mk/mkMath.h"
 #include <glm/gtx/transform.hpp>
 
 namespace Saka
