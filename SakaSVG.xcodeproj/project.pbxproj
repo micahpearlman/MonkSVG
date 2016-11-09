@@ -92,6 +92,13 @@
 			remoteGlobalIDString = 96EF25061D662D2E00F95C51;
 			remoteInfo = StyleSheet;
 		};
+		9694B8F31DD2A45500CE0F5A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9694B8EF1DD2A45400CE0F5A /* polyclip.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9694B8E31DD2A45300CE0F5A;
+			remoteInfo = polyclip;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -122,6 +129,7 @@
 		9649535D1DC2E0E700838988 /* SakaSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SakaSVG.cpp; path = src/SakaSVG.cpp; sourceTree = "<group>"; };
 		9649535E1DC2E0E700838988 /* SakaSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SakaSVG.h; path = src/SakaSVG.h; sourceTree = "<group>"; };
 		96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = glm.xcodeproj; path = glm/glm.xcodeproj; sourceTree = "<group>"; };
+		9694B8EF1DD2A45400CE0F5A /* polyclip.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = polyclip.xcodeproj; path = polyclip/polyclip.xcodeproj; sourceTree = "<group>"; };
 		96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
 		96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess2.xcodeproj; path = libtess2/Tess2.xcodeproj; sourceTree = "<group>"; };
 		96F7042F1D69D4490081408C /* libSakaSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSakaSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +209,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		9694B8F01DD2A45400CE0F5A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9694B8F41DD2A45500CE0F5A /* libpolyclip.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		96F704261D69D4490081408C = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +249,7 @@
 		96FA87CF1D71CE75006528A1 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				9694B8EF1DD2A45400CE0F5A /* polyclip.xcodeproj */,
 				96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */,
 				96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */,
 				96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */,
@@ -305,6 +322,10 @@
 					ProjectRef = 96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */;
 				},
 				{
+					ProductGroup = 9694B8F01DD2A45400CE0F5A /* Products */;
+					ProjectRef = 9694B8EF1DD2A45400CE0F5A /* polyclip.xcodeproj */;
+				},
+				{
 					ProductGroup = 96874F4F1DC7FD97002B18FE /* Products */;
 					ProjectRef = 96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */;
 				},
@@ -358,6 +379,13 @@
 			fileType = archive.ar;
 			path = libglm.a;
 			remoteRef = 96874F721DC7FDE9002B18FE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		9694B8F41DD2A45500CE0F5A /* libpolyclip.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libpolyclip.a;
+			remoteRef = 9694B8F31DD2A45500CE0F5A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
