@@ -10,6 +10,7 @@
 		96091AA71DCF8E12007EB32A /* SakaSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9649535E1DC2E0E700838988 /* SakaSVG.h */; };
 		96091AAC1DD00988007EB32A /* glMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96091AAB1DD00988007EB32A /* glMgr.cpp */; };
 		96091AAE1DD00ABC007EB32A /* glMgr.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96091AAD1DD009A0007EB32A /* glMgr.h */; };
+		9629F2151DD405D200D558E6 /* libpolyclip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9694B9081DD2D67F00CE0F5A /* libpolyclip.a */; };
 		962DBF2E1DD159F000BC51F1 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 962DBF271DD159F000BC51F1 /* mkPaint.cpp */; };
 		962DBF2F1DD159F000BC51F1 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 962DBF291DD159F000BC51F1 /* mkPath.cpp */; };
 		962DBF301DD159F000BC51F1 /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 962DBF2B1DD159F000BC51F1 /* mkSVG.cpp */; };
@@ -22,6 +23,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		9629F2121DD405C800D558E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9694B9031DD2D67F00CE0F5A /* polyclip.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 9694B8E21DD2A45300CE0F5A;
+			remoteInfo = polyclip;
+		};
 		96874F431DC7FD70002B18FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96BB2E051DC4FB57003079AC /* Tess2.xcodeproj */;
@@ -142,6 +150,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9629F2151DD405D200D558E6 /* libpolyclip.a in Frameworks */,
 				968751BD1DC80A8C002B18FE /* libcpp_btree.a in Frameworks */,
 				968751BE1DC80A8C002B18FE /* libglm.a in Frameworks */,
 				968751C01DC80A8C002B18FE /* libStyleSheet.a in Frameworks */,
@@ -274,6 +283,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				9629F2131DD405C800D558E6 /* PBXTargetDependency */,
 				968751B21DC80A82002B18FE /* PBXTargetDependency */,
 				968751B41DC80A82002B18FE /* PBXTargetDependency */,
 				968751B61DC80A82002B18FE /* PBXTargetDependency */,
@@ -406,6 +416,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		9629F2131DD405C800D558E6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = polyclip;
+			targetProxy = 9629F2121DD405C800D558E6 /* PBXContainerItemProxy */;
+		};
 		968751B21DC80A82002B18FE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = glm;
