@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtx/hash.hpp>
+#include <polyclip/polyclip.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -24,6 +25,10 @@ namespace MonkVG {
     typedef glm::u16vec2 GpuPos;
     typedef glm::fmat3x3 Matrix33;
     typedef glm::u8vec4 Color;
+    
+    typedef v2_t ClipPoint;
+    typedef polyclip::Contour<ClipPoint> ClipContour;
+    typedef polyclip::Polygon<ClipPoint> ClipPolygon;
 
 	static inline float radians (float degrees) {return (float)(degrees * (M_PI/180.0f));}
 	static inline float degrees (float radians) {return (float)(radians * (180.0f/M_PI));}

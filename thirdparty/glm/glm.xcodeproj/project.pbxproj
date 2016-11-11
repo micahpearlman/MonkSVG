@@ -234,12 +234,6 @@
 		968751851DC80902002B18FE /* scalar_multiplication.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750901DC80862002B18FE /* scalar_multiplication.hpp */; };
 		968751861DC80902002B18FE /* scalar_relational.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750911DC80862002B18FE /* scalar_relational.hpp */; };
 		968751871DC80902002B18FE /* scalar_relational.inl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750921DC80862002B18FE /* scalar_relational.inl */; };
-		968751881DC80902002B18FE /* simd_mat4.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750931DC80862002B18FE /* simd_mat4.hpp */; };
-		968751891DC80902002B18FE /* simd_mat4.inl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750941DC80862002B18FE /* simd_mat4.inl */; };
-		9687518A1DC80902002B18FE /* simd_quat.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750951DC80862002B18FE /* simd_quat.hpp */; };
-		9687518B1DC80902002B18FE /* simd_quat.inl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750961DC80862002B18FE /* simd_quat.inl */; };
-		9687518C1DC80902002B18FE /* simd_vec4.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750971DC80862002B18FE /* simd_vec4.hpp */; };
-		9687518D1DC80902002B18FE /* simd_vec4.inl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750981DC80862002B18FE /* simd_vec4.inl */; };
 		9687518E1DC80902002B18FE /* spline.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 968750991DC80862002B18FE /* spline.hpp */; };
 		9687518F1DC80902002B18FE /* spline.inl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9687509A1DC80862002B18FE /* spline.inl */; };
 		968751901DC80902002B18FE /* std_based_type.hpp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9687509B1DC80862002B18FE /* std_based_type.hpp */; };
@@ -531,12 +525,6 @@
 				968751851DC80902002B18FE /* scalar_multiplication.hpp in CopyFiles */,
 				968751861DC80902002B18FE /* scalar_relational.hpp in CopyFiles */,
 				968751871DC80902002B18FE /* scalar_relational.inl in CopyFiles */,
-				968751881DC80902002B18FE /* simd_mat4.hpp in CopyFiles */,
-				968751891DC80902002B18FE /* simd_mat4.inl in CopyFiles */,
-				9687518A1DC80902002B18FE /* simd_quat.hpp in CopyFiles */,
-				9687518B1DC80902002B18FE /* simd_quat.inl in CopyFiles */,
-				9687518C1DC80902002B18FE /* simd_vec4.hpp in CopyFiles */,
-				9687518D1DC80902002B18FE /* simd_vec4.inl in CopyFiles */,
 				9687518E1DC80902002B18FE /* spline.hpp in CopyFiles */,
 				9687518F1DC80902002B18FE /* spline.inl in CopyFiles */,
 				968751901DC80902002B18FE /* std_based_type.hpp in CopyFiles */,
@@ -811,12 +799,6 @@
 		968750901DC80862002B18FE /* scalar_multiplication.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = scalar_multiplication.hpp; sourceTree = "<group>"; };
 		968750911DC80862002B18FE /* scalar_relational.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = scalar_relational.hpp; sourceTree = "<group>"; };
 		968750921DC80862002B18FE /* scalar_relational.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = scalar_relational.inl; sourceTree = "<group>"; };
-		968750931DC80862002B18FE /* simd_mat4.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = simd_mat4.hpp; sourceTree = "<group>"; };
-		968750941DC80862002B18FE /* simd_mat4.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simd_mat4.inl; sourceTree = "<group>"; };
-		968750951DC80862002B18FE /* simd_quat.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = simd_quat.hpp; sourceTree = "<group>"; };
-		968750961DC80862002B18FE /* simd_quat.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simd_quat.inl; sourceTree = "<group>"; };
-		968750971DC80862002B18FE /* simd_vec4.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = simd_vec4.hpp; sourceTree = "<group>"; };
-		968750981DC80862002B18FE /* simd_vec4.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = simd_vec4.inl; sourceTree = "<group>"; };
 		968750991DC80862002B18FE /* spline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spline.hpp; sourceTree = "<group>"; };
 		9687509A1DC80862002B18FE /* spline.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = spline.inl; sourceTree = "<group>"; };
 		9687509B1DC80862002B18FE /* std_based_type.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = std_based_type.hpp; sourceTree = "<group>"; };
@@ -1134,12 +1116,6 @@
 				968750901DC80862002B18FE /* scalar_multiplication.hpp */,
 				968750911DC80862002B18FE /* scalar_relational.hpp */,
 				968750921DC80862002B18FE /* scalar_relational.inl */,
-				968750931DC80862002B18FE /* simd_mat4.hpp */,
-				968750941DC80862002B18FE /* simd_mat4.inl */,
-				968750951DC80862002B18FE /* simd_quat.hpp */,
-				968750961DC80862002B18FE /* simd_quat.inl */,
-				968750971DC80862002B18FE /* simd_vec4.hpp */,
-				968750981DC80862002B18FE /* simd_vec4.inl */,
 				968750991DC80862002B18FE /* spline.hpp */,
 				9687509A1DC80862002B18FE /* spline.inl */,
 				9687509B1DC80862002B18FE /* std_based_type.hpp */,
