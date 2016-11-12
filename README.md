@@ -75,6 +75,7 @@ SakaSVG uses the following 3rd party libraries:
 - __cpp_btree__ https://github.com/sakamura/cpp-btree (Apache 2.0 License)
 - __glm__ https://github.com/g-truc/glm (Happy Bunny License / MIT License)
 - __libTess2__ https://github.com/sakamura/libtess2 (SGI Free Software License B Version 2.0)
+- __polyclip__ https://github.com/sakamura/polyclip (Unlicense)
 - __StyleSheet__ https://github.com/sakamura/StyleSheet (Clean room implementation using the MIT License)
 - __TinyXML2__ https://github.com/sakamura/tinyxml2 (ZLib License)
 
