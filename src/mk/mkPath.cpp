@@ -457,8 +457,7 @@ namespace MonkVG {
         assert(num_contours == 0);
         
         const int nvp = 3;
-        int result = tessTesselate(_fillTesseleator, winding, Tess::TESS_CONSTRAINED_DELAUNAY_TRIANGLES, nvp, NULL);
-        assert(result == 1);
+        tessTesselate(_fillTesseleator, winding, Tess::TESS_CONSTRAINED_DELAUNAY_TRIANGLES, nvp, NULL);
         
         float v[6];
         
