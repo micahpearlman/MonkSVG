@@ -3,13 +3,13 @@
 	url = https://github.com/sakamura/StyleSheet.git
 [submodule "thirdparty/tinyxml2"]
 	path = thirdparty/tinyxml2
-	url = https://github.com/sakamura/tinyxml2
+	url = https://github.com/sakamura/tinyxml2.git
 [submodule "thirdparty/libtess2"]
 	path = thirdparty/libtess2
 	url = https://github.com/sakamura/libtess2.git
 [submodule "thirdparty/cpp-btree"]
 	path = thirdparty/cpp-btree
-	url = https://github.com/sakamura/cpp-btree
+	url = https://github.com/sakamura/cpp-btree.git
 [submodule "thirdparty/glm/glm"]
 	path = thirdparty/glm/glm
 	url = https://github.com/g-truc/glm.git
