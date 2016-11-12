@@ -20,7 +20,6 @@
 
 namespace MonkVG {
     typedef glm::f32vec2 v2_t;
-    typedef glm::f32vec3 v3_t;
     typedef glm::i32vec2 Pos;
     typedef glm::u16vec2 GpuPos;
     typedef glm::fmat3x3 Matrix33;

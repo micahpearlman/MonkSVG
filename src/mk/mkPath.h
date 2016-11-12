@@ -103,7 +103,7 @@ namespace MonkVG {
         Tess::TESStesselator*		_fillTesseleator;
         std::vector<GLfloat>		_vertices;
         std::vector<v2_t>		_strokeVertices;
-        std::list<v3_t>			_tessVertices;
+        std::list<v2_t>			_tessVertices;
         int					_numberFillVertices;
         int					_numberStrokeVertices;
         MKPaint*		_fillPaintForPath;
@@ -134,7 +134,7 @@ namespace MonkVG {
             _vertices.push_back(y);
         }
         
-        float * addTessVertex( const v3_t & v ) {
+        float * addTessVertex( const v2_t & v ) {
             _tessVertices.push_back( v );
             return tessVerticesBackPtr();
         }

@@ -197,8 +197,8 @@ namespace MonkVG {
         
         std::vector< float >::iterator coordsIter = _fcoords->begin();
         unsigned char segment = VG_CLOSE_PATH;
-        v3_t coords(0,0,0);
-        v3_t prev(0,0,0);
+        v2_t coords;
+        v2_t prev;
         int num_contours = 0;
         
         for ( std::vector< unsigned char >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
@@ -226,7 +226,7 @@ namespace MonkVG {
                     coords.y = *coordsIter; coordsIter++;
                     
                     addTessVertex( coords );
-                    tessAddVertex( _fillTesseleator, coords.x, coords.y, coords.z );
+                    tessAddVertex( _fillTesseleator, coords.x, coords.y );
                     
                 } break;
                 case (VG_LINE_TO >> 1):
@@ -240,7 +240,7 @@ namespace MonkVG {
                     }
                     
                     addTessVertex( coords );
-                    tessAddVertex( _fillTesseleator, coords.x, coords.y, coords.z );
+                    tessAddVertex( _fillTesseleator, coords.x, coords.y );
                 } break;
                 case (VG_HLINE_TO >> 1):
                 {
@@ -251,7 +251,7 @@ namespace MonkVG {
                     }
                     
                     addTessVertex( coords );
-                    tessAddVertex( _fillTesseleator, coords.x, coords.y, coords.z );
+                    tessAddVertex( _fillTesseleator, coords.x, coords.y );
                 } break;
                 case (VG_VLINE_TO >> 1):
                 {
@@ -262,7 +262,7 @@ namespace MonkVG {
                     }
                     
                     addTessVertex( coords );
-                    tessAddVertex(_fillTesseleator, coords.x, coords.y, coords.z );
+                    tessAddVertex(_fillTesseleator, coords.x, coords.y );
                 } break;
                 case (VG_SCUBIC_TO >> 1):
                 {
@@ -287,12 +287,11 @@ namespace MonkVG {
                     float increment = 1.0f / _handler->getTessellationIterations();
                     //printf("\tcubic: ");
                     for ( float t = increment; t < 1.0f + increment; t+=increment ) {
-                        v3_t c;
+                        v2_t c;
                         c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
                         c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-                        c.z = 0;
                         addTessVertex( c );
-                        tessAddVertex( _fillTesseleator, c.x, c.y, c.z );
+                        tessAddVertex( _fillTesseleator, c.x, c.y );
                         //	c.print();
                     }
                     //printf("\n");
@@ -323,12 +322,11 @@ namespace MonkVG {
                     float increment = 1.0f / _handler->getTessellationIterations();
                     //printf("\tcubic: ");
                     for ( float t = increment; t < 1.0f + increment; t+=increment ) {
-                        v3_t c;
+                        v2_t c;
                         c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
                         c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-                        c.z = 0;
                         addTessVertex( c );
-                        tessAddVertex( _fillTesseleator, c.x, c.y, c.z );
+                        tessAddVertex( _fillTesseleator, c.x, c.y );
                         //	c.print();
                     }
                     //printf("\n");
@@ -354,12 +352,11 @@ namespace MonkVG {
                     
                     float increment = 1.0f / _handler->getTessellationIterations();
                     for ( float t = increment; t < 1.0f + increment; t+=increment ) {
-                        v3_t c;
+                        v2_t c;
                         c.x = calcQuadBezier1d( coords.x, cpx, px, t );
                         c.y = calcQuadBezier1d( coords.y, cpy, py, t );
-                        c.z = 0;
                         addTessVertex( c );
-                        tessAddVertex( _fillTesseleator, c.x, c.y, c.z );
+                        tessAddVertex( _fillTesseleator, c.x, c.y );
                     }
                     
                     coords.x = px;
@@ -430,16 +427,15 @@ namespace MonkVG {
                             endAngle = endAngle - 90;
                         }
                         for ( float g = startAngle; g < endAngle; g+=360/steps ) {
-                            v3_t c;
+                            v2_t c;
                             
                             float alpha = g * (M_PI / 180.0f);
                             float sinalpha = sinf( alpha );
                             float cosalpha = cosf( alpha );
                             c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
                             c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
-                            c.z = 0;
                             addTessVertex( c );
-                            tessAddVertex( _fillTesseleator, c.x, c.y, c.z );
+                            tessAddVertex( _fillTesseleator, c.x, c.y );
                         }
                     }
                     
@@ -461,8 +457,7 @@ namespace MonkVG {
         assert(num_contours == 0);
         
         const int nvp = 3;
-        const int nve = 2;
-        int result = tessTesselate(_fillTesseleator, winding, Tess::TESS_CONSTRAINED_DELAUNAY_TRIANGLES, nvp, nve, NULL);
+        int result = tessTesselate(_fillTesseleator, winding, Tess::TESS_CONSTRAINED_DELAUNAY_TRIANGLES, nvp, NULL);
         assert(result == 1);
         
         float v[6];
