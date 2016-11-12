@@ -186,13 +186,13 @@ namespace MonkVG {
         _width = -1;
         _height = -1;
         
-        _fillTesseleator = tessNewTess(NULL);
+        _fillTesseleator = Tess::tessNewTess(NULL);
         
-        TessWindingRule winding = TESS_WINDING_POSITIVE;
+        Tess::TessWindingRule winding = Tess::TESS_WINDING_POSITIVE;
         if( _handler->getFillRule() == VG_EVEN_ODD ) {
-            winding = TESS_WINDING_ODD;
+            winding = Tess::TESS_WINDING_ODD;
         } else if( _handler->getFillRule() == VG_NON_ZERO ) {
-            winding = TESS_WINDING_NONZERO;
+            winding = Tess::TESS_WINDING_NONZERO;
         }
         
         std::vector< float >::iterator coordsIter = _fcoords->begin();
@@ -462,7 +462,7 @@ namespace MonkVG {
         
         const int nvp = 3;
         const int nve = 2;
-        int result = tessTesselate(_fillTesseleator, winding, TESS_CONSTRAINED_DELAUNAY_TRIANGLES, nvp, nve, NULL);
+        int result = tessTesselate(_fillTesseleator, winding, Tess::TESS_CONSTRAINED_DELAUNAY_TRIANGLES, nvp, nve, NULL);
         assert(result == 1);
         
         float v[6];

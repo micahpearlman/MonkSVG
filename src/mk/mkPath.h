@@ -100,7 +100,7 @@ namespace MonkVG {
         
     private:
         
-        TESStesselator*		_fillTesseleator;
+        Tess::TESStesselator*		_fillTesseleator;
         std::vector<GLfloat>		_vertices;
         std::vector<v2_t>		_strokeVertices;
         std::list<v3_t>			_tessVertices;
