@@ -905,8 +905,6 @@ namespace MonkSVG {
     ,	_tessellationIterations( 16 )
 
     {
-        Tess::tessDisableAutomaticCleanup();
-
         _blackBackFill = createPaint();
         float fcolor[4] = { 0,0,0,1 };
         _blackBackFill->setPaintColor(fcolor);
@@ -1664,7 +1662,6 @@ namespace MonkSVG {
         {
             printf("%5d : %d\n", iter.first, iter.second);
         }
-        Tess::tessCleanupDefaultAlloc();
     }
 }
 

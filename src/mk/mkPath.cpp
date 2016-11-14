@@ -186,7 +186,7 @@ namespace MonkVG {
         _width = -1;
         _height = -1;
         
-        _fillTesseleator = Tess::tessNewTess(NULL);
+        _fillTesseleator = Tess::tessNewTess();
         
         Tess::TessWindingRule winding = Tess::TESS_WINDING_POSITIVE;
         if( _handler->getFillRule() == VG_EVEN_ODD ) {
