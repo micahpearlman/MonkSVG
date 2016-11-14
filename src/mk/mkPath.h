@@ -11,7 +11,7 @@
 #include "mkPaint.h"
 #include <list>
 #include <vector>
-#include <Tess2/tesselator.h>
+#include <Tess2/tess.h>
 #include <OpenGLES/ES2/gl.h>
 
 
@@ -68,7 +68,7 @@ namespace MonkVG {
 		,	_minY( std::numeric_limits<float>::max() )
 		,	_width( -1 )
 		,	_height( -1 )
-        ,	_fillTesseleator( 0 )
+        ,	_fillTesselator( 0 )
         ,   _fcoords(new std::vector<float>)
 		{
 		}
@@ -100,7 +100,7 @@ namespace MonkVG {
         
     private:
         
-        Tess::TESStesselator*		_fillTesseleator;
+        Tess::Tesselator*		_fillTesselator;
         std::vector<GLfloat>		_vertices;
         std::vector<v2_t>		_strokeVertices;
         std::list<v2_t>			_tessVertices;
