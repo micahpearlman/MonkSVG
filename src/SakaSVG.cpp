@@ -58,9 +58,10 @@ namespace Saka
             is.seekg (0, std::ios::end);
             std::fpos_t length = is.tellg();
             is.seekg (0, std::ios::beg);
+            assert(length <= UINT_MAX);
             
             // allocate memory:
-            buffer = new char[length];
+            buffer = new char[(unsigned int)length];
             
             // read data as a block:
             is.read(buffer,(std::streamsize)length);

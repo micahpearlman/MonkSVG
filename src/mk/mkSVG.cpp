@@ -902,7 +902,7 @@ namespace MonkSVG {
     ,	_stroke_paint( 0 )
     ,	_fill_paint( 0 )
     ,	_fill_rule( VG_EVEN_ODD )
-    ,	_tessellationIterations( 16 )
+    ,	_tessellationIterations( 4 )
 
     {
         _blackBackFill = createPaint();
@@ -1008,6 +1008,12 @@ namespace MonkSVG {
         // onPathClose()
         
         _current_group->path_objects.push_back( *_current_group->current_path );
+        // Do not delete what was copy-constructed, only delete the object itself 
+        _current_group->current_path->path = nullptr;
+        _current_group->current_path->fill = nullptr;
+        _current_group->current_path->stroke = nullptr;
+        delete _current_group->current_path;
+        _current_group->current_path = nullptr;
     }
     
     void MKSVGHandler::onPathMoveTo( float x, float y ) {

@@ -457,7 +457,7 @@ namespace MonkVG {
         assert(num_contours == 0);
         
         const int nvp = 3;
-        _fillTesselator->tesselate(winding, Tess::TESS_CONSTRAINED_DELAUNAY_TRIANGLES, nvp, NULL);
+        _fillTesselator->tesselate(winding, Tess::TESS_POLYGONS, nvp, NULL);
         
         float v[6];
         
