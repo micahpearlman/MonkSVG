@@ -6,7 +6,7 @@
 #define __mkPaint_h__
 
 #include "vgCompat.h"
-#include <vector>
+#include "sakaDefs.h"
 
 namespace MonkVG {
 	
@@ -48,7 +48,7 @@ namespace MonkVG {
 		struct Stop_t {
 			float a[5];
 		};
-		std::vector<Stop_t>		_colorRampStops;
+		Saka::vector<Stop_t>		_colorRampStops;
 
 		
 	};

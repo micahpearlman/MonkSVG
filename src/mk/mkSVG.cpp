@@ -1,7 +1,6 @@
 /*
  BSD 3-Clause License - Please see LICENSE file for full license
  */
-
 #include "mkSVG.h"
 #include <tinyxml2/tinyxml2.h>
 #include <StyleSheet/Document.h>
@@ -16,8 +15,6 @@
 #include "vgCompat.h"
 #include <OpenGLES/ES2/gl.h>
 
-#include <set>
-#include <unordered_map>
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
 #include <Tess2/tess.h>
@@ -30,6 +27,8 @@ namespace MonkVG {
         MonkVG::Pos pos;
         MonkVG::Color color;
         
+        vertexData_t() {}
+        
         vertexData_t(MonkVG::Pos::value_type x, MonkVG::Pos::value_type y, MonkVG::Color _color) :
         pos(x, y),
         color(_color)
@@ -38,6 +37,10 @@ namespace MonkVG {
         bool operator==(const vertexData_t& other) const
         {
             return pos == other.pos && color == other.color;
+        }
+        bool operator <(const vertexData_t& other) const
+        {
+            return pos.x < other.pos.x || (pos.x == other.pos.x && pos.y < other.pos.y);
         }
     };
     struct __attribute__((packed)) gpuVertexData_t {
@@ -91,13 +94,13 @@ namespace MonkSVG {
         // get bounds information from the svg file, ignoring non-pixel values
 
         const char* inCString;
-        string numberWithUnitString;
-        regex numberWithUnitPattern( "^(-?\\d+)(px)?$" );
+        std::string numberWithUnitString;
+        std::regex numberWithUnitPattern( "^(-?\\d+)(px)?$" );
         
         _handler->_minX = 0.0f;
         if ( root->QueryStringAttribute( "x", &inCString ) == XML_SUCCESS ) {
             numberWithUnitString = inCString;
-            match_results<string::const_iterator> matches;
+            std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_minX = ::atof( matches[1].str().c_str() );
             }
@@ -106,7 +109,7 @@ namespace MonkSVG {
         _handler->_minY = 0.0f;
         if ( root->QueryStringAttribute( "y", &inCString ) == XML_SUCCESS ) {
             numberWithUnitString = inCString;
-            match_results<string::const_iterator> matches;
+            std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_minY = ::atof( matches[1].str().c_str() );
             }
@@ -115,7 +118,7 @@ namespace MonkSVG {
         _handler->_width = 0.0f;
         if ( root->QueryStringAttribute( "width", &inCString ) == XML_SUCCESS ) {
             numberWithUnitString = inCString;
-            match_results<string::const_iterator> matches;
+            std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_width = ::atof( matches[1].str().c_str() );
             }
@@ -124,7 +127,7 @@ namespace MonkSVG {
         _handler->_height = 0.0f;
         if ( root->QueryStringAttribute( "height", &inCString ) == XML_SUCCESS ) {
             numberWithUnitString = inCString;
-            match_results<string::const_iterator> matches;
+            std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_height = ::atof( matches[1].str().c_str() );
             }
@@ -134,8 +137,8 @@ namespace MonkSVG {
         if (_handler->_width == 0.0f && _handler->_height == 0.0f) {
             if ( root->QueryStringAttribute( "viewBox", &inCString) == XML_SUCCESS ) {
                 numberWithUnitString = inCString;
-                match_results<string::const_iterator> matches;
-                regex numberWithUnitPatternVBox( "(\\d+)[ ](\\d+)[ ](\\d+)[ ](\\d+)" );
+                std::match_results<std::string::const_iterator> matches;
+                std::regex numberWithUnitPatternVBox( "(\\d+)[ ](\\d+)[ ](\\d+)[ ](\\d+)" );
                 if ( regex_search( numberWithUnitString, matches, numberWithUnitPatternVBox ) ) {
                     _handler->_minX = ::atof( matches[1].str().c_str() );
                     _handler->_minY = ::atof( matches[2].str().c_str() );
@@ -150,7 +153,7 @@ namespace MonkSVG {
 		
 	}
 	
-	bool SVG::read( string& data ) {
+    bool SVG::read( std::string& data ) {
 		return read( data.c_str() );
 	}
 	
@@ -178,7 +181,7 @@ namespace MonkSVG {
 		if( !element )
 			return false;
 		
-		string type = element->Value();
+        std::string type = element->Value();
 
         if (type == "style") {
             handle_stylesheet(element);
@@ -210,7 +213,7 @@ namespace MonkSVG {
 		} else if ( type == "use" ) {
 			const char* href;
 			if ( element->QueryStringAttribute( "xlink:href", &href ) == XML_SUCCESS ) {
-				string id = href+1;	// skip the #
+                std::string id = href+1;	// skip the #
 				_handler->onUseBegin();
 				// handle transform and other parameters
 				handle_general_parameter( element );
@@ -231,7 +234,7 @@ namespace MonkSVG {
     }
     
 	void SVG::handle_group( XMLElement* pathElement ) {
-		string id_;
+        std::string id_;
 //		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
 //			//_handler->onId( id_ );
 //			cout << "group begin: " << id_ << endl;
@@ -245,7 +248,7 @@ namespace MonkSVG {
 		// go through all the children
 		XMLElement* children = pathElement->FirstChildElement();
 		for ( XMLElement* child = children; child != 0; child = child->NextSiblingElement() ) {
-			string type = child->Value();
+            std::string type = child->Value();
 			handle_xml_element( child );
 		}
 		
@@ -436,7 +439,7 @@ namespace MonkSVG {
 		
 	}
 	
-	uint32_t SVG::string_hex_color_to_uint( const string& hexstring ) {
+    uint32_t SVG::string_hex_color_to_uint( const std::string& hexstring ) {
 		uint32_t color = (uint32_t)strtol( hexstring.c_str() + 1, 0, 16 );
         
 		if ( hexstring.length() == 7 ) {	// fix up to rgba if the color is only rgb
@@ -479,27 +482,27 @@ namespace MonkSVG {
 		//cout << "state: " << *state << endl;
 	}
 	
-	void SVG::parse_path_transform( const string& tr )	{
+	void SVG::parse_path_transform( const std::string& tr )	{
 		size_t p = tr.find( "translate" );
-		if ( p != string::npos ) {
+		if ( p != std::string::npos ) {
 			size_t left = tr.find( "(" );
 			size_t right = tr.find( ")" );
-			string values = tr.substr( left+1, right-1 );
+			std::string values = tr.substr( left+1, right-1 );
 			char* c = const_cast<char*>( values.c_str() );
 			float x = d_string_to_float( c, &c );
 			float y = d_string_to_float( c, &c );
 			_handler->onTransformTranslate( x, y );
-		} else if ( tr.find( "rotate" ) != string::npos ) {
+		} else if ( tr.find( "rotate" ) != std::string::npos ) {
 			size_t left = tr.find( "(" );
 			size_t right = tr.find( ")" );
-			string values = tr.substr( left+1, right-1 );
+			std::string values = tr.substr( left+1, right-1 );
 			char* c = const_cast<char*>( values.c_str() );
 			float a = d_string_to_float( c, &c );
 			_handler->onTransformRotate( a );	// ??? radians or degrees ??
-		} else if ( tr.find( "matrix" ) != string::npos ) {
+		} else if ( tr.find( "matrix" ) != std::string::npos ) {
 			size_t left = tr.find( "(" );
 			size_t right = tr.find( ")" );
-			string values = tr.substr( left+1, right-1 );
+			std::string values = tr.substr( left+1, right-1 );
 			char* cc = const_cast<char*>( values.c_str() );
 			float a = d_string_to_float( cc, &cc );
 			float b = d_string_to_float( cc, &cc );
@@ -511,7 +514,7 @@ namespace MonkSVG {
 		}
 	}
 	
-	void SVG::parse_path_d( const string& d ) {
+	void SVG::parse_path_d( const std::string& d ) {
 		char* c = const_cast<char*>( d.c_str() );
 		char state = *c;
 		nextState( &c, &state );
@@ -636,7 +639,7 @@ namespace MonkSVG {
 		}
 	}
 	
-    void SVG::parse_path_stylesheet( string ps ) {
+    void SVG::parse_path_stylesheet( std::string ps ) {
 
         if (_styleDocument.getElementCount()) {
 
@@ -730,8 +733,8 @@ namespace MonkSVG {
     }
     
 	// semicolon-separated property declarations of the form "name : value" within the ‘style’ attribute
-	void SVG::parse_path_style( const string& ps ) {
-		map< string, string > style_key_values;
+	void SVG::parse_path_style( const std::string& ps ) {
+        Saka::map< std::string, std::string > style_key_values;
 
         char *initial_str = new char[ps.length() + 1];
         char *str = initial_str;
@@ -746,7 +749,7 @@ namespace MonkSVG {
             if (value != NULL) {
                 *value = '\0';
                 ++value;
-                style_key_values[string(key)] = string(value);
+                style_key_values[std::string(key)] = std::string(value);
             }
             
             values = strtok(NULL, style_separator);
@@ -754,7 +757,7 @@ namespace MonkSVG {
         
         delete [] initial_str;
 		
-		map<string, string>::iterator kv = style_key_values.find( string("fill") );
+        Saka::map<std::string, std::string>::iterator kv = style_key_values.find( std::string("fill") );
 		if ( kv != style_key_values.end() ) {
 			if( kv->second != "none" )
 				_handler->onPathFillColor( string_hex_color_to_uint( kv->second ) );
@@ -830,12 +833,12 @@ namespace MonkSVG {
 		}
     }
 
-    void SVG::parse_polyline_points( const string& points ) {
+    void SVG::parse_polyline_points( const std::string& points ) {
         float xy[2];
         int xy_offset = 0;  // 0:x, 1:y
         bool first = true;
         _handler->setRelative(false);
-        StyleSheet::tokenizer(points, ", \t", [&xy, &xy_offset, &first, this](const string& token)
+        StyleSheet::tokenizer(points, ", \t", [&xy, &xy_offset, &first, this](const std::string& token)
                               {
                                   xy[xy_offset++] = (float)atof(token.c_str());
 
@@ -851,7 +854,7 @@ namespace MonkSVG {
         //_handler->onPathClose();
     }
     
-	void SVG::parse_points( const string& points ) {
+    void SVG::parse_points( const std::string& points ) {
         float xy[2];
         int xy_offset = 0;  // 0:x, 1:y
         bool first = true;
@@ -923,7 +926,7 @@ namespace MonkSVG {
         // push the group matrix onto the stack
         pushTransform( group.transform ); setTransform( topTransform() );
         
-        for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
+        for ( Saka::list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
             path_object_t& po = *it;
             uint32_t draw_params = 0;
             if ( po.fill ) {
@@ -950,7 +953,7 @@ namespace MonkSVG {
             popTransform();	setTransform( topTransform() );
         }
         
-        for ( list<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
+        for ( Saka::list<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
             draw_recursive( *it );
         }
         
@@ -1228,7 +1231,7 @@ namespace MonkSVG {
         }
     }
     
-    void MKSVGHandler::onPathFillRule( const string& rule ) {
+    void MKSVGHandler::onPathFillRule( const std::string& rule ) {
         if( _mode == kGroupParseMode ) {
             if( rule == "nonzero" ) {
                 _current_group->fill_rule = VG_NON_ZERO;
@@ -1609,13 +1612,13 @@ namespace MonkSVG {
         // Move triangles to vertexes
         int numVertices = (int)(trianglesDb.size() - numDeletedId) * 3;
         
-        std::vector<GLuint> ebo;
+        Saka::vector<GLuint> ebo;
         ebo.reserve(numVertices);
         
-        std::vector<gpuVertexData_t> vbo;
+        Saka::vector<gpuVertexData_t> vbo;
         vbo.reserve(numVertices); // Note : numVertices is the maximum ever. It will ALWAYS be less than this.
         
-        std::unordered_map<vertexData_t, size_t> vertexToId;
+        Saka::unordered_map<vertexData_t, size_t> vertexToId(numVertices);
         
         GLfloat xSize = _batchMaxX - _batchMinX;
         GLfloat ySize = _batchMaxY - _batchMinY;
@@ -1623,14 +1626,17 @@ namespace MonkSVG {
         auto addVertex = [&](int32_t x, int32_t y, MonkVG::Color color) -> GLuint
         {
             vertexData_t toAdd(x, y, color);
-            auto found = vertexToId.find(toAdd);
+            auto id = vbo.size();
+            
+            auto found( vertexToId.find(toAdd));
+
             if (found == vertexToId.end())
             {
-                auto id = vbo.size();
+                vertexToId.emplace_hint(found, std::move(toAdd), id);
+
                 GLushort xNorm = (GLushort)( ((GLfloat)x / precisionMult - _batchMinX) / xSize * 65535 );
                 GLushort yNorm = 65535 - (GLushort)( ((GLfloat)y / precisionMult - _batchMinY) / ySize * 65535 );
                 vbo.push_back({{xNorm, yNorm}, color});
-                vertexToId.insert({toAdd, id});
                 return (GLuint)id;
             }
             else

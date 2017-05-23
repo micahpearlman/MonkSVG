@@ -6,17 +6,13 @@
 #define __mkSVG_h__
 
 #include <memory>
-#include <vector>
-#include <map>
-#include <deque>
 #include <cmath>
-#include <list>
 #include <string>
 #include <stdlib.h>
 #include "vgCompat.h"
 #include "mkMath.h"
-#include <cpp_btree/btree_map.h>
 #include <OpenGLES/ES2/gl.h>
+#include "sakaDefs.h"
 
 
 namespace Saka
@@ -37,7 +33,6 @@ namespace MonkVG {
 
 namespace MonkSVG {
 
-    using namespace std;
     using namespace tinyxml2;
     using namespace MonkVG;
     
@@ -83,7 +78,7 @@ namespace MonkSVG {
         // paint
         void onPathFillColor( unsigned int color );
         void onPathFillOpacity( float o );
-        void onPathFillRule( const string& rule );
+        void onPathFillRule( const std::string& rule );
         
         
         // stroke
@@ -184,8 +179,8 @@ namespace MonkSVG {
             }
             Matrix33			transform;
             group_t*			parent;
-            list<group_t>		children;
-            list<path_object_t> path_objects;
+            Saka::list<group_t>		children;
+            Saka::list<path_object_t> path_objects;
             path_object_t*		current_path;
             std::string			id;
             
@@ -200,7 +195,7 @@ namespace MonkSVG {
         group_t*	_current_group;
         
         
-        vector<Matrix33>		_transform_stack;
+        Saka::vector<Matrix33>		_transform_stack;
         Matrix33				_root_transform;
         Matrix33				_use_transform;
         float					_use_opacity;
@@ -340,9 +335,9 @@ namespace MonkSVG {
             }
         };
         
-        std::deque<triangle_t> trianglesDb;
-        btree::btree_multimap<int32_t, triangle_t*> trianglesByXMin;
-        std::deque<triangle_t*> trianglesToAdd;
+        Saka::deque<triangle_t> trianglesDb;
+        Saka::btree_multimap<int32_t, triangle_t*> trianglesByXMin;
+        Saka::deque<triangle_t*> trianglesToAdd;
         int32_t                 maxSizeX, maxSizeY, newMaxSizeX, newMaxSizeY;
         int                     numDeletedId;
                 
@@ -355,7 +350,7 @@ namespace MonkSVG {
 	public:
 		
 		bool initialize( MKSVGHandler* handler );
-		bool read( string& data );
+		bool read( std::string& data );
 		bool read( const char* data );
 
 	private:
@@ -363,7 +358,7 @@ namespace MonkSVG {
 		MKSVGHandler*		_handler;
 		
 		// holds svg <symbols>
-		map<string, XMLElement*>	_symbols;
+        Saka::map<std::string, XMLElement*>	_symbols;
 		
 	private:
 		void recursive_parse( XMLElement* element );
@@ -376,13 +371,13 @@ namespace MonkSVG {
 		void handle_rect( XMLElement* pathElement );
 		void handle_polygon( XMLElement* pathElement );
 		void handle_general_parameter( XMLElement* pathElement );
-		void parse_path_d( const string& ps );
-		void parse_path_style( const string& ps );
-		void parse_path_stylesheet( string ps );
-        void parse_path_transform( const string& tr );
-		void parse_points( const string& points );
-        void parse_polyline_points( const string& points );
-		uint32_t string_hex_color_to_uint( const string& hexstring );
+		void parse_path_d( const std::string& ps );
+		void parse_path_style( const std::string& ps );
+		void parse_path_stylesheet( std::string ps );
+        void parse_path_transform( const std::string& tr );
+		void parse_points( const std::string& points );
+        void parse_polyline_points( const std::string& points );
+		uint32_t string_hex_color_to_uint( const std::string& hexstring );
 		float d_string_to_float( char *c, char **str );
 		int d_string_to_int( char *c, char **str );
 		void nextState( char** c, char* state );

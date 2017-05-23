@@ -7,13 +7,10 @@
 
 #include "mkMath.h"
 
-#include <vector>
 #include "mkPaint.h"
-#include <list>
-#include <vector>
 #include <Tess2/tess.h>
 #include <OpenGLES/ES2/gl.h>
-
+#include "sakaDefs.h"
 
 namespace MonkSVG {
     class MKSVGHandler;
@@ -69,7 +66,7 @@ namespace MonkVG {
 		,	_width( -1 )
 		,	_height( -1 )
         ,	_fillTesselator( 0 )
-        ,   _fcoords(new std::vector<float>)
+        ,   _fcoords(new Saka::vector<float>)
 		{
 		}
 		
@@ -81,8 +78,8 @@ namespace MonkVG {
 		int				_numCoords;		// VG_PATH_NUM_COORDS
 		
 		// data
-		std::vector< unsigned char >	_segments;
-		std::vector< float >	*_fcoords;
+		Saka::vector< unsigned char >	_segments;
+		Saka::vector< float >	*_fcoords;
 		
 		// bounds
 		float				_minX;
@@ -101,9 +98,9 @@ namespace MonkVG {
     private:
         
         Tess::Tesselator*		_fillTesselator;
-        std::vector<GLfloat>		_vertices;
-        std::vector<v2_t>		_strokeVertices;
-        std::list<v2_t>			_tessVertices;
+        Saka::vector<GLfloat>		_vertices;
+        Saka::vector<v2_t>		_strokeVertices;
+        Saka::list<v2_t>			_tessVertices;
         int					_numberFillVertices;
         int					_numberStrokeVertices;
         MKPaint*		_fillPaintForPath;
@@ -141,7 +138,7 @@ namespace MonkVG {
         
         void buildFill();
         void buildStroke();
-        void buildFatLineSegment( std::vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
+        void buildFatLineSegment( Saka::vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
                 
     };
 }

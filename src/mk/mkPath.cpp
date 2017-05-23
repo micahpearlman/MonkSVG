@@ -487,7 +487,7 @@ namespace MonkVG {
         _height = fabsf(_height - _minY);
     }
     
-    void MKPath::buildFatLineSegment( std::vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width ) {
+    void MKPath::buildFatLineSegment( Saka::vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width ) {
         
         if ( p0 == p1 ) {
             return;

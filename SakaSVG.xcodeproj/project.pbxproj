@@ -134,6 +134,7 @@
 		962DBF2B1DD159F000BC51F1 /* mkSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkSVG.cpp; sourceTree = "<group>"; };
 		962DBF2C1DD159F000BC51F1 /* mkSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkSVG.h; sourceTree = "<group>"; };
 		962DBF2D1DD159F000BC51F1 /* vgCompat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vgCompat.h; sourceTree = "<group>"; };
+		963076661ED33F2600F027CA /* sakaDefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sakaDefs.h; sourceTree = "<group>"; };
 		9649535D1DC2E0E700838988 /* SakaSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SakaSVG.cpp; path = src/SakaSVG.cpp; sourceTree = "<group>"; };
 		9649535E1DC2E0E700838988 /* SakaSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SakaSVG.h; path = src/SakaSVG.h; sourceTree = "<group>"; };
 		96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = glm.xcodeproj; path = glm/glm.xcodeproj; sourceTree = "<group>"; };
@@ -173,6 +174,7 @@
 				962DBF2B1DD159F000BC51F1 /* mkSVG.cpp */,
 				962DBF2C1DD159F000BC51F1 /* mkSVG.h */,
 				962DBF2D1DD159F000BC51F1 /* vgCompat.h */,
+				963076661ED33F2600F027CA /* sakaDefs.h */,
 			);
 			name = mk;
 			path = src/mk;
@@ -359,7 +361,8 @@
 		96874F441DC7FD70002B18FE /* libTess2.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libTess2.a;
+			name = libTess2.a;
+			path = libtess2.a;
 			remoteRef = 96874F431DC7FD70002B18FE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -380,7 +383,8 @@
 		96874F531DC7FD97002B18FE /* libStyleSheet.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libStyleSheet.a;
+			name = libStyleSheet.a;
+			path = libstylesheet.a;
 			remoteRef = 96874F521DC7FD97002B18FE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -501,11 +505,13 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = sakasvg;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
+				SYSTEM_HEADER_SEARCH_PATHS = /usr/local/include;
 			};
 			name = Debug;
 		};
@@ -556,10 +562,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = sakasvg;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
+				SYSTEM_HEADER_SEARCH_PATHS = /usr/local/include;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
