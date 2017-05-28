@@ -8,6 +8,8 @@
 #ifndef sakaDefs_h
 #define sakaDefs_h
 
+#include <iostream>
+
 #include <boost/pool/pool_alloc.hpp>
 #include <vector>
 #include <list>
@@ -18,13 +20,31 @@
 #include <cpp_btree/btree_map.h>
 #include <scoped_allocator>
 
+#ifndef SAKA_PROFILE_LEAKS
+#define SAKA_PROFILE_LEAKS false            // Set to true if you wish to use a slower allocator, but will show leaks
+#endif
+
+#ifdef DEBUG
+#define SAKA_LOG std::cout
+#else
+#define SAKA_LOG if (true) {} else std::cout
+#endif
 
 namespace Saka {
     template <typename T>
+    using std_allocator = std::allocator<T>;
+    
+#if SAKA_PROFILE_LEAKS
+    template <typename T>
+    using fast_pool_allocator = std::allocator<T>;
+#else
+    template <typename T>
     using fast_pool_allocator = boost::fast_pool_allocator<T, boost::default_user_allocator_new_delete, boost::details::pool::null_mutex, 1024>;
+#endif
+    
     
     template <typename T>
-    using vector = std::vector<T>;
+    using vector = std::vector<T, std_allocator<T>>;
 
     template <typename T>
     using list = std::list<T, fast_pool_allocator<T>>;
@@ -40,19 +60,12 @@ namespace Saka {
     
     namespace _unordered_map
     {
-        template <typename T>
-        using stdAlloc = std::allocator<T>;
-        
-        template <typename T>
-        using fastAlloc = fast_pool_allocator<T>;
-        
-        
         // This is our data type and its allocator. It's the simplest one
         template <typename T, typename U>
         using data_type = std::pair<const T, U>;
         
         template <typename T, typename U>
-        using data_type_allocator = stdAlloc<data_type<T, U>>;
+        using data_type_allocator = std_allocator<data_type<T, U>>;
 
         // We must specifically instantiate every single rebind so we don't miss any
         template <typename T, typename U, typename Up> struct rebind_selector : public std::false_type {};
@@ -80,7 +93,7 @@ namespace Saka {
         using hash_value_type = typename std::__hash_value_type<T, U>;
         
         template <typename T, typename U>
-        using hash_value_type_allocator = fastAlloc<hash_value_type<T, U>>;
+        using hash_value_type_allocator = fast_pool_allocator<hash_value_type<T, U>>;
 
         template<typename T, typename U>
         struct rebind_selector<T, U, hash_value_type<T, U>> : public std::true_type {using other = allocator<T, U, hash_value_type_allocator<T,U>>;};
@@ -90,7 +103,7 @@ namespace Saka {
         using hash_node_type = typename std::__make_hash_node_types<U, typename std::allocator_traits<data_type_allocator<T, U>>::void_pointer>::type::__node_type;
         
         template <typename T, typename U>
-        using hash_node_type_allocator = fastAlloc<hash_node_type<T, U>>;
+        using hash_node_type_allocator = fast_pool_allocator<hash_node_type<T, U>>;
         
         template<typename T, typename U>
         struct rebind_selector<T, U, hash_node_type<T, U>> : public std::true_type {using other = allocator<T, U, hash_node_type_allocator<T,U>>;};
@@ -100,7 +113,7 @@ namespace Saka {
         using hash_node = typename std::__hash_node<hash_value_type<T, U>, typename std::allocator_traits<data_type_allocator<T, U>>::void_pointer>;
         
         template <typename T, typename U>
-        using hash_node_allocator = fastAlloc<hash_node<T, U>>;
+        using hash_node_allocator = fast_pool_allocator<hash_node<T, U>>;
 
         template<typename T, typename U>
         struct rebind_selector<T, U, hash_node<T, U>> : public std::true_type {using other = allocator<T, U, hash_node_allocator<T,U>>;};
@@ -110,10 +123,10 @@ namespace Saka {
         using hash_node_base = typename std::__hash_node_base<hash_node<T, U>*>;
         
         template <typename T, typename U>
-        using hash_node_base_allocator = fastAlloc<hash_node_base<T, U>>;
+        using hash_node_base_allocator = fast_pool_allocator<hash_node_base<T, U>>;
 
         template <typename T, typename U>
-        using hash_node_base_allocator_ptr = stdAlloc<hash_node_base<T, U>*>;   // This one gets reserved. Keep it as normal allocator
+        using hash_node_base_allocator_ptr = std_allocator<hash_node_base<T, U>*>;   // This one gets reserved. Keep it as normal allocator
 
         template<typename T, typename U>
         struct rebind_selector<T, U, hash_node_base<T, U>> : public std::true_type {using other = allocator<T, U, hash_node_base_allocator<T, U>>;};

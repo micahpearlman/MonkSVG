@@ -370,7 +370,9 @@ namespace MonkSVG {
         void handle_path( XMLElement* pathElement );
 		void handle_rect( XMLElement* pathElement );
 		void handle_polygon( XMLElement* pathElement );
-		void handle_general_parameter( XMLElement* pathElement );
+        void handle_general_parameter( XMLElement* pathElement );
+        void handle_symbol( XMLElement* pathElement );
+        void handle_use( XMLElement* pathElement );
 		void parse_path_d( const std::string& ps );
 		void parse_path_style( const std::string& ps );
 		void parse_path_stylesheet( std::string ps );
@@ -380,7 +382,7 @@ namespace MonkSVG {
 		uint32_t string_hex_color_to_uint( const std::string& hexstring );
 		float d_string_to_float( char *c, char **str );
 		int d_string_to_int( char *c, char **str );
-		void nextState( char** c, char* state );
+		bool nextState( char** c, char* state );
 	};
 }
 

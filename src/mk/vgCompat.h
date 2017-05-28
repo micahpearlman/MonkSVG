@@ -54,7 +54,7 @@ namespace MonkVG
     };
     
     
-    enum VGPathAbsRel
+    enum VGPathAbsRel : unsigned char
     {
         VG_ABSOLUTE                                 = 0,
         VG_RELATIVE                                 = 1

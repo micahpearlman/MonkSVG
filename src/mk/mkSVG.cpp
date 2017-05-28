@@ -103,6 +103,7 @@ namespace MonkSVG {
             std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_minX = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
+                SAKA_LOG << "minX=" << _handler->_minX << std::endl;
             }
         }
         
@@ -112,6 +113,7 @@ namespace MonkSVG {
             std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_minY = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
+                SAKA_LOG << "minY=" << _handler->_minY << std::endl;
             }
         }
         
@@ -121,6 +123,7 @@ namespace MonkSVG {
             std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_width = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
+                SAKA_LOG << "width=" << _handler->_width << std::endl;
             }
         }
         
@@ -130,6 +133,7 @@ namespace MonkSVG {
             std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
                 _handler->_height = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
+                SAKA_LOG << "height=" << _handler->_height << std::endl;
             }
         }
         
@@ -144,6 +148,7 @@ namespace MonkSVG {
                     _handler->_minY = (int)::strtol( matches[2].str().c_str(), nullptr, 10 );
                     _handler->_width = (int)::strtol( matches[3].str().c_str(), nullptr, 10 );
                     _handler->_height  = (int)::strtol( matches[4].str().c_str(), nullptr, 10 );
+                    SAKA_LOG << "minX=" << _handler->_minX << " minY=" << _handler->_minY << " width=" << _handler->_width << " height=" << _handler->_height << std::endl;
                 }
             }
             
@@ -162,8 +167,8 @@ namespace MonkSVG {
 	void SVG::recursive_parse( XMLElement* element ) {
 		
 		if ( element ) {
-			for ( XMLElement* sibbling = element; sibbling != 0; sibbling = sibbling->NextSiblingElement() ) {
-				handle_xml_element( sibbling );
+			for ( XMLElement* sibling = element; sibling != 0; sibling = sibling->NextSiblingElement() ) {
+				handle_xml_element( sibling );
 			}
 		}
 		
@@ -176,55 +181,43 @@ namespace MonkSVG {
 		}
 
 	}
-	
+
+    constexpr uint32_t fnv1a(char const* s, std::size_t count)
+    {
+        return ((count ? fnv1a(s, count - 1) : 2166136261u) ^ (uint32_t)s[count]) * 16777619u;
+    }
+
+    static constexpr uint32_t operator"" _hash(char const* s, std::size_t count)
+    {
+        return fnv1a(s, count-1);
+    }
+    static uint32_t hashStr(const char* s)
+    {
+        return fnv1a(s, strlen(s)-1);
+    }
+
 	bool SVG::handle_xml_element( XMLElement* element ) {
 		if( !element )
 			return false;
 		
-        std::string type = element->Value();
-
-        if (type == "style") {
-            handle_stylesheet(element);
-            return false;
-        } else if ( type == "g" ) {
-			handle_group( element );
-			return true;
-		} else if ( type == "path" ) {
-			handle_path( element );
-			return true;
-		} else if ( type == "rect" ) {
-			handle_rect( element );
-			return true;
-        } else if ( type == "line" ) {
-            handle_line( element );
-            return true;
-        } else if ( type == "polyline" ) {
-            handle_polyline( element );
-            return true;
-        } else if ( type == "polygon" ) {
-			handle_polygon ( element );
-			return true;
-		} else if( type == "symbol" ) {
-			const char* id;
-			if ( element->QueryStringAttribute( "id", &id ) == XML_SUCCESS ) {
-				_symbols[id] = (XMLElement*)element->ShallowClone(nullptr);
-			}
-			return true;
-		} else if ( type == "use" ) {
-			const char* href;
-			if ( element->QueryStringAttribute( "xlink:href", &href ) == XML_SUCCESS ) {
-                std::string id = href+1;	// skip the #
-				_handler->onUseBegin();
-				// handle transform and other parameters
-				handle_general_parameter( element );
-				recursive_parse( _symbols[id] );
-				_handler->onUseEnd();
-			}
-			
-			return true;
-        } 
-		return false;
-
+        const auto type = element->Value();
+        const auto hash = hashStr(type);
+        
+        switch (hash)
+        {
+            case "style"_hash: handle_stylesheet(element); return false;
+            case "g"_hash: handle_group( element ); return true;
+            case "path"_hash: handle_path( element ); return true;
+            case "rect"_hash: handle_rect( element ); return true;
+            case "line"_hash: handle_line( element ); return true;
+            case "polyline"_hash: handle_polyline( element ); return true;
+            case "polygon"_hash: handle_polygon ( element ); return true;
+            case "symbol"_hash: handle_symbol( element ); return true;
+            case "use"_hash: handle_use( element ); return true;
+            default:
+                SAKA_LOG << "Unknown xml element: " << type << std::endl;
+                return false;
+        }
 	}
     
 	void SVG::handle_stylesheet( XMLElement* pathElement ) {
@@ -234,11 +227,11 @@ namespace MonkSVG {
     }
     
 	void SVG::handle_group( XMLElement* pathElement ) {
-        std::string id_;
-//		if ( pathElement->QueryStringAttribute( "id", &id_) == TIXML_SUCCESS ) {
-//			//_handler->onId( id_ );
-//			cout << "group begin: " << id_ << endl;
-//		}
+        const char* id_;
+		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
+			//_handler->onId( id_ );
+            SAKA_LOG << "group begin: " << id_ << std::endl;
+		}
 
 		_handler->onGroupBegin();
 		
@@ -254,21 +247,21 @@ namespace MonkSVG {
 		
 		_handler->onGroupEnd();
 		
-//		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
-//			//_handler->onId( id_ );
-//			cout << "group end: " << id_ << endl;
-//		}
+		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
+			//_handler->onId( id_ );
+            SAKA_LOG << "group end: " << id_ << std::endl;
+		}
 
 
 	}
 	
 	void SVG::handle_path( XMLElement* pathElement ) {
 		
-//		string id_;
-//		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
-//			//_handler->onId( id_ );
-//			cout << "path: " << id_ << endl;
-//		}
+		const char* id_;
+		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
+			//_handler->onId( id_ );
+            SAKA_LOG << "path: " << id_ << std::endl;
+		}
 
 		_handler->onPathBegin();
 		const char* d;
@@ -409,7 +402,27 @@ namespace MonkSVG {
 		}
 
 	}
+    
+    void SVG::handle_symbol( XMLElement* pathElement )
+    {
+        const char* id;
+        if ( pathElement->QueryStringAttribute( "id", &id ) == XML_SUCCESS ) {
+            _symbols[id] = (XMLElement*)pathElement->ShallowClone(nullptr);
+        }
+    }
 
+    void SVG::handle_use( XMLElement* pathElement )
+    {
+        const char* href;
+        if ( pathElement->QueryStringAttribute( "xlink:href", &href ) == XML_SUCCESS ) {
+            std::string id = href+1;	// skip the #
+            _handler->onUseBegin();
+            // handle transform and other parameters
+            handle_general_parameter( pathElement );
+            recursive_parse( _symbols[id] );
+            _handler->onUseEnd();
+        }
+    }
 	
 	
 	float SVG::d_string_to_float( char *c, char** str ) {
@@ -451,16 +464,14 @@ namespace MonkSVG {
 	}	
 	
 	
-	void SVG::nextState( char** c, char* state ) {
+	bool SVG::nextState( char** c, char* state ) {
 		if ( **c == '\0') {
-			*state = 'e';
-			return;
+			return false;
 		}
 		
 		while ( isspace(**c) ) {
 			if ( **c == '\0') {
-				*state = 'e';
-				return;
+				return false;
 			}
 			(*c)++;
 		}
@@ -468,7 +479,7 @@ namespace MonkSVG {
 			*state = **c;
 			(*c)++;
 //			if ( **c == '\0') {
-//				*state = 'e';
+//				*state = '\0';
 //				return;
 //			}
 			
@@ -478,8 +489,8 @@ namespace MonkSVG {
 				_handler->setRelative( false );
 			}
 		}
-		
-		//cout << "state: " << *state << endl;
+        SAKA_LOG << "state: " << *state << std::endl;
+        return true;
 	}
 	
 	void SVG::parse_path_transform( const std::string& tr )	{
@@ -492,6 +503,7 @@ namespace MonkSVG {
 			float x = d_string_to_float( c, &c );
 			float y = d_string_to_float( c, &c );
 			_handler->onTransformTranslate( x, y );
+            SAKA_LOG << "Translate " << x << ", " << y << std::endl;
 		} else if ( tr.find( "rotate" ) != std::string::npos ) {
 			size_t left = tr.find( "(" );
 			size_t right = tr.find( ")" );
@@ -499,6 +511,7 @@ namespace MonkSVG {
 			char* c = const_cast<char*>( values.c_str() );
 			float a = d_string_to_float( c, &c );
 			_handler->onTransformRotate( a );	// ??? radians or degrees ??
+            SAKA_LOG << "Rotate " << a << std::endl;
 		} else if ( tr.find( "matrix" ) != std::string::npos ) {
 			size_t left = tr.find( "(" );
 			size_t right = tr.find( ")" );
@@ -511,35 +524,33 @@ namespace MonkSVG {
 			float e = d_string_to_float( cc, &cc );
 			float f = d_string_to_float( cc, &cc );
 			_handler->onTransformMatrix( a, b, c, d, e, f );
+            SAKA_LOG << "Matrix " << a << ", " << b << ", " << c << ", " << d << ", " << e << ", " << f << std::endl;
 		}
 	}
 	
 	void SVG::parse_path_d( const std::string& d ) {
 		char* c = const_cast<char*>( d.c_str() );
 		char state = *c;
-		nextState( &c, &state );
-		while ( /**c &&*/ state != 'e' ) {
+		while ( nextState( &c, &state ) ) {
 			
 			switch ( state ) {
 				case 'm':
 				case 'M':
 				{
-					//c++;
 					float x = d_string_to_float( c, &c );
 					float y = d_string_to_float( c, &c );
+                    SAKA_LOG << "  move to " << state << ": " << x << ", " << y << std::endl;
 					_handler->onPathMoveTo( x, y );
-					nextState(&c, &state);
 				}
 				break;
 					
 				case 'l':
 				case 'L':
 				{
-					//c++;
 					float x = d_string_to_float( c, &c );
 					float y = d_string_to_float( c, &c );
+                    SAKA_LOG << "  line to " << state << ": " << x << ", " << y << std::endl;
 					_handler->onPathLineTo( x, y );
-					nextState(&c, &state);
 					
 				}
 				break;
@@ -548,18 +559,17 @@ namespace MonkSVG {
 				case 'H':
 				{
 					float x = d_string_to_float( c, &c );
+                    SAKA_LOG << "  H line " << state << ": " << x << std::endl;
 					_handler->onPathHorizontalLine( x );
-					nextState(&c, &state);
-
 				}
 				break;
 
 				case 'v':
 				case 'V':
 				{
-					float y = d_string_to_float( c, &c );
+                    float y = d_string_to_float( c, &c );
+                    SAKA_LOG << "  V line " << state << ": " << y << std::endl;
 					_handler->onPathVerticalLine( y );
-					nextState(&c, &state);
 					
 				}
 				break;
@@ -573,9 +583,8 @@ namespace MonkSVG {
 					float y2 = d_string_to_float( c, &c );
 					float x3 = d_string_to_float( c, &c );
 					float y3 = d_string_to_float( c, &c );
+                    SAKA_LOG << "  cubic " << state << ": " << x1 << ", " << y1 << ", " << x2 << ", " << y2 << ", " << x3 << ", " << y3 << std::endl;
 					_handler->onPathCubic(x1, y1, x2, y2, x3, y3);
-					nextState(&c, &state);
-					
 				}
 				break;
 
@@ -586,10 +595,9 @@ namespace MonkSVG {
 					float y2 = d_string_to_float( c, &c );
 					float x3 = d_string_to_float( c, &c );
 					float y3 = d_string_to_float( c, &c );
+                    SAKA_LOG << "  Scubic " << state << ": " << x2 << ", " << y2 << ", " << x3 << ", " << y3 << std::endl;
 					_handler->onPathSCubic(x2, y2, x3, y3);
-					nextState(&c, &state);
-					
-				}
+                }
 				break;
 					
 				case 'a':
@@ -600,10 +608,10 @@ namespace MonkSVG {
 					float x_axis_rotation = d_string_to_float( c, &c );
 					int large_arc_flag = d_string_to_int( c, &c );
 					int sweep_flag = d_string_to_int( c, &c );
-					float x = d_string_to_float( c, &c );;
+					float x = d_string_to_float( c, &c );
 					float y = d_string_to_float( c, &c );
+                    SAKA_LOG << "  arc " << state << ": r " << rx << ", " << ry << ", rot " << x_axis_rotation << ", large " << large_arc_flag << ", sweep " << sweep_flag << ", pos " << x << ", " << y << std::endl;
 					_handler->onPathArc( rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y );
-					nextState(&c, &state);
 					
 				}
 				break;
@@ -611,11 +619,9 @@ namespace MonkSVG {
 				case 'z':
 				case 'Z':
 				{
-					//c++;
+                    SAKA_LOG << "  )" << std::endl;
 					_handler->onPathClose();
-					nextState(&c, &state);
-					
-				}
+                }
 				break;
                     
                 case 'q':
@@ -625,14 +631,13 @@ namespace MonkSVG {
                     float y1 = d_string_to_float(c, &c);
                     float x2 = d_string_to_float(c, &c);
                     float y2 = d_string_to_float(c, &c);
+                    SAKA_LOG << "  quad " << state << ": " << x1 << ", " << y1 << ", " << x2 << ", " << y2 << std::endl;
                     _handler->onPathQuad(x1, y1, x2, y2);
-                    nextState(&c, &state);
                 }
                 break;
 					
 				default:
-					// BUGBUG: can get stuck here!
-					// TODO: figure out the next state if we don't handle a particular state or just dummy handle a state!
+                    SAKA_LOG << "  unknown state " << state << std::endl;
 					c++;
 					break;
 			}

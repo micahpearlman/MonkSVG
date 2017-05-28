@@ -66,13 +66,6 @@ namespace MonkVG {
         buildFill();
     }
     
-    inline void printMat44( float m[4][4] ) {
-        printf("--\n");
-        for ( int x = 0; x < 4; x++ ) {
-            printf("%f\t%f\t%f\t%f\n", m[x][0], m[x][1], m[x][2], m[x][3]);
-        }
-    }
-    
     bool MKPath::draw( GLbitfield paintModes ) {
         
         if ( paintModes == 0 )
@@ -105,9 +98,6 @@ namespace MonkVG {
         return (powf(inverseTime, 2.0f) * start) + (2.0f * inverseTime * time * control) + (powf(time, 2.0f) * end);
     }
     
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
     // Given: Points (x0, y0) and (x1, y1)
     // Return: TRUE if a solution exists, FALSE otherwise
     //	Circle centers are written to (cx0, cy0) and (cx1, cy1)
@@ -224,6 +214,10 @@ namespace MonkVG {
                     num_contours++;
                     coords.x = *coordsIter; coordsIter++;
                     coords.y = *coordsIter; coordsIter++;
+                    if ( isRelative ) {
+                        coords.x += prev.x;
+                        coords.y += prev.y;
+                    }
                     
                     addTessVertex( coords );
                     _fillTesselator->addVertex( coords.x, coords.y );
