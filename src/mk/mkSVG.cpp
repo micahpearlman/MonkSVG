@@ -102,7 +102,7 @@ namespace MonkSVG {
             numberWithUnitString = inCString;
             std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
-                _handler->_minX = ::atof( matches[1].str().c_str() );
+                _handler->_minX = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
             }
         }
         
@@ -111,7 +111,7 @@ namespace MonkSVG {
             numberWithUnitString = inCString;
             std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
-                _handler->_minY = ::atof( matches[1].str().c_str() );
+                _handler->_minY = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
             }
         }
         
@@ -120,7 +120,7 @@ namespace MonkSVG {
             numberWithUnitString = inCString;
             std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
-                _handler->_width = ::atof( matches[1].str().c_str() );
+                _handler->_width = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
             }
         }
         
@@ -129,7 +129,7 @@ namespace MonkSVG {
             numberWithUnitString = inCString;
             std::match_results<std::string::const_iterator> matches;
             if ( regex_search( numberWithUnitString, matches, numberWithUnitPattern ) ) {
-                _handler->_height = ::atof( matches[1].str().c_str() );
+                _handler->_height = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
             }
         }
         
@@ -140,10 +140,10 @@ namespace MonkSVG {
                 std::match_results<std::string::const_iterator> matches;
                 std::regex numberWithUnitPatternVBox( "(\\d+)[ ](\\d+)[ ](\\d+)[ ](\\d+)" );
                 if ( regex_search( numberWithUnitString, matches, numberWithUnitPatternVBox ) ) {
-                    _handler->_minX = ::atof( matches[1].str().c_str() );
-                    _handler->_minY = ::atof( matches[2].str().c_str() );
-                    _handler->_width = ::atof( matches[3].str().c_str() );
-                    _handler->_height  = ::atof( matches[4].str().c_str() );
+                    _handler->_minX = (int)::strtol( matches[1].str().c_str(), nullptr, 10 );
+                    _handler->_minY = (int)::strtol( matches[2].str().c_str(), nullptr, 10 );
+                    _handler->_width = (int)::strtol( matches[3].str().c_str(), nullptr, 10 );
+                    _handler->_height  = (int)::strtol( matches[4].str().c_str(), nullptr, 10 );
                 }
             }
             
@@ -284,14 +284,14 @@ namespace MonkSVG {
     void SVG::handle_line( XMLElement* pathElement ) {
         _handler->onPathBegin();
         
-        double pos [4];
-        if ( pathElement->QueryDoubleAttribute( "x1", &pos[0]) == XML_SUCCESS) {
+        float pos [4];
+        if ( pathElement->QueryFloatAttribute( "x1", &pos[0]) == XML_SUCCESS) {
         }
-        if ( pathElement->QueryDoubleAttribute( "y1", &pos[1]) == XML_SUCCESS) {
+        if ( pathElement->QueryFloatAttribute( "y1", &pos[1]) == XML_SUCCESS) {
         }
-        if ( pathElement->QueryDoubleAttribute( "x2", &pos[2]) == XML_SUCCESS) {
+        if ( pathElement->QueryFloatAttribute( "x2", &pos[2]) == XML_SUCCESS) {
         }
-        if ( pathElement->QueryDoubleAttribute( "y2", &pos[3]) == XML_SUCCESS) {
+        if ( pathElement->QueryFloatAttribute( "y2", &pos[3]) == XML_SUCCESS) {
         }
         _handler->setRelative(false);
         _handler->onPathMoveTo(pos[0], pos[1]);
@@ -369,7 +369,7 @@ namespace MonkSVG {
 		
 		const char* stroke_width;
 		if ( pathElement->QueryStringAttribute( "stroke-width", &stroke_width) == XML_SUCCESS ) {
-			float width = atof( stroke_width );
+			float width = strtof( stroke_width, nullptr );
 			_handler->onPathStrokeWidth( width );
 		}
 		
@@ -394,12 +394,12 @@ namespace MonkSVG {
 		
 		const char* opacity;
 		if ( pathElement->QueryStringAttribute( "opacity", &opacity) == XML_SUCCESS ) {
-			float o = atof( opacity );
+			float o = strtof( opacity, nullptr );
 			_handler->onPathFillOpacity( o );
 			// TODO: ??? stroke opacity???
 		}
 		if ( pathElement->QueryStringAttribute( "fill-opacity", &opacity) == XML_SUCCESS ) {
-			float o = atof( opacity );
+			float o = strtof( opacity, nullptr );
 			_handler->onPathFillOpacity( o );
 		}
 
@@ -664,7 +664,7 @@ namespace MonkSVG {
                 property = theElement.getProperties().getProperty("fill-opacity");
                 value = property.getValue();
                 if ( !value.empty() ) {
-                    float o = atof( value.c_str() );
+                    float o = strtof( value.c_str(), nullptr );
                     _handler->onPathFillOpacity( o );
                 }
                 
@@ -679,7 +679,7 @@ namespace MonkSVG {
                 property = theElement.getProperties().getProperty("stroke-width");
                 value = property.getValue();
                 if ( !value.empty() ) {
-                    float width = atof( value.c_str() );
+                    float width = strtof( value.c_str(), nullptr );
                     _handler->onPathStrokeWidth( width );
                 }
                 
@@ -716,14 +716,14 @@ namespace MonkSVG {
                 property = theElement.getProperties().getProperty("stroke-opacity");
                 value = property.getValue();
                 if ( !value.empty() ) {
-                    float o = atof( value.c_str() );
+                    float o = strtof( value.c_str(), nullptr );
                     _handler->onPathStrokeOpacity( o );
                 }
                 
                 property = theElement.getProperties().getProperty("opacity");
                 value = property.getValue();
                 if ( !value.empty() ) {
-                    float o = atof( value.c_str() );
+                    float o = strtof( value.c_str(), nullptr );
                     _handler->onPathFillOpacity( o );
                 }
                 
@@ -770,7 +770,7 @@ namespace MonkSVG {
         
         kv = style_key_values.find( "fill-opacity" );
         if ( kv != style_key_values.end() ) {
-            float o = atof( kv->second.c_str() );
+            float o = strtof( kv->second.c_str(), nullptr );
             _handler->onPathFillOpacity( o );
         }
         
@@ -783,7 +783,7 @@ namespace MonkSVG {
 		
 		kv = style_key_values.find( "stroke-width" );
 		if ( kv != style_key_values.end() ) {
-			float width = atof( kv->second.c_str() );
+			float width = strtof( kv->second.c_str(), nullptr );
 			_handler->onPathStrokeWidth( width );
 		}
 		
@@ -821,13 +821,13 @@ namespace MonkSVG {
 */
         kv = style_key_values.find( "stroke-opacity" );
         if ( kv != style_key_values.end() ) {
-            float o = atof( kv->second.c_str() );
+            float o = strtof( kv->second.c_str(), nullptr );
             _handler->onPathStrokeOpacity( o );
         }
 
 		kv = style_key_values.find( "opacity" );
 		if ( kv != style_key_values.end() ) {
-			float o = atof( kv->second.c_str() );
+			float o = strtof( kv->second.c_str(), nullptr );
 			_handler->onPathFillOpacity( o );
 			// ?? TODO: stroke Opacity???
 		}
@@ -882,10 +882,10 @@ namespace MonkSVG {
 	}
     
     MKSVGHandler::MKSVGHandler()
-    :	_minX( MAXFLOAT )
-    ,	_minY( MAXFLOAT )
-    ,	_width( -MAXFLOAT )
-    ,	_height( -MAXFLOAT )
+    :	_minX( INT_MAX )
+    ,	_minY( INT_MAX )
+    ,	_width( INT_MIN )
+    ,	_height( INT_MIN )
     ,   _batchMinX(INT_MAX)
     ,   _batchMinY(INT_MAX)
     ,   _batchMaxX(INT_MIN)
@@ -1150,12 +1150,12 @@ namespace MonkSVG {
     }
     
     void MKSVGHandler::onPathFillOpacity( float o ) {
+        static const float fcolorBlack[4] = { 0,0,0,1 };
         float fcolor[4];
         if( _mode == kGroupParseMode ) {
             if( _current_group->fill == 0 ) {	// if no fill create a black fill
                 _current_group->fill = createPaint();
-                float fcolor[4] = { 0,0,0,1 };
-                _current_group->fill->setPaintColor(fcolor);
+                _current_group->fill->setPaintColor(fcolorBlack);
             }
             _current_group->fill->getPaintColor( &fcolor[0] );
             // set the opacity
@@ -1165,8 +1165,7 @@ namespace MonkSVG {
         } else if( _mode == kPathParseMode ) {
             if( _current_group->current_path->fill == 0 ) {	// if no fill create a black fill
                 _current_group->current_path->fill = createPaint();
-                float fcolor[4] = { 0,0,0,1 };
-                _current_group->current_path->fill->setPaintColor(fcolor);
+                _current_group->current_path->fill->setPaintColor(fcolorBlack);
             }
             
             _current_group->current_path->fill->getPaintColor( &fcolor[0] );
@@ -1177,8 +1176,7 @@ namespace MonkSVG {
             _use_opacity = o;
             if( _current_group->fill == 0 ) {	// if no fill create a black fill
                 _current_group->fill = createPaint();
-                float fcolor[4] = { 0,0,0,1 };
-                _current_group->fill->setPaintColor(fcolor);
+                _current_group->fill->setPaintColor(fcolorBlack);
             }
             _current_group->fill->getPaintColor( &fcolor[0] );
             // set the opacity
@@ -1576,7 +1574,7 @@ namespace MonkSVG {
             int32_t* thirdV = &v[4];
             
             int vertcnt = 0;
-            for ( int i = 0; i < strokeVertCnt * 2; i+=2, vertcnt++ ) {
+            for ( unsigned long i = 0; i < strokeVertCnt * 2; i+=2, vertcnt++ ) {
                 v2_t affine = affineTransform(_active_matrix, &strokeVerts[i]) * precisionMult;
                 
                 // for stroke we need to convert from a strip to triangle
@@ -1610,7 +1608,7 @@ namespace MonkSVG {
     void MKSVGHandler::finalize(Saka::SVG* dest) {
         optimize();
         // Move triangles to vertexes
-        int numVertices = (int)(trianglesDb.size() - numDeletedId) * 3;
+        size_t numVertices = (trianglesDb.size() - (size_t)numDeletedId) * 3;
         
         Saka::vector<GLuint> ebo;
         ebo.reserve(numVertices);
@@ -1662,12 +1660,12 @@ namespace MonkSVG {
         Saka::SharedVBO sVbo = Saka::SharedVBO::make_shared();
         Saka::SharedEBO sEbo = dest->ebo = Saka::SharedEBO::make_shared();
         Saka::GLMgr::instance().bind(sVao).bind(sVbo).bind(sEbo);
-        sVbo->bufferData(vbo.size() * sizeof(gpuVertexData_t), &vbo[0], GL_STATIC_DRAW);
+        sVbo->bufferData((GLsizeiptr)(vbo.size() * sizeof(gpuVertexData_t)), &vbo[0], GL_STATIC_DRAW);
         sVbo->setNumAttribs(2);
         sVbo->addAttrib(2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, pos));
         sVbo->addAttrib(4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, color));
         sVao->addVbo(sVbo);
-        sEbo->bufferData(ebo.size() * sizeof(GLuint), &ebo[0], GL_STATIC_DRAW, GL_TRIANGLES, (GLsizei)(ebo.size()), GL_UNSIGNED_INT);
+        sEbo->bufferData((GLsizeiptr)(ebo.size() * sizeof(GLuint)), &ebo[0], GL_STATIC_DRAW, GL_TRIANGLES, (GLsizei)(ebo.size()), GL_UNSIGNED_INT);
         
         printf("\n");
         for (auto iter : stat)

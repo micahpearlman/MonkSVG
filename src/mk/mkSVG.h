@@ -96,7 +96,7 @@ namespace MonkSVG {
         // misc
         void onId( const std::string& id_ );
         
-        uint32_t openVGRelative() {
+        unsigned char openVGRelative() {
             if ( relative() ) {
                 return VG_RELATIVE;
             }
@@ -145,10 +145,10 @@ namespace MonkSVG {
 		
 	protected:
 		// bounds info
-		float _minX;
-		float _minY;
-		float _width;
-		float _height;	
+		int _minX;
+		int _minY;
+		int _width;
+		int _height;
 		
 		friend class SVG;
 	private:

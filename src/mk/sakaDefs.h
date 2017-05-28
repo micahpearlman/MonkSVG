@@ -55,7 +55,7 @@ namespace Saka {
         using data_type_allocator = stdAlloc<data_type<T, U>>;
 
         // We must specifically instantiate every single rebind so we don't miss any
-        template <typename T, typename U, typename Up> struct rebind_selector : public std::true_type {using other=stdAlloc<Up>;};
+        template <typename T, typename U, typename Up> struct rebind_selector : public std::false_type {};
 
         template <typename T, typename U, typename Up> struct rebind_selector_checked : public rebind_selector<T, U, Up>
         {

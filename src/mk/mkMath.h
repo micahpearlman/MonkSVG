@@ -34,16 +34,16 @@ namespace MonkVG {
     inline v2_t affineTransform(const Matrix33& m, const float v[2])	{
         return affineTransform(m, glm::make_vec2(v));
     }
-    void translate(Matrix33& m, float x, float y)
+    inline void translate(Matrix33& m, float x, float y)
     {
         const v2_t v(x,y);
         m = glm::translate(m, v);
     }
-    void rotate(Matrix33& m, float angle)
+    inline void rotate(Matrix33& m, float angle)
     {
         m = glm::rotate(m, angle);
     }
-    void scale(Matrix33& m, float x, float y)
+    inline void scale(Matrix33& m, float x, float y)
     {
         const v2_t v(x,y);
         m = glm::scale(m, v);

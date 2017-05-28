@@ -33,7 +33,7 @@ namespace Saka
         void bind();
         void unbind();
         void bufferData(GLsizeiptr size, const GLvoid* data, GLenum usage);
-        void setNumAttribs(int num) { attribs.reserve(num); }
+        void setNumAttribs(size_t num) { attribs.reserve(num); }
         void addAttrib(GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* ptr) { attribs.push_back({size, type, normalized, stride, ptr}); }
         void setupAttribs();
     };
@@ -132,15 +132,15 @@ namespace Saka
             Do(GLMgr& _mgr) : glMgr(_mgr) { glMgr.inc(); }
             ~Do() { glMgr.dec(); }
             
-            Do bind(const SharedVAO& vao) { glMgr.nextVao = vao; return Do(glMgr); }
-            Do bind(const SharedVBO& vbo) { glMgr.nextVbo = vbo; return Do(glMgr); }
-            Do bind(const SharedEBO& ebo) { glMgr.nextEbo = ebo; return Do(glMgr); }
-            Do bind(const SharedProgram& program) { glMgr.nextProgram = program; return Do(glMgr); }
+            Do bind(const SharedVAO& _vao) { glMgr.nextVao = _vao; return Do(glMgr); }
+            Do bind(const SharedVBO& _vbo) { glMgr.nextVbo = _vbo; return Do(glMgr); }
+            Do bind(const SharedEBO& _ebo) { glMgr.nextEbo = _ebo; return Do(glMgr); }
+            Do bind(const SharedProgram& _program) { glMgr.nextProgram = _program; return Do(glMgr); }
         };
-        Do bind(const SharedVAO& vao) { return Do(*this).bind(vao); }
-        Do bind(const SharedVBO& vbo) { return Do(*this).bind(vbo); }
-        Do bind(const SharedEBO& ebo) { return Do(*this).bind(ebo); }
-        Do bind(const SharedProgram& program) { return Do(*this).bind(program); }
+        Do bind(const SharedVAO& _vao) { return Do(*this).bind(_vao); }
+        Do bind(const SharedVBO& _vbo) { return Do(*this).bind(_vbo); }
+        Do bind(const SharedEBO& _ebo) { return Do(*this).bind(_ebo); }
+        Do bind(const SharedProgram& _program) { return Do(*this).bind(_program); }
         void reset();
         
         inline VAO* getVao() { return vao.get(); }

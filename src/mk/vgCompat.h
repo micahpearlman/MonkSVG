@@ -60,7 +60,7 @@ namespace MonkVG
         VG_RELATIVE                                 = 1
     };
     
-    enum VGPathSegment
+    enum VGPathSegment : unsigned char
     {
         VG_CLOSE_PATH                               = ( 0 << 1),
         VG_MOVE_TO                                  = ( 1 << 1),
@@ -69,6 +69,7 @@ namespace MonkVG
         VG_VLINE_TO                                 = ( 4 << 1),
         VG_QUAD_TO                                  = ( 5 << 1),
         VG_CUBIC_TO                                 = ( 6 << 1),
+
         VG_SQUAD_TO                                 = ( 7 << 1),
         VG_SCUBIC_TO                                = ( 8 << 1),
         VG_SCCWARC_TO                               = ( 9 << 1),
@@ -77,7 +78,7 @@ namespace MonkVG
         VG_LCWARC_TO                                = (12 << 1)
     };
     
-    enum VGPaintMode
+    enum VGPaintMode : unsigned char
     {
         VG_STROKE_PATH                              = (1 << 0),
         VG_FILL_PATH                                = (1 << 1)

@@ -58,7 +58,7 @@ namespace Saka
             is.seekg (0, std::ios::end);
             std::fpos_t length = is.tellg();
             is.seekg (0, std::ios::beg);
-            assert(length <= UINT_MAX);
+            assert(length <= UINT_MAX && length > 0);
             
             // allocate memory:
             buffer = new char[(unsigned int)length];

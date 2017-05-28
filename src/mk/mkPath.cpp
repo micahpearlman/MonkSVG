@@ -66,7 +66,7 @@ namespace MonkVG {
         buildFill();
     }
     
-    void printMat44( float m[4][4] ) {
+    inline void printMat44( float m[4][4] ) {
         printf("--\n");
         for ( int x = 0; x < 4; x++ ) {
             printf("%f\t%f\t%f\t%f\n", m[x][0], m[x][1], m[x][2], m[x][3]);
@@ -128,7 +128,7 @@ namespace MonkVG {
         if (disc < 0.0)
             return false; // Points are too far apart
         
-        s = sqrt(disc);
+        s = sqrtf(disc);
         sdx = s*dx;
         sdy = s*dy;
         *cx0 = xm + sdy;
@@ -150,8 +150,8 @@ namespace MonkVG {
         // Convert rotation angle from degrees to radians
         rot *= M_PI/180.0;
         // Pre-compute rotation matrix entries
-        COS = cos(rot);
-        SIN = sin(rot);
+        COS = cosf(rot);
+        SIN = sinf(rot);
         // Transform (x0, y0) and (x1, y1) into unit space
         // using (inverse) rotate, followed by (inverse) scale
         x0p = (x0*COS + y0*SIN)/rh;
@@ -429,7 +429,7 @@ namespace MonkVG {
                         for ( float g = startAngle; g < endAngle; g+=360/steps ) {
                             v2_t c;
                             
-                            float alpha = g * (M_PI / 180.0f);
+                            float alpha = g * ((float)M_PI / 180.0f);
                             float sinalpha = sinf( alpha );
                             float cosalpha = cosf( alpha );
                             c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
@@ -747,7 +747,7 @@ namespace MonkVG {
                         for ( float g = startAngle; g < endAngle + (360/steps); g+=360/steps ) {
                             v2_t c;
                             
-                            float alpha = g * (M_PI / 180.0f);
+                            float alpha = g * ((float)M_PI / 180.0f);
                             float sinalpha = sinf( alpha );
                             float cosalpha = cosf( alpha );
                             c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
