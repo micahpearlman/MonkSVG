@@ -1383,48 +1383,9 @@ namespace MonkSVG {
         int32_t result = (a[0]-c[0]) * (b[1]-c[1]) - (a[1]-c[1]) * (b[0]-c[0]);
         return result;
     }
-    static inline int intersectionTestVertex(const int32_t p1[2], const int32_t q1[2], const int32_t r1[2], const int32_t p2[2], const int32_t q2[2], const int32_t r2[2])
-    {
-        if (orientation(r2,p2,q1) >= 0)
-            if (orientation(r2,q2,q1) <= 0)
-                if (orientation(p1,p2,q1) > 0) return (orientation(p1,q2,q1) <= 0) ? 1 : false;
-                else if (orientation(p1,p2,r1) < 0) return false;
-                else return (orientation(q1,r1,p2) >= 0) ? 2 : false;
-                else if (orientation(p1,q2,q1) > 0) return false;
-                else if (orientation(r2,q2,r1) > 0) return false;
-                else return (orientation(q1,r1,q2) >= 0) ? 3 : false;
-                else if (orientation(r2,p2,r1) < 0) return false;
-                else if (orientation(q1,r1,r2) >= 0) return (orientation(p1,p2,r1) >= 0) ? 4 : false;
-                else if (orientation(q1,r1,q2) < 0) return false;
-                else return (orientation(r2,r1,q2) >= 0) ? 5 : false;
-    }
-    static inline int intersectionTestEdge(const int32_t p1[2], const int32_t q1[2], const int32_t r1[2], const int32_t p2[2], const int32_t q2[2], const int32_t r2[2])
-    {
-        if (orientation(r2,p2,q1) >= 0)
-            if (orientation(p1,p2,q1) >= 0) return (orientation(p1,q1,r2) >= 0) ? 1 : false;
-            else if (orientation(q1,r1,p2) < 0) return false;
-            else return (orientation(r1,p1,p2) >= 0) ? 2 : false;
-            else if (orientation(r2,p2,r1) < 0) return false;
-            else if (orientation(p1,p2,r1) < 0) return false;
-            else if (orientation(p1,r1,r2) >= 0) return 3;
-            else return (orientation(q1,r1,r2) >= 0) ? 4 : false;
-    }
-    static inline int intersection(const int32_t p1[2], const int32_t q1[2], const int32_t r1[2], const int32_t p2[2], const int32_t q2[2], const int32_t r2[2])
-    {
-        if ( orientation(p2,q2,p1) >= 0 )
-            if ( orientation(q2,r2,p1) >= 0 )
-                if ( orientation(r2,p2,p1) >= 0 ) return 1;
-                else return intersectionTestEdge(p1,q1,r1,p2,q2,r2) << 1;
-                else if ( orientation(r2,p2,p1) >= 0 ) return intersectionTestEdge(p1,q1,r1,r2,p2,q2) << 4;
-                else return intersectionTestVertex(p1,q1,r1,p2,q2,r2) << 7;
-                else if (orientation(q2,r2,p1) < 0) return intersectionTestVertex(p1,q1,r1,r2,p2,q2) << 10;
-                else if (orientation(r2,p2,p1) >= 0) return intersectionTestEdge(p1,q1,r1,q2,r2,p2) << 13;
-                else return intersectionTestVertex(p1,q1,r1,q2,r2,p2) << 16;
-    };
     
     static const GLfloat precision = 0.01f;
     static const GLfloat precisionMult = 1.f/precision;
-    std::map<int, int> stat;
     
     void MKSVGHandler::addTriangle(int32_t v[6], const MonkVG::Color& color)
     {
@@ -1464,49 +1425,6 @@ namespace MonkSVG {
         _batchMaxX = std::max(_batchMaxX, (GLfloat)xmax/precisionMult);
         _batchMinY = std::min(_batchMinY, (GLfloat)ymin/precisionMult);
         _batchMaxY = std::max(_batchMaxY, (GLfloat)ymax/precisionMult);
-        
-        /*
-         bool eraseIter;
-         for (auto iter = trianglesByXMin.lower_bound(xmin - maxSizeX + 1); iter != trianglesByXMin.end();
-         eraseIter ? iter = trianglesByXMin.erase(iter) : ++iter)
-         {
-         eraseIter = false;
-         
-         auto& t1(*iter->second);
-         if (t1.max[1] <= ymin)
-         {
-         continue;
-         }
-         if (t1.min[1] >= ymax)
-         {
-         continue;
-         }
-         if (t1.max[0] <= xmin)
-         {
-         continue;
-         }
-         if (t1.min[0] >= xmax)
-         {
-         break;
-         }
-         
-         // We got an optimization contender!
-         int which = intersection(p, q, r, t1.p, t1.q, t1.r);
-         
-         auto addedStat = stat.emplace({which, 1});
-         if (!addedStat.second)
-         {
-         ++addedStat.first->second;
-         }
-         if (which != 0)
-         {
-         // Optimized! TODO: just chop it!
-         t1.id = -1;         // Please don't use it anymore (signal)
-         eraseIter = true;
-         ++numDeletedId;
-         }
-         }
-         */
         
         // Add triangle to deque
         trianglesDb.push_back(triangle_t(
@@ -1671,12 +1589,6 @@ namespace MonkSVG {
         sVbo->addAttrib(4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, color));
         sVao->addVbo(sVbo);
         sEbo->bufferData((GLsizeiptr)(ebo.size() * sizeof(GLuint)), &ebo[0], GL_STATIC_DRAW, GL_TRIANGLES, (GLsizei)(ebo.size()), GL_UNSIGNED_INT);
-        
-        printf("\n");
-        for (auto iter : stat)
-        {
-            printf("%5d : %d\n", iter.first, iter.second);
-        }
     }
 }
 
