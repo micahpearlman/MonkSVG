@@ -613,45 +613,57 @@ namespace MonkVG {
         
         std::vector< float >::iterator coordsIter = _fcoords->begin();
         unsigned char segment = VG_CLOSE_PATH;
-        v2_t coords;
+        v2_t coords({0,0});
         v2_t prev;
-        int num_contours = 0;
+        v2_t contourBeginning;
+        bool inContour = false;
         
         for ( std::vector< unsigned char >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
             segment = (*segmentIter);
             
             // todo: deal with relative move
             bool isRelative = segment & VG_RELATIVE;
+            prev = coords;
+            
+            if (!inContour && (segment >> 1) != (VG_CLOSE_PATH >> 1) && (segment >> 1) != (VG_MOVE_TO >> 1))
+            {
+                _fillTesselator->beginContour();
+                inContour = true;
+                contourBeginning = coords;
+            }
             switch (segment >> 1) {
                 case (VG_CLOSE_PATH >> 1):
                 {
-                    if ( num_contours ) {
-                        num_contours--;
+                    if ( inContour ) {
+                        inContour = false;
+                        coords = contourBeginning;
+                        _fillTesselator->addVertex(coords.x, coords.y);
+                        // Should add contour as closed
                     }
-                    
                 } break;
                 case (VG_MOVE_TO >> 1):
                 {
-                    if ( num_contours ) {
-                        num_contours--;
+                    if (inContour)
+                    {
+                        // Should keep contour open
                     }
-                    
-                    _fillTesselator->beginContour();
-                    num_contours++;
+
                     coords.x = *coordsIter; coordsIter++;
                     coords.y = *coordsIter; coordsIter++;
                     if ( isRelative ) {
                         coords.x += prev.x;
                         coords.y += prev.y;
                     }
+
+                    _fillTesselator->beginContour();
+                    inContour = true;
+                    contourBeginning = coords;
                     
-                    addTessVertex( coords );
                     _fillTesselator->addVertex( coords.x, coords.y );
                     
                 } break;
                 case (VG_LINE_TO >> 1):
                 {
-                    prev = coords;
                     coords.x = *coordsIter; coordsIter++;
                     coords.y = *coordsIter; coordsIter++;
                     if ( isRelative ) {
@@ -659,34 +671,28 @@ namespace MonkVG {
                         coords.y += prev.y;
                     }
                     
-                    addTessVertex( coords );
                     _fillTesselator->addVertex( coords.x, coords.y );
                 } break;
                 case (VG_HLINE_TO >> 1):
                 {
-                    prev = coords;
                     coords.x = *coordsIter; coordsIter++;
                     if ( isRelative ) {
                         coords.x += prev.x;
                     }
                     
-                    addTessVertex( coords );
                     _fillTesselator->addVertex( coords.x, coords.y );
                 } break;
                 case (VG_VLINE_TO >> 1):
                 {
-                    prev = coords;
                     coords.y = *coordsIter; coordsIter++;
                     if ( isRelative ) {
                         coords.y += prev.y;
                     }
                     
-                    addTessVertex( coords );
                     _fillTesselator->addVertex( coords.x, coords.y );
                 } break;
                 case (VG_SCUBIC_TO >> 1):
                 {
-                    prev = coords;
                     float cp2x = *coordsIter; coordsIter++;
                     float cp2y = *coordsIter; coordsIter++;
                     float p3x = *coordsIter; coordsIter++;
@@ -719,7 +725,6 @@ namespace MonkVG {
                             c.x = quad.x;
                             c.y = quad.y;
 
-                            addTessVertex( c );
                             _fillTesselator->addVertex( c.x, c.y );
                         }
                         // TODO: quads are not processed atm. This will be done gpu-side
@@ -732,7 +737,6 @@ namespace MonkVG {
                     break;
                 case (VG_CUBIC_TO >> 1):
                 {
-                    prev = coords;
                     float cp1x = *coordsIter; coordsIter++;
                     float cp1y = *coordsIter; coordsIter++;
                     float cp2x = *coordsIter; coordsIter++;
@@ -765,7 +769,6 @@ namespace MonkVG {
                             c.x = quad.x;
                             c.y = quad.y;
                             
-                            addTessVertex( c );
                             _fillTesselator->addVertex( c.x, c.y );
                         }
                         // TODO: quads are not processed atm. This will be done gpu-side
@@ -779,7 +782,6 @@ namespace MonkVG {
                     
                 case (VG_QUAD_TO >> 1):
                 {
-                    prev = coords;
                     float cpx = *coordsIter; coordsIter++;
                     float cpy = *coordsIter; coordsIter++;
                     float px = *coordsIter; coordsIter++;
@@ -796,7 +798,6 @@ namespace MonkVG {
                     c.x = px;
                     c.y = py;
                     // TODO: quads are not processed atm. This will be done gpu-side
-                    addTessVertex( c );
                     _fillTesselator->addVertex( c.x, c.y );
                     
                     coords.x = px;
@@ -875,7 +876,6 @@ namespace MonkVG {
                             float cosalpha = cosf( alpha );
                             c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
                             c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
-                            addTessVertex( c );
                             _fillTesselator->addVertex( c.x, c.y );
                         }
                     }
@@ -890,12 +890,6 @@ namespace MonkVG {
                     break;
             }
         }	// foreach segment
-        
-        if ( num_contours ) {
-            num_contours--;
-        }
-        
-        assert(num_contours == 0);
         
         const int nvp = 3;
         _fillTesselator->tesselate(winding, Tess::TESS_POLYGONS, nvp, NULL);

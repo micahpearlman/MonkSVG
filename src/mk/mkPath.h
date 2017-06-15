@@ -100,7 +100,6 @@ namespace MonkVG {
         Tess::Tesselator*		_fillTesselator;
         Saka::vector<GLfloat>		_vertices;
         Saka::vector<v2_t>		_strokeVertices;
-        Saka::list<v2_t>			_tessVertices;
         int					_numberFillVertices;
         int					_numberStrokeVertices;
         MKPaint*		_fillPaintForPath;
@@ -111,10 +110,6 @@ namespace MonkVG {
         void endOfTesselation( GLbitfield paintModes );
         
     private:	// utility methods
-        
-        float* tessVerticesBackPtr() {
-            return &(_tessVertices.back().x);
-        }
         
         void updateBounds(float x, float y) {
             _minX = std::min(_minX, x);
@@ -129,11 +124,6 @@ namespace MonkVG {
             updateBounds(x, y);
             _vertices.push_back(x);
             _vertices.push_back(y);
-        }
-        
-        float * addTessVertex( const v2_t & v ) {
-            _tessVertices.push_back( v );
-            return tessVerticesBackPtr();
         }
         
         void buildFill();
