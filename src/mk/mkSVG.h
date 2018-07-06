@@ -8,6 +8,8 @@
 #include <memory>
 #include <cmath>
 #include <string>
+#include <list>
+#include <map>
 #include <stdlib.h>
 #include "vgCompat.h"
 #include "mkMath.h"
@@ -154,6 +156,50 @@ namespace MonkSVG {
 	private:
 		bool _relative;
 		
+        struct anim_transform_t {
+            std::string property;
+            float beginT;
+            float durT;
+            float endT;
+            float minT;
+            float maxT;
+            float repeatCount;
+            float repeatTotalT;
+            bool fillFreeze;
+            
+            enum CalcMode : uint8_t
+            {
+                Discrete,
+                Linear,
+                Paced,
+                Spline
+            } calcMode;
+            
+            std::map<float, float> calcModeKeyValues;   // keyTimes to values
+            struct AnimSpline
+            {
+                float x1, y1, x2, y2;
+            };
+            std::map<float, AnimSpline> calcModeKeySplines;   // keyTimes to keySplines
+            
+            float from, to, by;
+            
+            bool additiveSum;
+            bool accumulateSum;
+            
+            struct AnimCoord { float x, y; };
+            std::list<AnimCoord> path;
+            
+            enum Rotate : uint8_t
+            {
+                None,
+                Auto,
+                AutoReverse,
+                Constant
+            } rotate;
+            float rotateBy;
+        };
+        
         struct path_object_t {
             MKPath*		path;
             MKPaint*		fill;
@@ -162,6 +208,7 @@ namespace MonkSVG {
             float		stroke_width;
             Matrix33 transform;
             std::string id;
+            std::list<anim_transform_t> anims;
             
             path_object_t() : path( nullptr ), fill( nullptr ), stroke( nullptr ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
                 
@@ -188,7 +235,8 @@ namespace MonkSVG {
             VGFillRule	fill_rule;
             MKPaint*		stroke;
             float		stroke_width;
-            
+
+            std::list<anim_transform_t> anims;
         };
         
         group_t		_root_group;
@@ -363,17 +411,24 @@ namespace MonkSVG {
 	private:
 		void recursive_parse( XMLElement* element );
 		bool handle_xml_element( XMLElement* element );
-		void handle_group( XMLElement* pathElement );
-   		void handle_stylesheet( XMLElement* pathElement );
-		void handle_line( XMLElement* pathElement );
-        void handle_polyline( XMLElement* pathElement );
-        void handle_path( XMLElement* pathElement );
-		void handle_rect( XMLElement* pathElement );
-		void handle_polygon( XMLElement* pathElement );
+		bool handle_group( XMLElement* pathElement );
+   		bool handle_stylesheet( XMLElement* pathElement );
+		bool handle_line( XMLElement* pathElement );
+        bool handle_polyline( XMLElement* pathElement );
+        bool handle_path( XMLElement* pathElement );
+		bool handle_rect( XMLElement* pathElement );
+		bool handle_polygon( XMLElement* pathElement );
+        bool handle_symbol( XMLElement* pathElement );
+        bool handle_use( XMLElement* pathElement );
+        bool handle_animate( XMLElement* pathElement );
+        bool handle_set( XMLElement* pathElement );
+        bool handle_animateMotion( XMLElement* pathElement );
+        bool handle_animateColor( XMLElement* pathElement );
+        bool handle_animateTransform( XMLElement* pathElement );
+
+        void handle_animate_parameter( XMLElement* pathElement );
         void handle_general_parameter( XMLElement* pathElement );
-        void handle_symbol( XMLElement* pathElement );
-        void handle_use( XMLElement* pathElement );
-		void parse_path_d( const std::string& ps );
+        void parse_path_d( const std::string& ps );
 		void parse_path_style( const std::string& ps );
 		void parse_path_stylesheet( std::string ps );
         void parse_path_transform( const std::string& tr );

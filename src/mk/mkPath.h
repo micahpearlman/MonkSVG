@@ -8,7 +8,7 @@
 #include "mkMath.h"
 
 #include "mkPaint.h"
-#include <Tess2/tess.h>
+#include <tess2/tess.h>
 #include <OpenGLES/ES2/gl.h>
 #include "sakaDefs.h"
 

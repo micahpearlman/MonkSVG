@@ -3,7 +3,7 @@
  */
 #include "mkSVG.h"
 #include <tinyxml2/tinyxml2.h>
-#include <StyleSheet/Document.h>
+#include <stylesheet/Document.h>
 #include <map>
 #include <iterator>
 #include <regex>
@@ -17,7 +17,7 @@
 
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
-#include <Tess2/tess.h>
+#include <tess2/tess.h>
 
 #include "SakaSVG.h"
 
@@ -182,9 +182,14 @@ namespace MonkSVG {
 
 	}
 
-    constexpr uint32_t fnv1a(char const* s, std::size_t count)
+    static constexpr char tolowerchar(const char c)
     {
-        return ((count ? fnv1a(s, count - 1) : 2166136261u) ^ (uint32_t)s[count]) * 16777619u;
+        return (c >= 'A' && c <= 'Z') ? c + ('a' - 'A') : c;
+    }
+    
+    static constexpr uint32_t fnv1a(char const* s, std::size_t count)
+    {
+        return ((count ? fnv1a(s, count - 1) : 2166136261u) ^ (uint32_t)tolowerchar(s[count])) * 16777619u;
     }
 
     static constexpr uint32_t operator"" _hash(char const* s, std::size_t count)
@@ -205,28 +210,34 @@ namespace MonkSVG {
         
         switch (hash)
         {
-            case "style"_hash: handle_stylesheet(element); return false;
-            case "g"_hash: handle_group( element ); return true;
-            case "path"_hash: handle_path( element ); return true;
-            case "rect"_hash: handle_rect( element ); return true;
-            case "line"_hash: handle_line( element ); return true;
-            case "polyline"_hash: handle_polyline( element ); return true;
-            case "polygon"_hash: handle_polygon ( element ); return true;
-            case "symbol"_hash: handle_symbol( element ); return true;
-            case "use"_hash: handle_use( element ); return true;
+            case "style"_hash: return handle_stylesheet(element);
+            case "g"_hash: return handle_group( element );
+            case "path"_hash: return handle_path( element );
+            case "rect"_hash: return handle_rect( element );
+            case "line"_hash: return handle_line( element );
+            case "polyline"_hash: return handle_polyline( element );
+            case "polygon"_hash: return handle_polygon ( element );
+            case "symbol"_hash: return handle_symbol( element );
+            case "use"_hash: return handle_use( element );
+            case "animate"_hash: return handle_animate( element );
+            case "set"_hash: return handle_set( element );
+            case "animateMotion"_hash: return handle_animateMotion( element );
+            case "animateColor"_hash: return handle_animateColor( element );
+            case "animateTransform"_hash: return handle_animateTransform( element );
             default:
                 SAKA_LOG << "Unknown xml element: " << type << std::endl;
                 return false;
         }
 	}
     
-	void SVG::handle_stylesheet( XMLElement* pathElement ) {
+	bool SVG::handle_stylesheet( XMLElement* pathElement ) {
         if (pathElement->GetText()) {
             _styleDocument = StyleSheet::CssDocument::parse(pathElement->GetText());
         }
+        return false;       // We didn't recurse inside it.
     }
     
-	void SVG::handle_group( XMLElement* pathElement ) {
+	bool SVG::handle_group( XMLElement* pathElement ) {
         const char* id_;
 		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
 			//_handler->onId( id_ );
@@ -240,10 +251,7 @@ namespace MonkSVG {
 		
 		// go through all the children
 		XMLElement* children = pathElement->FirstChildElement();
-		for ( XMLElement* child = children; child != 0; child = child->NextSiblingElement() ) {
-            std::string type = child->Value();
-			handle_xml_element( child );
-		}
+        recursive_parse(children);
 		
 		_handler->onGroupEnd();
 		
@@ -252,10 +260,10 @@ namespace MonkSVG {
             SAKA_LOG << "group end: " << id_ << std::endl;
 		}
 
-
+        return true;
 	}
 	
-	void SVG::handle_path( XMLElement* pathElement ) {
+	bool SVG::handle_path( XMLElement* pathElement ) {
 		
 		const char* id_;
 		if ( pathElement->QueryStringAttribute( "id", &id_) == XML_SUCCESS ) {
@@ -271,10 +279,12 @@ namespace MonkSVG {
 		
 		handle_general_parameter( pathElement );
 		
-		_handler->onPathEnd();		
+		_handler->onPathEnd();
+        
+        return true;
 	}
 	
-    void SVG::handle_line( XMLElement* pathElement ) {
+    bool SVG::handle_line( XMLElement* pathElement ) {
         _handler->onPathBegin();
         
         float pos [4];
@@ -293,9 +303,11 @@ namespace MonkSVG {
         handle_general_parameter( pathElement );
 
         _handler->onPathEnd();
+        
+        return true;
     }
     
-    void SVG::handle_polyline( XMLElement* pathElement ) {
+    bool SVG::handle_polyline( XMLElement* pathElement ) {
         _handler->onPathBegin();
         const char* points;
         if ( pathElement->QueryStringAttribute( "points", &points ) == XML_SUCCESS ) {
@@ -306,11 +318,11 @@ namespace MonkSVG {
         
         _handler->onPathEnd();
 
+        return true;
     }
     
-	void SVG::handle_rect( XMLElement* pathElement ) {
+	bool SVG::handle_rect( XMLElement* pathElement ) {
 		_handler->onPathBegin();
-		
 		
 		float pos[2] = { 0, 0 };
 		if ( pathElement->QueryFloatAttribute( "x", &pos[0] ) == XML_SUCCESS ) {
@@ -331,12 +343,12 @@ namespace MonkSVG {
 
 		handle_general_parameter( pathElement );
 		
-		
 		_handler->onPathEnd();		
-		
+
+        return true;
 	}
 
-	void SVG::handle_polygon( XMLElement* pathElement ) {
+	bool SVG::handle_polygon( XMLElement* pathElement ) {
 		_handler->onPathBegin();
 		const char* points;
 		if ( pathElement->QueryStringAttribute( "points", &points ) == XML_SUCCESS ) {
@@ -346,8 +358,61 @@ namespace MonkSVG {
 		handle_general_parameter( pathElement );
 
 		_handler->onPathEnd();
+        
+        return true;
 	}
-	
+
+    bool SVG::handle_symbol( XMLElement* pathElement )
+    {
+        const char* id;
+        if ( pathElement->QueryStringAttribute( "id", &id ) == XML_SUCCESS ) {
+            _symbols[id] = (XMLElement*)pathElement->ShallowClone(nullptr);
+        }
+        
+        return true;
+    }
+    
+    bool SVG::handle_use( XMLElement* pathElement )
+    {
+        const char* href;
+        if ( pathElement->QueryStringAttribute( "xlink:href", &href ) == XML_SUCCESS ) {
+            std::string id = href+1;	// skip the #
+            _handler->onUseBegin();
+            // handle transform and other parameters
+            handle_general_parameter( pathElement );
+            recursive_parse( _symbols[id] );
+            _handler->onUseEnd();
+        }
+        
+        return true;
+    }
+
+    bool SVG::handle_animate( XMLElement* pathElement )
+    {
+        return true;
+    }
+    bool SVG::handle_set( XMLElement* pathElement )
+    {
+        return true;
+    }
+    bool SVG::handle_animateMotion( XMLElement* pathElement )
+    {
+        return true;
+    }
+    bool SVG::handle_animateColor( XMLElement* pathElement )
+    {
+        return true;
+    }
+    bool SVG::handle_animateTransform( XMLElement* pathElement )
+    {
+        return true;
+    }
+
+    void SVG::handle_animate_parameter( XMLElement* pathElement )
+    {
+        
+    }
+
 	void SVG::handle_general_parameter( XMLElement* pathElement ) {
 		const char* fill;
 		if ( pathElement->QueryStringAttribute( "fill", &fill ) == XML_SUCCESS ) {
@@ -402,27 +467,6 @@ namespace MonkSVG {
 		}
 
 	}
-    
-    void SVG::handle_symbol( XMLElement* pathElement )
-    {
-        const char* id;
-        if ( pathElement->QueryStringAttribute( "id", &id ) == XML_SUCCESS ) {
-            _symbols[id] = (XMLElement*)pathElement->ShallowClone(nullptr);
-        }
-    }
-
-    void SVG::handle_use( XMLElement* pathElement )
-    {
-        const char* href;
-        if ( pathElement->QueryStringAttribute( "xlink:href", &href ) == XML_SUCCESS ) {
-            std::string id = href+1;	// skip the #
-            _handler->onUseBegin();
-            // handle transform and other parameters
-            handle_general_parameter( pathElement );
-            recursive_parse( _symbols[id] );
-            _handler->onUseEnd();
-        }
-    }
 	
 	
 	float SVG::d_string_to_float( char *c, char** str ) {
@@ -1120,7 +1164,6 @@ namespace MonkSVG {
         data[4] = y;
         
         _current_group->current_path->path->appendData( 1, &seg, data);
-        
     }
     
     void MKSVGHandler::onPathRect( float x, float y, float w, float h ) {
