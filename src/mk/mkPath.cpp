@@ -602,14 +602,15 @@ namespace MonkVG {
         _width = -1;
         _height = -1;
         
-        _fillTesselator = new Tess::Tesselator;
-        
-        Tess::WindingRule winding = Tess::TESS_WINDING_POSITIVE;
+        Tess::DefaultOptions options;
+        options.m_windingRule = Tess::TESS_WINDING_POSITIVE;
         if( _handler->getFillRule() == VG_EVEN_ODD ) {
-            winding = Tess::TESS_WINDING_ODD;
+            options.m_windingRule = Tess::TESS_WINDING_ODD;
         } else if( _handler->getFillRule() == VG_NON_ZERO ) {
-            winding = Tess::TESS_WINDING_NONZERO;
+            options.m_windingRule = Tess::TESS_WINDING_NONZERO;
         }
+
+        _fillTesselator = new Tesselator(options);
         
         std::vector< float >::iterator coordsIter = _fcoords->begin();
         unsigned char segment = VG_CLOSE_PATH;
@@ -892,7 +893,7 @@ namespace MonkVG {
         }	// foreach segment
         
         const int nvp = 3;
-        _fillTesselator->tesselate(winding, Tess::TESS_POLYGONS, nvp, NULL);
+        _fillTesselator->tesselate(Tess::TESS_POLYGONS, nvp, NULL);
         
         float v[6];
         

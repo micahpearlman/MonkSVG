@@ -29,6 +29,13 @@
 			remoteGlobalIDString = 9694B8E21DD2A45300CE0F5A;
 			remoteInfo = polyclip;
 		};
+		966848C8211297D200CD1609 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96BB2E051DC4FB57003079AC /* Tess3.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 96FF98991D65E54800404BDA;
+			remoteInfo = Tess3;
+		};
 		96874F481DC7FD7D002B18FE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */;
@@ -276,6 +283,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				966848C9211297D200CD1609 /* PBXTargetDependency */,
 				9629F2131DD405C800D558E6 /* PBXTargetDependency */,
 				968751B21DC80A82002B18FE /* PBXTargetDependency */,
 				968751B61DC80A82002B18FE /* PBXTargetDependency */,
@@ -386,7 +394,8 @@
 		96D119EE21127D03000ED4E1 /* libtess2.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libtess2.a;
+			name = libtess2.a;
+			path = libtess3.a;
 			remoteRef = 96D119ED21127D03000ED4E1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -412,6 +421,11 @@
 			isa = PBXTargetDependency;
 			name = polyclip;
 			targetProxy = 9629F2121DD405C800D558E6 /* PBXContainerItemProxy */;
+		};
+		966848C9211297D200CD1609 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Tess3;
+			targetProxy = 966848C8211297D200CD1609 /* PBXContainerItemProxy */;
 		};
 		968751B21DC80A82002B18FE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -499,7 +513,6 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = sakasvg;
-				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = /opt/boost/include;
 			};
@@ -562,7 +575,6 @@
 				LIBRARY_SEARCH_PATHS = /opt/boost/lib;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = sakasvg;
-				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = /opt/boost/include;
 				VALIDATE_PRODUCT = YES;

@@ -17,7 +17,7 @@
 
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
-#include <tess2/tess.h>
+#include <tess3/tess.h>
 
 #include "SakaSVG.h"
 
@@ -53,7 +53,8 @@ template <> struct std::hash<MonkVG::vertexData_t>
     template <typename T> constexpr static
     T rotate_left(T val, size_t len)
     {
-        return (val << len) | ((unsigned) val >> (-len & (sizeof(T) * CHAR_BIT - 1)));
+        using unsigned_type = typename std::make_unsigned<T>::type;
+        return (val << len) | ((unsigned_type) val >> (-len & (sizeof(T) * CHAR_BIT - 1)));
     }
     
     std::size_t operator()(const MonkVG::vertexData_t& key) const

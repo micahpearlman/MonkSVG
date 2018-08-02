@@ -8,7 +8,7 @@
 #include "mkMath.h"
 
 #include "mkPaint.h"
-#include <tess2/tess.h>
+#include <tess3/tess.h>
 #include <OpenGLES/ES2/gl.h>
 #include "sakaDefs.h"
 
@@ -96,8 +96,8 @@ namespace MonkVG {
         };
         
     private:
-        
-        Tess::Tesselator*		_fillTesselator;
+        using Tesselator = Tess::Tesselator<Tess::DefaultOptions, Tess::BaseAllocators<Tess::DefaultOptions> >;
+        Tesselator*		_fillTesselator;
         Saka::vector<GLfloat>		_vertices;
         Saka::vector<v2_t>		_strokeVertices;
         int					_numberFillVertices;

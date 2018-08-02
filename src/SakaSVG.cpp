@@ -61,10 +61,12 @@ namespace Saka
             assert(length <= UINT_MAX && length > 0);
             
             // allocate memory:
-            buffer = new char[(unsigned int)length];
+            buffer = new char[(unsigned int)length + 1];
             
             // read data as a block:
             is.read(buffer,(std::streamsize)length);
+            
+            buffer[(unsigned int)length] = 0;
         }
         
         // run it through the svg parser
