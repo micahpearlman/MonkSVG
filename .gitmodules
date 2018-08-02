@@ -4,9 +4,9 @@
 [submodule "thirdparty/tinyxml2"]
 	path = thirdparty/tinyxml2
 	url = https://github.com/sakamura/tinyxml2.git
-[submodule "thirdparty/libtess2"]
-	path = thirdparty/libtess2
-	url = https://github.com/sakamura/libtess2.git
+[submodule "thirdparty/libtess3"]
+	path = thirdparty/libtess3
+	url = https://github.com/sakamura/libtess3.git
 [submodule "thirdparty/cpp-btree"]
 	path = thirdparty/cpp-btree
 	url = https://github.com/sakamura/cpp-btree.git
