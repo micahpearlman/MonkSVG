@@ -3,7 +3,7 @@
  */
 #include "mkSVG.h"
 #include <tinyxml2/tinyxml2.h>
-#include <stylesheet/Document.h>
+#include <StyleSheet/Document.h>
 #include <map>
 #include <iterator>
 #include <regex>
@@ -20,6 +20,10 @@
 #include <tess3/tess.h>
 
 #include "SakaSVG.h"
+
+#include <boost/spirit/include/qi_int.hpp>
+#include <boost/spirit/include/qi_real.hpp>
+
 
 
 namespace MonkVG {
@@ -470,7 +474,7 @@ namespace MonkSVG {
 	}
 	
 	
-	float SVG::d_string_to_float( char *c, char** str ) {
+	float SVG::d_string_to_float( char *c, char *max, char** str ) {
 		while ( isspace(*c) ) {
 			c++;
 			(*str)++;
@@ -480,10 +484,16 @@ namespace MonkSVG {
 			(*str)++;
 		}
 		
-		return strtof( c, str );
+        using boost::spirit::qi::parse;
+        using boost::spirit::qi::float_;
+        
+        float result;
+        parse(c, max, float_, result);
+        if (str) *str = c;
+		return (float)result;
 	}
 	
-	int SVG::d_string_to_int( char *c, char **str ) {
+	int SVG::d_string_to_int( char *c, char *max, char **str ) {
 		while ( isspace(*c) ) {
 			c++;
 			(*str)++;
@@ -493,8 +503,13 @@ namespace MonkSVG {
 			(*str)++;
 		}
 		
-		return (int)strtol( c, str, 10);
-		
+        using boost::spirit::qi::parse;
+        using boost::spirit::qi::int_;
+        
+        int result;
+        parse(c, max, int_, result);
+        if (str) *str = c;
+        return result;
 	}
 	
     uint32_t SVG::string_hex_color_to_uint( const std::string& hexstring ) {
@@ -545,8 +560,9 @@ namespace MonkSVG {
 			size_t right = tr.find( ")" );
 			std::string values = tr.substr( left+1, right-1 );
 			char* c = const_cast<char*>( values.c_str() );
-			float x = d_string_to_float( c, &c );
-			float y = d_string_to_float( c, &c );
+            char* max = c + (right - left - 1);
+			float x = d_string_to_float( c, max, &c );
+			float y = d_string_to_float( c, max, &c );
 			_handler->onTransformTranslate( x, y );
             SAKA_LOG << "Translate " << x << ", " << y << std::endl;
 		} else if ( tr.find( "rotate" ) != std::string::npos ) {
@@ -554,7 +570,8 @@ namespace MonkSVG {
 			size_t right = tr.find( ")" );
 			std::string values = tr.substr( left+1, right-1 );
 			char* c = const_cast<char*>( values.c_str() );
-			float a = d_string_to_float( c, &c );
+            char* max = c + (right - left - 1);
+			float a = d_string_to_float( c, max, &c );
 			_handler->onTransformRotate( a );	// ??? radians or degrees ??
             SAKA_LOG << "Rotate " << a << std::endl;
 		} else if ( tr.find( "matrix" ) != std::string::npos ) {
@@ -562,12 +579,13 @@ namespace MonkSVG {
 			size_t right = tr.find( ")" );
 			std::string values = tr.substr( left+1, right-1 );
 			char* cc = const_cast<char*>( values.c_str() );
-			float a = d_string_to_float( cc, &cc );
-			float b = d_string_to_float( cc, &cc );
-			float c = d_string_to_float( cc, &cc );
-			float d = d_string_to_float( cc, &cc );
-			float e = d_string_to_float( cc, &cc );
-			float f = d_string_to_float( cc, &cc );
+            char* max = cc + (right - left - 1);
+			float a = d_string_to_float( cc, max, &cc );
+			float b = d_string_to_float( cc, max, &cc );
+			float c = d_string_to_float( cc, max, &cc );
+			float d = d_string_to_float( cc, max, &cc );
+			float e = d_string_to_float( cc, max, &cc );
+			float f = d_string_to_float( cc, max, &cc );
 			_handler->onTransformMatrix( a, b, c, d, e, f );
             SAKA_LOG << "Matrix " << a << ", " << b << ", " << c << ", " << d << ", " << e << ", " << f << std::endl;
 		}
@@ -575,6 +593,7 @@ namespace MonkSVG {
 	
 	void SVG::parse_path_d( const std::string& d ) {
 		char* c = const_cast<char*>( d.c_str() );
+        char* max = c + d.length();
 		char state = *c;
 		while ( nextState( &c, &state ) ) {
 			
@@ -582,8 +601,8 @@ namespace MonkSVG {
 				case 'm':
 				case 'M':
 				{
-					float x = d_string_to_float( c, &c );
-					float y = d_string_to_float( c, &c );
+					float x = d_string_to_float( c, max, &c );
+					float y = d_string_to_float( c, max, &c );
                     SAKA_LOG << "  move to " << state << ": " << x << ", " << y << std::endl;
 					_handler->onPathMoveTo( x, y );
 				}
@@ -592,8 +611,8 @@ namespace MonkSVG {
 				case 'l':
 				case 'L':
 				{
-					float x = d_string_to_float( c, &c );
-					float y = d_string_to_float( c, &c );
+					float x = d_string_to_float( c, max, &c );
+					float y = d_string_to_float( c, max, &c );
                     SAKA_LOG << "  line to " << state << ": " << x << ", " << y << std::endl;
 					_handler->onPathLineTo( x, y );
 					
@@ -603,7 +622,7 @@ namespace MonkSVG {
 				case 'h':
 				case 'H':
 				{
-					float x = d_string_to_float( c, &c );
+					float x = d_string_to_float( c, max, &c );
                     SAKA_LOG << "  H line " << state << ": " << x << std::endl;
 					_handler->onPathHorizontalLine( x );
 				}
@@ -612,7 +631,7 @@ namespace MonkSVG {
 				case 'v':
 				case 'V':
 				{
-                    float y = d_string_to_float( c, &c );
+                    float y = d_string_to_float( c, max, &c );
                     SAKA_LOG << "  V line " << state << ": " << y << std::endl;
 					_handler->onPathVerticalLine( y );
 					
@@ -622,12 +641,12 @@ namespace MonkSVG {
 				case 'c':
 				case 'C':
 				{
-					float x1 = d_string_to_float( c, &c );
-					float y1 = d_string_to_float( c, &c );
-					float x2 = d_string_to_float( c, &c );
-					float y2 = d_string_to_float( c, &c );
-					float x3 = d_string_to_float( c, &c );
-					float y3 = d_string_to_float( c, &c );
+					float x1 = d_string_to_float( c, max, &c );
+					float y1 = d_string_to_float( c, max, &c );
+					float x2 = d_string_to_float( c, max, &c );
+					float y2 = d_string_to_float( c, max, &c );
+					float x3 = d_string_to_float( c, max, &c );
+					float y3 = d_string_to_float( c, max, &c );
                     SAKA_LOG << "  cubic " << state << ": " << x1 << ", " << y1 << ", " << x2 << ", " << y2 << ", " << x3 << ", " << y3 << std::endl;
 					_handler->onPathCubic(x1, y1, x2, y2, x3, y3);
 				}
@@ -636,10 +655,10 @@ namespace MonkSVG {
 				case 's':
 				case 'S':
 				{
-					float x2 = d_string_to_float( c, &c );
-					float y2 = d_string_to_float( c, &c );
-					float x3 = d_string_to_float( c, &c );
-					float y3 = d_string_to_float( c, &c );
+					float x2 = d_string_to_float( c, max, &c );
+					float y2 = d_string_to_float( c, max, &c );
+					float x3 = d_string_to_float( c, max, &c );
+					float y3 = d_string_to_float( c, max, &c );
                     SAKA_LOG << "  Scubic " << state << ": " << x2 << ", " << y2 << ", " << x3 << ", " << y3 << std::endl;
 					_handler->onPathSCubic(x2, y2, x3, y3);
                 }
@@ -648,13 +667,13 @@ namespace MonkSVG {
 				case 'a':
 				case 'A':
 				{
-					float rx = d_string_to_float( c, &c );
-					float ry = d_string_to_float( c, &c );
-					float x_axis_rotation = d_string_to_float( c, &c );
-					int large_arc_flag = d_string_to_int( c, &c );
-					int sweep_flag = d_string_to_int( c, &c );
-					float x = d_string_to_float( c, &c );
-					float y = d_string_to_float( c, &c );
+					float rx = d_string_to_float( c, max, &c );
+					float ry = d_string_to_float( c, max, &c );
+					float x_axis_rotation = d_string_to_float( c, max, &c );
+					int large_arc_flag = d_string_to_int( c, max, &c );
+					int sweep_flag = d_string_to_int( c, max, &c );
+					float x = d_string_to_float( c, max, &c );
+					float y = d_string_to_float( c, max, &c );
                     SAKA_LOG << "  arc " << state << ": r " << rx << ", " << ry << ", rot " << x_axis_rotation << ", large " << large_arc_flag << ", sweep " << sweep_flag << ", pos " << x << ", " << y << std::endl;
 					_handler->onPathArc( rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y );
 					
@@ -672,10 +691,10 @@ namespace MonkSVG {
                 case 'q':
                 case 'Q':
                 {
-                    float x1 = d_string_to_float(c, &c);
-                    float y1 = d_string_to_float(c, &c);
-                    float x2 = d_string_to_float(c, &c);
-                    float y2 = d_string_to_float(c, &c);
+                    float x1 = d_string_to_float(c, max, &c);
+                    float y1 = d_string_to_float(c, max, &c);
+                    float x2 = d_string_to_float(c, max, &c);
+                    float y2 = d_string_to_float(c, max, &c);
                     SAKA_LOG << "  quad " << state << ": " << x1 << ", " << y1 << ", " << x2 << ", " << y2 << std::endl;
                     _handler->onPathQuad(x1, y1, x2, y2);
                 }

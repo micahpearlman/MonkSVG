@@ -602,7 +602,7 @@ namespace MonkVG {
         _width = -1;
         _height = -1;
         
-        Tess::DefaultOptions options;
+        TessOptions options;
         options.m_windingRule = Tess::TESS_WINDING_POSITIVE;
         if( _handler->getFillRule() == VG_EVEN_ODD ) {
             options.m_windingRule = Tess::TESS_WINDING_ODD;
@@ -710,6 +710,12 @@ namespace MonkVG {
                     float cp1x = 2.0f * cp2x - p3x;
                     float cp1y = 2.0f * cp2y - p3y;
                     
+                    coords.x = p3x;
+                    coords.y = p3y;
+                    
+                    _fillTesselator->addVertex( coords.x, coords.y );
+
+                    /*
                     const auto quads(Cubic<float>({{coords.x, coords.y}, {cp1x, cp1y}, {cp2x, cp2y}, {p3x, p3y}}).toQuad());
                     bool coord = true;
                     bool first = true;
@@ -733,7 +739,7 @@ namespace MonkVG {
                     }
 
                     coords.x = p3x;
-                    coords.y = p3y;
+                    coords.y = p3y;*/
                 }
                     break;
                 case (VG_CUBIC_TO >> 1):
@@ -753,7 +759,13 @@ namespace MonkVG {
                         p3x += prev.x;
                         p3y += prev.y;
                     }
+
+                    coords.x = p3x;
+                    coords.y = p3y;
                     
+                    _fillTesselator->addVertex( coords.x, coords.y );
+
+                    /*
                     const auto quads(Cubic<float>({{coords.x, coords.y}, {cp1x, cp1y}, {cp2x, cp2y}, {p3x, p3y}}).toQuad());
                     bool coord = true;
                     bool first = true;
@@ -777,7 +789,7 @@ namespace MonkVG {
                     }
 
                     coords.x = p3x;
-                    coords.y = p3y;
+                    coords.y = p3y; */
                     
                 } break;
                     
@@ -1037,7 +1049,13 @@ namespace MonkVG {
                     
                     float cp1x = 2.0f * cp2x - p3x;
                     float cp1y = 2.0f * cp2y - p3y;
+
+                    coords.x = p3x;
+                    coords.y = p3y;
                     
+                    buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
+
+/*
                     const auto quads(Cubic<float>({{coords.x, coords.y}, {cp1x, cp1y}, {cp2x, cp2y}, {p3x, p3y}}).toQuad());
                     bool coord = true;
                     bool first = true;
@@ -1058,8 +1076,8 @@ namespace MonkVG {
                         // TODO: quads are not processed atm. This will be done gpu-side
                         coord = !coord;
                     }
-                }
-                    break;
+ */
+                } break;
                     
                 case (VG_QUAD_TO >> 1):     // added by rhcad
                 {
@@ -1103,6 +1121,11 @@ namespace MonkVG {
                         p3y += prev.y;
                     }
                     
+                    coords.x = p3x;
+                    coords.y = p3y;
+                    
+                    buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
+/*
                     const auto quads(Cubic<float>({{coords.x, coords.y}, {cp1x, cp1y}, {cp2x, cp2y}, {p3x, p3y}}).toQuad());
                     bool coord = true;
                     bool first = true;
@@ -1120,7 +1143,7 @@ namespace MonkVG {
                         }
                         // TODO: quads are not processed atm. This will be done gpu-side
                         coord = !coord;
-                    }
+                    } */
                 } break;
                 case (VG_SCCWARC_TO >> 1):
                 case (VG_SCWARC_TO >> 1):

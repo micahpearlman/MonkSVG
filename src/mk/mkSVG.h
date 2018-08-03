@@ -435,8 +435,8 @@ namespace MonkSVG {
 		void parse_points( const std::string& points );
         void parse_polyline_points( const std::string& points );
 		uint32_t string_hex_color_to_uint( const std::string& hexstring );
-		float d_string_to_float( char *c, char **str );
-		int d_string_to_int( char *c, char **str );
+		float d_string_to_float( char *c, char *max, char **str );
+		int d_string_to_int( char *c, char *max, char **str );
 		bool nextState( char** c, char* state );
 	};
 }

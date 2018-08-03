@@ -96,7 +96,16 @@ namespace MonkVG {
         };
         
     private:
-        using Tesselator = Tess::Tesselator<Tess::DefaultOptions, Tess::BaseAllocators<Tess::DefaultOptions> >;
+        struct TessOptions : public Tess::DefaultOptions
+        {
+            using Coord = GLfloat; // wet dream: u_int16_t;
+            struct Vec                      // One vector comprised of Coords.
+            {
+                Coord x;
+                Coord y;
+            };
+        };
+        using Tesselator = Tess::Tesselator<TessOptions, Tess::BaseAllocators<TessOptions> >;
         Tesselator*		_fillTesselator;
         Saka::vector<GLfloat>		_vertices;
         Saka::vector<v2_t>		_strokeVertices;
