@@ -9,14 +9,12 @@ SakaSVG is a rendering system allowing to read SVG files, parse them and push th
 
 ### Project scope limitation examples
 
+These are true, unless someone or a company actually wishes to champion these changes.
+
 - There probably will never be font support unless they are converted to outlines and pushed back to the same VBO.
 - Adding textures would need to create on-the-spot atlases so we can draw them in one pass.
 - Although SVG supports external files, this system's goal is to be quick and efficient. Getting a second file beats that purpose.
 - Some very complex edge cases might not render properly. The goal is not to provide rendering for everything on the market including the dreaded polygon edge cases, but to provide adequate rendering for objects made specifically for a project (e.g. a game). If something doesn't render adequately, it's expected the source can be modified to suit the renderer's limitations.
-
-### Multipass system
-
-- As designed, getting a SVG into a VAO, VBO and EBO is relatively quick to do. However, many optimizations take a lot of time and cannot be provided immediately. As such, there is a possibility to ask the system to do a two-pass optimization in a secondary thread in order to reduce the number of triangles to draw and improve the tesselation quality.
 
 ### Final goals
 
@@ -27,6 +25,7 @@ SakaSVG is a rendering system allowing to read SVG files, parse them and push th
 
 ## What's new
 
+- 2019-01-12 Now with a radically improved speed for tesselation. Getting there for final refactoring before release.
 - 2016-10-29 Branching to SakaSVG as it's now a total different beast!
 - 2016-10-13 iOS only, uses latest tool versions. Cleaned up potential license conflict.
 - 2015-07-21 Now supports embedded SVG CSS style sheets.
@@ -34,14 +33,20 @@ SakaSVG is a rendering system allowing to read SVG files, parse them and push th
 
 ## Project TODO (in priority order)
 
-- Merging SVG and VG to remove OpenVG code and reduce object complexities
-- Add SVG animations
+- Refactoring drawing operations to support slow with b-trees, quick points, single frame, static animation and fully dynamic animation
+- Finalize refactoring to remove now strange hierarchies and old Monk* hierarchies
+- Cleaning and dusting code
+- Make sure it works with Metal (as GLES is now obsolete)
+- Add SVG animations. That includes adding a quick and efficient JS engine.
 - Add gradients to tesselation
 - Add polygon intersection (occlusion & culling) before tesselation
+- Add multipass optimizations for software that wants to do something ASAP, and then refine the result
 - Scissoring and masking
 - Finalize miter code
 - Pattern fills and strokes
 - Various blending modes
+- Add unit testing
+- Making sure we are supporting something else than iOS natively
 
 
 ## Project fork & major contributors
@@ -63,6 +68,7 @@ Use git to clone the official original versions:
 - Smooth line, Miter, Cap: Sean Batson
 
 #### Removed from SakaSVG. Was there initially in MonkVG/MonkSVG
+
 - Initial Android Port: Paul Holden
 - Windows Port: Vincent Richomme
 - Android and Linux Port: Gav Wood
@@ -74,8 +80,7 @@ Use git to clone the official original versions:
 SakaSVG uses the following 3rd party libraries:
 - __cpp_btree__ https://github.com/sakamura/cpp-btree (Apache 2.0 License)
 - __glm__ https://github.com/g-truc/glm (Happy Bunny License / MIT License)
-- __libTess2__ https://github.com/sakamura/libtess2 (SGI Free Software License B Version 2.0)
-- __polyclip__ https://github.com/sakamura/polyclip (Unlicense)
+- __libTess3__ https://github.com/sakamura/libtess3 (SGI Free Software License B Version 2.0)
 - __StyleSheet__ https://github.com/sakamura/StyleSheet (Clean room implementation using the MIT License)
 - __TinyXML2__ https://github.com/sakamura/tinyxml2 (ZLib License)
 
