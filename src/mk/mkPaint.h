@@ -7,6 +7,7 @@
 
 #include "vgCompat.h"
 #include "sakaDefs.h"
+#include "mkMath.h"
 
 namespace MonkVG {
 	
@@ -19,7 +20,14 @@ namespace MonkVG {
 		const float* getPaintColor() const {
 			return _paintColor;
 		}
-		
+        
+        Color getColor() const {
+            return Color(typename Color::value_type(_paintColor[0] * 255.0f),
+                         typename Color::value_type(_paintColor[1] * 255.0f),
+                         typename Color::value_type(_paintColor[2] * 255.0f),
+                         typename Color::value_type(_paintColor[3] * 255.0f));
+        }
+
 		VGPaintType getPaintType() { return _paintType; }
 		void setPaintType( VGPaintType t ) { _paintType = t; }
 

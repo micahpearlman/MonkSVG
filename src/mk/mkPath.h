@@ -8,7 +8,6 @@
 #include "mkMath.h"
 
 #include "mkPaint.h"
-#include <tess3/tess.h>
 #include <OpenGLES/ES2/gl.h>
 #include "sakaDefs.h"
 
@@ -16,9 +15,25 @@ namespace MonkSVG {
     class MKSVGHandler;
 }
 
+namespace Tess {
+    template <typename Options, typename Allocators>
+    class Tesselator;
+    
+    template <typename Options>
+    struct BaseAllocators;
+}
+
 namespace MonkVG {
     class MKPath {
 	public:
+        using Coord = value_t;
+        using PointVec = positionData_t;
+        using Vec = vertexData_t;
+        using SentinelVec = PointVec;
+        
+        struct TessOptions;
+        using Tesselator = Tess::Tesselator<TessOptions, Tess::BaseAllocators<TessOptions> >;
+
         void clear( GLbitfield caps );
 		
 		inline int getNumSegments() const {
@@ -90,50 +105,17 @@ namespace MonkVG {
     private:
         MonkSVG::MKSVGHandler* _handler;
         
-        struct textured_vertex_t {
-            GLfloat		v[2];
-            GLfloat		uv[2];
-        };
-        
     private:
-        struct TessOptions : public Tess::DefaultOptions
-        {
-            using Coord = GLfloat; // wet dream: u_int16_t;
-            struct Vec                      // One vector comprised of Coords.
-            {
-                Coord x;
-                Coord y;
-            };
-        };
-        using Tesselator = Tess::Tesselator<TessOptions, Tess::BaseAllocators<TessOptions> >;
         Tesselator*		_fillTesselator;
-        Saka::vector<GLfloat>		_vertices;
         Saka::vector<v2_t>		_strokeVertices;
-        int					_numberFillVertices;
         int					_numberStrokeVertices;
         MKPaint*		_fillPaintForPath;
         MKPaint*		_strokePaintForPath;
 
-        
     private:		// tesseleator callbacks
         void endOfTesselation( GLbitfield paintModes );
         
     private:	// utility methods
-        
-        void updateBounds(float x, float y) {
-            _minX = std::min(_minX, x);
-            _width = std::max(_width, x);
-            _minY = std::min(_minY, y);
-            _height = std::max(_height, y);
-        }
-        
-        void addVertex( float* v ) {
-            float x = (float)v[0];
-            float y = (float)v[1];
-            updateBounds(x, y);
-            _vertices.push_back(x);
-            _vertices.push_back(y);
-        }
         
         void buildFill();
         void buildStroke();

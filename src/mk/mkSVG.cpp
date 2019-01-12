@@ -2,8 +2,8 @@
  BSD 3-Clause License - Please see LICENSE file for full license
  */
 #include "mkSVG.h"
-#include <tinyxml2/tinyxml2.h>
-#include <StyleSheet/Document.h>
+#include "tinyxml2/tinyxml2.h"
+#include "StyleSheet/StyleSheet/Document.h"
 #include <map>
 #include <iterator>
 #include <regex>
@@ -17,57 +17,12 @@
 
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
-#include <tess3/tess.h>
+#include "libtess3/Source/tess.h"
 
 #include "SakaSVG.h"
 
 #include <boost/spirit/include/qi_int.hpp>
 #include <boost/spirit/include/qi_real.hpp>
-
-
-
-namespace MonkVG {
-    struct vertexData_t {
-        MonkVG::Pos pos;
-        MonkVG::Color color;
-        
-        vertexData_t() {}
-        
-        vertexData_t(MonkVG::Pos::value_type x, MonkVG::Pos::value_type y, MonkVG::Color _color) :
-        pos(x, y),
-        color(_color)
-        {
-        }
-        bool operator==(const vertexData_t& other) const
-        {
-            return pos == other.pos && color == other.color;
-        }
-        bool operator <(const vertexData_t& other) const
-        {
-            return pos.x < other.pos.x || (pos.x == other.pos.x && pos.y < other.pos.y);
-        }
-    };
-    struct __attribute__((packed)) gpuVertexData_t {
-        MonkVG::GpuPos pos;
-        MonkVG::Color color;
-    };
-}
-template <> struct std::hash<MonkVG::vertexData_t>
-{
-    template <typename T> constexpr static
-    T rotate_left(T val, size_t len)
-    {
-        using unsigned_type = typename std::make_unsigned<T>::type;
-        return (val << len) | ((unsigned_type) val >> (-len & (sizeof(T) * CHAR_BIT - 1)));
-    }
-    
-    std::size_t operator()(const MonkVG::vertexData_t& key) const
-    {
-        return
-        std::hash<MonkVG::Pos>()(key.pos) ^
-        rotate_left(std::hash<MonkVG::Color>()(key.color), 1);
-    }
-};
 
 namespace MonkSVG {
     MKSVGHandler::path_object_t::~path_object_t() {
@@ -84,15 +39,8 @@ namespace MonkSVG {
 		return true;
 	}
 	
-	bool SVG::read( const char* data ) {
+	bool SVG::read( XMLDocument& doc ) {
         
-		XMLDocument doc;
-		doc.Parse( data );
-        
-        if (doc.Error()) {
-            return false;
-        }
-		
 		XMLElement* root = doc.FirstChildElement( "svg" )->ToElement();
 		recursive_parse( root );        
         
@@ -142,7 +90,6 @@ namespace MonkSVG {
             }
         }
         
-        
         if (_handler->_width == 0.0f && _handler->_height == 0.0f) {
             if ( root->QueryStringAttribute( "viewBox", &inCString) == XML_SUCCESS ) {
                 numberWithUnitString = inCString;
@@ -156,18 +103,10 @@ namespace MonkSVG {
                     SAKA_LOG << "minX=" << _handler->_minX << " minY=" << _handler->_minY << " width=" << _handler->_width << " height=" << _handler->_height << std::endl;
                 }
             }
-            
         }
  
 		return true;
-		
 	}
-	
-    bool SVG::read( std::string& data ) {
-		return read( data.c_str() );
-	}
-	
-	
 	
 	void SVG::recursive_parse( XMLElement* element ) {
 		
@@ -175,16 +114,13 @@ namespace MonkSVG {
 			for ( XMLElement* sibling = element; sibling != 0; sibling = sibling->NextSiblingElement() ) {
 				handle_xml_element( sibling );
 			}
-		}
-		
-		if ( element ) {
-			XMLElement* child = element->FirstChildElement();
+
+            XMLElement* child = element->FirstChildElement();
 			// if we don't handle the element recursively go into it
 			if( handle_xml_element( child ) == false ) {
 				recursive_parse( child );
 			}
 		}
-
 	}
 
     static constexpr char tolowerchar(const char c)
@@ -951,19 +887,10 @@ namespace MonkSVG {
 	}
     
     MKSVGHandler::MKSVGHandler()
-    :	_minX( INT_MAX )
-    ,	_minY( INT_MAX )
-    ,	_width( INT_MIN )
-    ,	_height( INT_MIN )
-    ,   _batchMinX(INT_MAX)
-    ,   _batchMinY(INT_MAX)
-    ,   _batchMaxX(INT_MIN)
-    ,   _batchMaxY(INT_MIN)
-    ,   maxSizeX(0)
-    ,   maxSizeY(0)
-    ,   newMaxSizeX(0)
-    ,   newMaxSizeY(0)
-    ,   numDeletedId(0)
+    :    _minX( INT_MAX )
+    ,    _minY( INT_MAX )
+    ,    _width( INT_MIN )
+    ,    _height( INT_MIN )
     ,	_mode( kGroupParseMode )
     ,	_current_group( &_root_group )
     ,	_blackBackFill( 0 )
@@ -982,7 +909,10 @@ namespace MonkSVG {
         _blackBackFill->setPaintColor(fcolor);
         
         //_root_transform.setScale( 1, -1 );
-        
+
+        _vertices.reserve(1000000/sizeof(vertexData_t));
+        _sentinelPoints.reserve(200);
+        _ebo.reserve(1000000/sizeof(ebo_t));
     }
     
     MKSVGHandler::~MKSVGHandler() {
@@ -1447,103 +1377,9 @@ namespace MonkSVG {
         return result;
     }
     
-    static const GLfloat precision = 0.01f;
-    static const GLfloat precisionMult = 1.f/precision;
-    
-    void MKSVGHandler::addTriangle(int32_t v[6], const MonkVG::Color& color)
-    {
-        int32_t* p = &v[0];
-        int32_t* q = &v[2];
-        int32_t* r = &v[4];
-        
-        // Remove null triangles
-        if ((p[0] == q[0] && p[0] == r[0]) || (p[1] == q[1] && p[1] == r[1]) || (p[0] == q[0] && p[1] == q[1]) || (p[0] == r[0] && p[1] == r[1]) || (q[0] == r[0] && q[1] == r[1]))
-        {
-            return;
-        }
-        
-        // Put leftmost first
-        if (q[0] < p[0] && q[0] <= r[0])
-        {
-            std::swap(p,q); // q to the left
-        }
-        else if (r[0] < p[0] && r[0] <= q[0])
-        {
-            std::swap(p,r); // q to the left
-        }
-        
-        // Make sure triangles are counterclockwise
-        if (orientation(p, q, r) < 0)
-        {
-            std::swap(q,r);
-        }
-        
-        // Find box
-        const int32_t xmin = p[0];
-        const int32_t xmax = std::max(q[0], r[0]);
-        const int32_t ymin = std::min(p[1], std::min(q[1], r[1]));
-        const int32_t ymax = std::max(p[1], std::max(q[1], r[1]));
-        
-        _batchMinX = std::min(_batchMinX, (GLfloat)xmin/precisionMult);
-        _batchMaxX = std::max(_batchMaxX, (GLfloat)xmax/precisionMult);
-        _batchMinY = std::min(_batchMinY, (GLfloat)ymin/precisionMult);
-        _batchMaxY = std::max(_batchMaxY, (GLfloat)ymax/precisionMult);
-        
-        // Add triangle to deque
-        trianglesDb.push_back(triangle_t(
-                                             (int)trianglesDb.size(), // id
-                                             MonkVG::Pos(xmin, ymin), MonkVG::Pos(xmax, ymax), // min, max
-                                             MonkVG::Pos(p[0], p[1]), MonkVG::Pos(q[0], q[1]), MonkVG::Pos(r[0], r[1]), // p,q,r
-                                             color
-                                             ));
-        trianglesToAdd.push_back(&trianglesDb.back());
-        newMaxSizeX = std::max(newMaxSizeX, xmax - xmin);
-        newMaxSizeY = std::max(newMaxSizeY, ymax - ymin);
-    }
-    
-    void MKSVGHandler::finalizeTriangleBatch()
-    {
-        for (auto triangleToAdd : trianglesToAdd)
-        {
-            trianglesByXMin.insert({triangleToAdd->min[0], triangleToAdd});
-        }
-        maxSizeX = newMaxSizeX;
-        maxSizeY = newMaxSizeY;
-        trianglesToAdd.clear();
-    }
-    
-    void MKSVGHandler::addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes ) {
+    void MKSVGHandler::addPathVertexData( GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes ) {
+        /*
         int32_t v[6];
-        
-        //printf("Adding %d fill %d stroke\n", (int)fillVertCnt, (int)strokeVertCnt);
-        if ( paintModes & VG_FILL_PATH) {
-            // get the paint color
-            const float* fc = getFillPaint()->getPaintColor();
-            
-            const MonkVG::Color color(
-                                      GLuint(fc[0] * 255.0f),
-                                      GLuint(fc[1] * 255.0f),
-                                      GLuint(fc[2] * 255.0f),
-                                      GLuint(fc[3] * 255.0f));
-            
-            // get vertices and transform them
-            for ( int i = 0; i < (int)fillVertCnt * 2 - 4; i+=6 ) {
-                v2_t affine;
-                affine = affineTransform(_active_matrix, &fillVerts[i + 0]);
-                v[0] = static_cast<int32_t>(affine[0]*precisionMult);
-                v[1] = static_cast<int32_t>(affine[1]*precisionMult);
-                affine = affineTransform(_active_matrix, &fillVerts[i + 2]);
-                v[2] = static_cast<int32_t>(affine[0]*precisionMult);
-                v[3] = static_cast<int32_t>(affine[1]*precisionMult);
-                affine = affineTransform(_active_matrix, &fillVerts[i + 4]);
-                v[4] = static_cast<int32_t>(affine[0]*precisionMult);
-                v[5] = static_cast<int32_t>(affine[1]*precisionMult);
-                
-                addTriangle(v, color);
-            }
-            finalizeTriangleBatch();
-        }
-        
         if ( paintModes & VG_STROKE_PATH) {
             // get the paint color
             const float* fc = getStrokePaint()->getPaintColor();
@@ -1588,70 +1424,24 @@ namespace MonkSVG {
                 }
             }
             finalizeTriangleBatch();
-        }
+        } */
     }
     
     void MKSVGHandler::finalize(Saka::SVG* dest) {
         optimize();
         // Move triangles to vertexes
-        size_t numVertices = (trianglesDb.size() - (size_t)numDeletedId) * 3;
-        
-        Saka::vector<GLuint> ebo;
-        ebo.reserve(numVertices);
-        
-        Saka::vector<gpuVertexData_t> vbo;
-        vbo.reserve(numVertices); // Note : numVertices is the maximum ever. It will ALWAYS be less than this.
-        
-        Saka::unordered_map<vertexData_t, size_t> vertexToId(numVertices);
-        
-        GLfloat xSize = _batchMaxX - _batchMinX;
-        GLfloat ySize = _batchMaxY - _batchMinY;
-        
-        auto addVertex = [&](int32_t x, int32_t y, MonkVG::Color color) -> GLuint
-        {
-            vertexData_t toAdd(x, y, color);
-            auto id = vbo.size();
-            
-            auto found( vertexToId.find(toAdd));
-
-            if (found == vertexToId.end())
-            {
-                vertexToId.emplace_hint(found, std::move(toAdd), id);
-
-                GLushort xNorm = (GLushort)( ((GLfloat)x / precisionMult - _batchMinX) / xSize * 65535 );
-                GLushort yNorm = 65535 - (GLushort)( ((GLfloat)y / precisionMult - _batchMinY) / ySize * 65535 );
-                vbo.push_back({{xNorm, yNorm}, color});
-                return (GLuint)id;
-            }
-            else
-            {
-                return (GLuint)found->second;
-            }
-        };
-        
-        for (auto iter : trianglesDb)
-        {
-            if (iter.id == -1)
-            {
-                continue;
-            }
-            ebo.push_back(addVertex(iter.p[0], iter.p[1], iter.color));
-            ebo.push_back(addVertex(iter.q[0], iter.q[1], iter.color));
-            ebo.push_back(addVertex(iter.r[0], iter.r[1], iter.color));
-        }
-        
-        printf("numVertices = %d, numVbo = %d, numEbo = %d\n", (int)numVertices, (int)vbo.size(), (int)ebo.size());
+        printf("numVbo = %d, numEbo = %d\n", (int)_vertices.size(), (int)_ebo.size());
         
         Saka::SharedVAO sVao = dest->vao = Saka::SharedVAO::make_shared();
         Saka::SharedVBO sVbo = Saka::SharedVBO::make_shared();
         Saka::SharedEBO sEbo = dest->ebo = Saka::SharedEBO::make_shared();
         Saka::GLMgr::instance().bind(sVao).bind(sVbo).bind(sEbo);
-        sVbo->bufferData((GLsizeiptr)(vbo.size() * sizeof(gpuVertexData_t)), &vbo[0], GL_STATIC_DRAW);
+        sVbo->bufferData((GLsizeiptr)(_vertices.size() * sizeof(vertexData_t)), &_vertices[0], GL_STATIC_DRAW);
         sVbo->setNumAttribs(2);
-        sVbo->addAttrib(2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, pos));
-        sVbo->addAttrib(4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(gpuVertexData_t), (GLvoid*)offsetof(gpuVertexData_t, color));
+        sVbo->addAttrib(2, GL_FLOAT, GL_TRUE, sizeof(vertexData_t), (GLvoid*)vertexData_t::k_position);
+        sVbo->addAttrib(4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(vertexData_t), (GLvoid*)vertexData_t::k_color);
         sVao->addVbo(sVbo);
-        sEbo->bufferData((GLsizeiptr)(ebo.size() * sizeof(GLuint)), &ebo[0], GL_STATIC_DRAW, GL_TRIANGLES, (GLsizei)(ebo.size()), GL_UNSIGNED_INT);
+        sEbo->bufferData((GLsizeiptr)(_ebo.size() * sizeof(GLuint)), &_ebo[0], GL_STATIC_DRAW, GL_TRIANGLES, (GLsizei)(_ebo.size()), GL_UNSIGNED_INT);
     }
 }
 

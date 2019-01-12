@@ -3,32 +3,22 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		96091AA71DCF8E12007EB32A /* SakaSVG.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9649535E1DC2E0E700838988 /* SakaSVG.h */; };
 		96091AAC1DD00988007EB32A /* glMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96091AAB1DD00988007EB32A /* glMgr.cpp */; };
-		96091AAE1DD00ABC007EB32A /* glMgr.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 96091AAD1DD009A0007EB32A /* glMgr.h */; };
-		9629F2151DD405D200D558E6 /* libpolyclip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9694B9081DD2D67F00CE0F5A /* libpolyclip.a */; };
 		962DBF2E1DD159F000BC51F1 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 962DBF271DD159F000BC51F1 /* mkPaint.cpp */; };
 		962DBF2F1DD159F000BC51F1 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 962DBF291DD159F000BC51F1 /* mkPath.cpp */; };
 		962DBF301DD159F000BC51F1 /* mkSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 962DBF2B1DD159F000BC51F1 /* mkSVG.cpp */; };
 		9649536C1DC2E0E700838988 /* SakaSVG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9649535D1DC2E0E700838988 /* SakaSVG.cpp */; };
 		968751BD1DC80A8C002B18FE /* libcpp_btree.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F491DC7FD7D002B18FE /* libcpp_btree.a */; };
 		968751BE1DC80A8C002B18FE /* libglm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F731DC7FDE9002B18FE /* libglm.a */; };
-		968751C01DC80A8C002B18FE /* libStyleSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F531DC7FD97002B18FE /* libStyleSheet.a */; };
+		968751C01DC80A8C002B18FE /* libstylesheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F531DC7FD97002B18FE /* libstylesheet.a */; };
 		968751C21DC80A8C002B18FE /* libtinyxml2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96874F4E1DC7FD8B002B18FE /* libtinyxml2.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		9629F2121DD405C800D558E6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9694B9031DD2D67F00CE0F5A /* polyclip.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 9694B8E21DD2A45300CE0F5A;
-			remoteInfo = polyclip;
-		};
 		966848C8211297D200CD1609 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96BB2E051DC4FB57003079AC /* Tess3.xcodeproj */;
@@ -92,13 +82,6 @@
 			remoteGlobalIDString = 96EF25061D662D2E00F95C51;
 			remoteInfo = StyleSheet;
 		};
-		9694B9071DD2D67F00CE0F5A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9694B9031DD2D67F00CE0F5A /* polyclip.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 9694B8E31DD2A45300CE0F5A;
-			remoteInfo = polyclip;
-		};
 		96D119ED21127D03000ED4E1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96BB2E051DC4FB57003079AC /* Tess3.xcodeproj */;
@@ -107,20 +90,6 @@
 			remoteInfo = Tess3;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		96F7042D1D69D4490081408C /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
-			files = (
-				96091AAE1DD00ABC007EB32A /* glMgr.h in CopyFiles */,
-				96091AA71DCF8E12007EB32A /* SakaSVG.h in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		96091AAB1DD00988007EB32A /* glMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = glMgr.cpp; path = src/glMgr.cpp; sourceTree = "<group>"; };
@@ -137,9 +106,11 @@
 		9649535D1DC2E0E700838988 /* SakaSVG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SakaSVG.cpp; path = src/SakaSVG.cpp; sourceTree = "<group>"; };
 		9649535E1DC2E0E700838988 /* SakaSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SakaSVG.h; path = src/SakaSVG.h; sourceTree = "<group>"; };
 		96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = glm.xcodeproj; path = glm/glm.xcodeproj; sourceTree = "<group>"; };
-		9694B9031DD2D67F00CE0F5A /* polyclip.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = polyclip.xcodeproj; path = polyclip/polyclip.xcodeproj; sourceTree = "<group>"; };
 		96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cpp_btree.xcodeproj; path = "cpp-btree/cpp_btree.xcodeproj"; sourceTree = "<group>"; };
 		96BB2E051DC4FB57003079AC /* Tess3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Tess3.xcodeproj; path = libtess3/Tess3.xcodeproj; sourceTree = "<group>"; };
+		96D0A4CC21D519CD0006E1AB /* CubicToQuad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CubicToQuad.h; sourceTree = "<group>"; };
+		96D0A4CD21D519CD0006E1AB /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		96D0A4CE21D519CD0006E1AB /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		96F7042F1D69D4490081408C /* libsakasvg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsakasvg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96FA87D61D71CE93006528A1 /* StyleSheet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = StyleSheet.xcodeproj; path = StyleSheet/StyleSheet.xcodeproj; sourceTree = "<group>"; };
 		96FA87E21D71CF0F006528A1 /* tinyxml2.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = tinyxml2.xcodeproj; path = tinyxml2/tinyxml2.xcodeproj; sourceTree = "<group>"; };
@@ -150,10 +121,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9629F2151DD405D200D558E6 /* libpolyclip.a in Frameworks */,
 				968751BD1DC80A8C002B18FE /* libcpp_btree.a in Frameworks */,
 				968751BE1DC80A8C002B18FE /* libglm.a in Frameworks */,
-				968751C01DC80A8C002B18FE /* libStyleSheet.a in Frameworks */,
+				968751C01DC80A8C002B18FE /* libstylesheet.a in Frameworks */,
 				968751C21DC80A8C002B18FE /* libtinyxml2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,7 +167,7 @@
 		96874F4F1DC7FD97002B18FE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				96874F531DC7FD97002B18FE /* libStyleSheet.a */,
+				96874F531DC7FD97002B18FE /* libstylesheet.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -210,12 +180,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		9694B9041DD2D67F00CE0F5A /* Products */ = {
+		96D0A4CB21D519CD0006E1AB /* CubicToQuad */ = {
 			isa = PBXGroup;
 			children = (
-				9694B9081DD2D67F00CE0F5A /* libpolyclip.a */,
+				96D0A4CC21D519CD0006E1AB /* CubicToQuad.h */,
+				96D0A4CD21D519CD0006E1AB /* LICENSE */,
+				96D0A4CE21D519CD0006E1AB /* README.md */,
 			);
-			name = Products;
+			path = CubicToQuad;
 			sourceTree = "<group>";
 		};
 		96D119EA21127D02000ED4E1 /* Products */ = {
@@ -258,7 +230,7 @@
 		96FA87CF1D71CE75006528A1 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				9694B9031DD2D67F00CE0F5A /* polyclip.xcodeproj */,
+				96D0A4CB21D519CD0006E1AB /* CubicToQuad */,
 				96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */,
 				96BB2E051DC4FB57003079AC /* Tess3.xcodeproj */,
 				96BB2DFF1DC4FB41003079AC /* cpp_btree.xcodeproj */,
@@ -278,13 +250,11 @@
 			buildPhases = (
 				96F7042B1D69D4490081408C /* Sources */,
 				96F7042C1D69D4490081408C /* Frameworks */,
-				96F7042D1D69D4490081408C /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				966848C9211297D200CD1609 /* PBXTargetDependency */,
-				9629F2131DD405C800D558E6 /* PBXTargetDependency */,
 				968751B21DC80A82002B18FE /* PBXTargetDependency */,
 				968751B61DC80A82002B18FE /* PBXTargetDependency */,
 				968751B81DC80A82002B18FE /* PBXTargetDependency */,
@@ -313,7 +283,7 @@
 				};
 			};
 			buildConfigurationList = 96F7042A1D69D4490081408C /* Build configuration list for PBXProject "SakaSVG" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -330,10 +300,6 @@
 				{
 					ProductGroup = 96874F6F1DC7FDE8002B18FE /* Products */;
 					ProjectRef = 96874F6E1DC7FDE8002B18FE /* glm.xcodeproj */;
-				},
-				{
-					ProductGroup = 9694B9041DD2D67F00CE0F5A /* Products */;
-					ProjectRef = 9694B9031DD2D67F00CE0F5A /* polyclip.xcodeproj */;
 				},
 				{
 					ProductGroup = 96874F4F1DC7FD97002B18FE /* Products */;
@@ -370,10 +336,10 @@
 			remoteRef = 96874F4D1DC7FD8B002B18FE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		96874F531DC7FD97002B18FE /* libStyleSheet.a */ = {
+		96874F531DC7FD97002B18FE /* libstylesheet.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libStyleSheet.a;
+			path = libstylesheet.a;
 			remoteRef = 96874F521DC7FD97002B18FE /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -382,13 +348,6 @@
 			fileType = archive.ar;
 			path = libglm.a;
 			remoteRef = 96874F721DC7FDE9002B18FE /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		9694B9081DD2D67F00CE0F5A /* libpolyclip.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libpolyclip.a;
-			remoteRef = 9694B9071DD2D67F00CE0F5A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		96D119EE21127D03000ED4E1 /* libtess2.a */ = {
@@ -417,11 +376,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		9629F2131DD405C800D558E6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = polyclip;
-			targetProxy = 9629F2121DD405C800D558E6 /* PBXContainerItemProxy */;
-		};
 		966848C9211297D200CD1609 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Tess3;
@@ -455,7 +409,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_ASSIGN_ENUM = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -483,6 +437,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_FAST_MATH = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -516,6 +471,7 @@
 				PRODUCT_NAME = sakasvg;
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = /opt/boost/include;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/thirdparty";
 			};
 			name = Debug;
 		};
@@ -524,7 +480,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_ASSIGN_ENUM = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -551,6 +507,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_FAST_MATH = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
@@ -579,6 +536,7 @@
 				PRODUCT_NAME = sakasvg;
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = /opt/boost/include;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/thirdparty";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

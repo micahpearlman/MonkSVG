@@ -15,6 +15,8 @@
 #include "mkMath.h"
 #include <OpenGLES/ES2/gl.h>
 #include "sakaDefs.h"
+#include "mkMath.h"
+
 
 
 namespace Saka
@@ -37,7 +39,7 @@ namespace MonkSVG {
 
     using namespace tinyxml2;
     using namespace MonkVG;
-    
+
     class SVG;
 
     class MKSVGHandler {
@@ -359,38 +361,53 @@ namespace MonkSVG {
         // from mkBatch.h
         //
     public:
+        addResult_t addPoint(vertexData_t&& vec)
+        {
+            auto found(_vertexToId.find(&vec));
+            if (found != _vertexToId.end())
+            {
+                SAKA_LOG << "Identical point " << found->second << std::endl;
+                return *found;
+            }
+
+            auto id = _vertices.size();
+            assert(id == 0 || id < _vertices.capacity());           // We cannot relocate for efficiency. Make it bigger!
+            _vertices.push_back(std::move(vec));
+            auto back = &_vertices.back();
+            _vertexToId[back] = id;
+            SAKA_LOG << "Added point " << id << ": {" << back->position.x << "," << back->position.y << "}, " << back->quad.x << "," << back->quad.y << std::endl;
+            return addResult_t(back, id);
+        }
+        positionData_t* addSentinelPoint(const positionData_t&& sentinelVec)
+        {
+            assert(_sentinelPoints.size() == 0 || _sentinelPoints.size() < _vertices.capacity());           // We cannot relocate for efficiency. Make it bigger!
+            _sentinelPoints.push_back(std::move(sentinelVec));
+            return &_sentinelPoints.back();
+        }
+        
+        void addVertexIdx(const ebo_t& idx)
+        {
+            assert(_ebo.size() == 0 || _ebo.size() < _ebo.capacity());           // We cannot relocate for efficiency. Make it bigger!
+            _ebo.push_back(idx);
+        }
+
+        Saka::vector<vertexData_t> _vertices;
+        
+        // Little optimization opportunities: Many tests were made, including using unordered_map and makeshift btree key hashing.
+        // Some operations took more time and some were more efficient in some cases, such as with CPUs without branch prediction.
+        // The overall difference was so small and variable in the end result it was judged simplicity being more important than the elusive minimal speedup.
+        Saka::btree_map<vertexData_t*, size_t, vertexDataPtrLessThan> _vertexToId;
+        
+        Saka::vector<positionData_t> _sentinelPoints;
+        Saka::vector<ebo_t> _ebo;
+        
+
         float _batchMinX, _batchMinY, _batchMaxX, _batchMaxY;
         
         void finalize(Saka::SVG* dest);
         
-        void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes );
+        void addPathVertexData( GLfloat* strokeVerts, size_t strokeVertCnt, GLbitfield paintModes );
         
-        struct triangle_t {
-            // Indexes & helpers
-            int id;             // incremental ID, playback order (-1 if it got deleted)
-            MonkVG::Pos min;     // smallest x,y from p,q,r
-            MonkVG::Pos max;     // biggest x,y from p,q,r
-            
-            // Data
-            MonkVG::Pos p;       // Leftmost point
-            MonkVG::Pos q;       // Counterclockwise next point
-            MonkVG::Pos r;       // Clockwise next point
-            MonkVG::Color color;       // Color being used
-            
-            inline triangle_t( const int& _id, const MonkVG::Pos& _min, const MonkVG::Pos& _max, const MonkVG::Pos& _p, const MonkVG::Pos& _q, const MonkVG::Pos& _r, const MonkVG::Color& _color) :
-            id(_id), min(_min), max(_max), p(_p), q(_q), r(_r), color(_color)
-            {
-            }
-        };
-        
-        Saka::deque<triangle_t> trianglesDb;
-        Saka::btree_multimap<int32_t, triangle_t*> trianglesByXMin;
-        Saka::deque<triangle_t*> trianglesToAdd;
-        int32_t                 maxSizeX, maxSizeY, newMaxSizeX, newMaxSizeY;
-        int                     numDeletedId;
-                
-        void addTriangle(int32_t v[6], const MonkVG::Color& color);
-        void finalizeTriangleBatch();
         void reset();
 	};
 	
@@ -398,8 +415,7 @@ namespace MonkSVG {
 	public:
 		
 		bool initialize( MKSVGHandler* handler );
-		bool read( std::string& data );
-		bool read( const char* data );
+		bool read( XMLDocument& doc );
 
 	private:
 		

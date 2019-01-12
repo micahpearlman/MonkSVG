@@ -17,7 +17,7 @@
 #include <map>
 #include <set>
 #include <unordered_map>
-#include <cpp_btree/btree_map.h>
+#include "cpp-btree/cpp_btree/btree_map.h"
 #include <scoped_allocator>
 
 #ifndef SAKA_PROFILE_LEAKS
@@ -54,7 +54,7 @@ namespace Saka {
 
     template <typename T>
     using set = std::set<T, fast_pool_allocator<T>>;
-
+    
     template <typename T, typename U>
     using map = std::map<T, U, std::less<T>, fast_pool_allocator<std::pair<const T, U>>>;
     
@@ -134,9 +134,12 @@ namespace Saka {
         template<typename T, typename U>
         struct rebind_selector<T, U, hash_node_base<T, U>*> : public std::true_type {using other = allocator<T, U, hash_node_base_allocator_ptr<T, U>>;};
     }
-    template <typename T, typename U>
-    using unordered_map = std::unordered_map<T, U, std::hash<T>, std::equal_to<T>, _unordered_map::allocator<T, U>>;
+    template <typename T, typename U, class _Hash = std::hash<T>, class _Pred = std::equal_to<T>>
+    using unordered_map = std::unordered_map<T, U, _Hash, _Pred, _unordered_map::allocator<T, U>>;
     
+    template <typename T, typename U, class _Less = std::less<T>>
+    using btree_map = btree::btree_map<T, U, _Less>;
+
     template <typename T, typename U>
     using btree_multimap = btree::btree_multimap<T, U>;
 }

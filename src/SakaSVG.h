@@ -7,6 +7,11 @@
 
 #include "glMgr.h"
 
+namespace tinyxml2
+{
+    class XMLDocument;
+}
+
 namespace Saka
 {
     class SVG
@@ -20,7 +25,7 @@ namespace Saka
         GLfloat batchMinY;
         GLfloat batchMaxY;
         
-        SVG(const char* const pathname);
+        SVG(tinyxml2::XMLDocument& doc);
         ~SVG();
         
         void draw();

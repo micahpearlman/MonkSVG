@@ -6,7 +6,8 @@
 #include "mk/mkSVG.h"
 #include <fstream>
 #include "mk/mkMath.h"
-#include <glm/gtx/transform.hpp>
+#include "glm/glm/glm/gtx/transform.hpp"
+#include "tinyxml2/tinyxml2.h"
 
 namespace Saka
 {
@@ -15,6 +16,8 @@ namespace Saka
         SharedProgram p = SharedProgram::make_shared();
         SharedShader v = SharedShader(new VertexShader);
         v->compile("attribute lowp vec2 position;"
+                   "attribute lowp vec2 cubic1;"
+                   "attribute lowp vec2 cubic2;"
                    "attribute lowp vec4 color;"
                    "uniform highp mat4 projection;"
                    "varying lowp vec4 exColor;"
@@ -43,40 +46,20 @@ namespace Saka
         return instance;
     };
     
-    SVG::SVG(const char* const pathname) :
-    program(defaultSVGProgram()),
-    batchMinX(0),
-    batchMaxX(0),
-    batchMinY(0),
-    batchMaxY(0)
+    SVG::SVG(tinyxml2::XMLDocument& doc) :
+        program(defaultSVGProgram()),
+        batchMinX(0),
+        batchMaxX(0),
+        batchMinY(0),
+        batchMaxY(0)
     {
-        char* buffer;
-        {
-            std::fstream is( pathname, std::fstream::in );
-            
-            // get length of file:
-            is.seekg (0, std::ios::end);
-            std::fpos_t length = is.tellg();
-            is.seekg (0, std::ios::beg);
-            assert(length <= UINT_MAX && length > 0);
-            
-            // allocate memory:
-            buffer = new char[(unsigned int)length + 1];
-            
-            // read data as a block:
-            is.read(buffer,(std::streamsize)length);
-            
-            buffer[(unsigned int)length] = 0;
-        }
-        
         // run it through the svg parser
         MonkSVG::MKSVGHandler handler;
         {
             MonkSVG::SVG svg_parser;
             svg_parser.initialize( &handler );
-            svg_parser.read( buffer );
+            svg_parser.read( doc );
         }
-        delete [] buffer;
         
         handler.finalize(this);
     }
@@ -87,7 +70,7 @@ namespace Saka
     
     void SVG::draw()
     {
-        glm::mat4 m = glm::translate(glm::scale(glm::vec3(2.f, 2.f, 0.f)), glm::vec3(-.5f, -.5f, 0.f));
+        glm::mat4 m = glm::translate(glm::scale(glm::vec3(1/300.f, 1/300.f, 0.f)), glm::vec3(-300.f, -300.f, 0.f));
         
         GLMgr::instance().bind(vao).bind(ebo).bind(program);
         glUniformMatrix4fv(0, 1, GL_FALSE,  glm::value_ptr(m));
