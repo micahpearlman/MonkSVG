@@ -8,6 +8,7 @@
 #include <cmath>
 #define GLM_PRECISION_LOWP_FLOAT
 #define GLM_PRECISION_LOWP_UINT
+#define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm/glm/glm.hpp"
 #include "glm/glm/glm/gtc/type_ptr.hpp"
 #include "glm/glm/glm/gtx/matrix_transform_2d.hpp"
