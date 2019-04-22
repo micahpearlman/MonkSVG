@@ -16,8 +16,7 @@ namespace Saka
         SharedProgram p = SharedProgram::make_shared();
         SharedShader v = SharedShader(new VertexShader);
         v->compile("attribute lowp vec2 position;"
-                   "attribute lowp vec2 cubic1;"
-                   "attribute lowp vec2 cubic2;"
+                   "attribute lowp vec2 quad;"
                    "attribute lowp vec4 color;"
                    "uniform highp mat4 projection;"
                    "varying lowp vec4 exColor;"

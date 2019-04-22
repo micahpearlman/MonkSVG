@@ -902,6 +902,9 @@ namespace MonkSVG {
     ,	_fill_paint( 0 )
     ,	_fill_rule( VG_EVEN_ODD )
     ,	_tessellationIterations( 4 )
+    ,   _use_transform( Matrix33(1.0) )
+    ,   _active_matrix( Matrix33(1.0) )
+    ,   _root_transform( Matrix33(1.0) )
 
     {
         _blackBackFill = createPaint();
@@ -1294,7 +1297,7 @@ namespace MonkSVG {
         _use_opacity = 1.0;
     }
     void MKSVGHandler::onUseEnd() {
-        _use_transform = Matrix33();
+        _use_transform = Matrix33(1.0);
         _use_opacity = 1.0;
     }
 }
@@ -1332,7 +1335,7 @@ namespace MonkSVG {
     
     
     void MKSVGHandler::setIdentity() {
-        _active_matrix = Matrix33();
+        _active_matrix = Matrix33(1.0);
     }
     
     const Matrix33& MKSVGHandler::getTransform( ) const {

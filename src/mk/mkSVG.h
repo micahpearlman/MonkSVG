@@ -212,7 +212,7 @@ namespace MonkSVG {
             std::string id;
             std::list<anim_transform_t> anims;
             
-            path_object_t() : path( nullptr ), fill( nullptr ), stroke( nullptr ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ) {
+            path_object_t() : path( nullptr ), fill( nullptr ), stroke( nullptr ), stroke_width( -1 ), fill_rule( VG_NON_ZERO ), transform(1.0) {
                 
             }
             ~path_object_t();
@@ -223,6 +223,7 @@ namespace MonkSVG {
             :	parent( 0 )
             ,	current_path( 0 )
             ,	fill( 0 ), stroke( 0 ), stroke_width( -1 ), fill_rule( VG_NON_ZERO )
+            ,   transform(1.0)
             {
                 
             }
