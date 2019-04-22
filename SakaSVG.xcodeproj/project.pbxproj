@@ -271,7 +271,7 @@
 		96F704271D69D4490081408C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Michel Donais";
 				TargetAttributes = {
 					96F7042E1D69D4490081408C = {
@@ -284,10 +284,11 @@
 			};
 			buildConfigurationList = 96F7042A1D69D4490081408C /* Build configuration list for PBXProject "SakaSVG" */;
 			compatibilityVersion = "Xcode 10.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 96F704261D69D4490081408C;
 			productRefGroup = 96F704301D69D4490081408C /* Products */;
@@ -408,6 +409,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -465,12 +467,12 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				LIBRARY_SEARCH_PATHS = /opt/boost/lib;
+				LIBRARY_SEARCH_PATHS = /opt/local/lib;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = sakasvg;
 				SKIP_INSTALL = YES;
-				SYSTEM_HEADER_SEARCH_PATHS = /opt/boost/include;
+				SYSTEM_HEADER_SEARCH_PATHS = /opt/local/include;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/thirdparty";
 			};
 			name = Debug;
@@ -479,6 +481,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -531,11 +534,11 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				LIBRARY_SEARCH_PATHS = /opt/boost/lib;
+				LIBRARY_SEARCH_PATHS = /opt/local/lib;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = sakasvg;
 				SKIP_INSTALL = YES;
-				SYSTEM_HEADER_SEARCH_PATHS = /opt/boost/include;
+				SYSTEM_HEADER_SEARCH_PATHS = /opt/local/include;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/thirdparty";
 				VALIDATE_PRODUCT = YES;
 			};
