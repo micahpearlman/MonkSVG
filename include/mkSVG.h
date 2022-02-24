@@ -15,13 +15,14 @@
 #include <map>
 #include <cmath>
 #include <memory>
+#include <fstream>
 
-class TiXmlDocument;
-class TiXmlElement;
+// class TiXmlDocument;
+// class TiXmlElement;
 
 namespace MonkSVG {
 
-class SVG;
+class SVG_Parser_Implementation;
 
 /**
  * @brief Interface for handling SVG elements.
@@ -94,7 +95,7 @@ class ISVGHandler {
     float _width;
     float _height;
 
-    friend class SVG;
+    friend class SVG_Parser_Implementation;
 
   private:
     bool _relative;
@@ -104,34 +105,16 @@ class ISVGHandler {
  * @brief SVG Xml Parser
  *
  */
-class SVG {
+class SVG_Parser {
   public:
-    bool initialize(ISVGHandler::SmartPtr handler);
-    bool read(std::string &data);
-    bool read(const char *data);
+    static SVG_Parser* create(ISVGHandler::SmartPtr handler);
+    static void destroy(SVG_Parser* svg_parser);
 
-  private:
-    ISVGHandler::SmartPtr _handler;
+    virtual bool parse(std::string &data) = 0;
+    virtual bool parse(const char *data) = 0;
 
-    // holds svg <symbols>
-    std::map<std::string, TiXmlElement *> _symbols;
-
-  private:
-    void     recursive_parse(TiXmlElement *element);
-    bool     handle_xml_element(TiXmlElement *element);
-    void     handle_group(TiXmlElement *pathElement);
-    void     handle_path(TiXmlElement *pathElement);
-    void     handle_rect(TiXmlElement *pathElement);
-    void     handle_polygon(TiXmlElement *pathElement);
-    void     handle_general_parameter(TiXmlElement *pathElement);
-    void     parse_path_d(std::string &ps);
-    void     parse_path_style(std::string &ps);
-    void     parse_path_transform(std::string &tr);
-    void     parse_points(std::string &points);
-    uint32_t string_hex_color_to_uint(std::string &hexstring);
-    float    d_string_to_float(char *c, char **str);
-    int      d_string_to_int(char *c, char **str);
-    void     nextState(char **c, char *state);
+  protected:
+    SVG_Parser() {}
 };
 } // namespace MonkSVG
 

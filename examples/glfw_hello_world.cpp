@@ -5,8 +5,6 @@
 /// svg
 #include <mkSVG.h>
 #include <openvg/mkOpenVG_SVG.h>
-static MonkSVG::OpenVG_SVGHandler::SmartPtr vgSVGRenderer;
-
 
 // OpenGL window creation libraries
 #define GLFW_INCLUDE_ES32
@@ -15,6 +13,7 @@ static MonkSVG::OpenVG_SVGHandler::SmartPtr vgSVGRenderer;
 
 // System
 #include <iostream>
+#include <fstream>
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
@@ -50,6 +49,19 @@ int main(int argc, char **argv) {
     // Initialize MonkVG using GLES 2.0 rendering
     vgCreateContextMNK(WINDOW_WIDTH, WINDOW_HEIGHT,
                        VG_RENDERING_BACKEND_TYPE_OPENGLES20);
+
+
+    // create an OpenVG (MonkVG) handler	
+	MonkSVG::ISVGHandler::SmartPtr svg_handler =  MonkSVG::OpenVG_SVGHandler::create();
+	
+    // load an example
+	std::string svgFilePath = "./example_data/tiger.svg";
+	std::fstream is( svgFilePath.c_str(), std::fstream::in );
+
+    // run it through the svg parser
+	MonkSVG::SVG_Parser* svg_parser = MonkSVG::SVG_Parser::create(svg_handler);
+	// svg_parser.read( buffer );
+
 
     // create a paint
     VGPaint paint;

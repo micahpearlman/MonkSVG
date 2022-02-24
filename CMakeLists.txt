@@ -103,6 +103,7 @@ if (MKSVG_DO_BUILD_EXAMPLES)
                                 ${MONKVG_INCLUDE_DIRS}                                
                                 )
     target_link_libraries(glfw_hello_world  PUBLIC
+                            monksvg
                             monkvg
                             ${GLU_LIBRARIES} # Required by MonkVG
                             ${GLFW_LIBRARIES}   
