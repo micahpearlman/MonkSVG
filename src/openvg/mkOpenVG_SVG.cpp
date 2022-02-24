@@ -7,7 +7,7 @@
  *
  */
 
-#include "mkOpenVG_SVG.h"
+#include <openvg/mkOpenVG_SVG.h>
 
 namespace MonkSVG {
 	

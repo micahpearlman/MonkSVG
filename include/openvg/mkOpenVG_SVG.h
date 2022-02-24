@@ -16,8 +16,8 @@
 #include <list>
 #include <cmath>
 #include <memory>
-#include "../mkSVG.h"
-#include "../mkTransform2d.h"
+#include <mkSVG.h>
+#include <mkTransform2d.h>
 
 namespace MonkSVG {
 class OpenVG_SVGHandler : public ISVGHandler {
