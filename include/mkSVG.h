@@ -34,47 +34,47 @@ class ISVGHandler {
     typedef std::shared_ptr<ISVGHandler> SmartPtr;
 
     // transforms
-    virtual void onTransformTranslate(float x, float y) {}
-    virtual void onTransformScale(float s) {}
-    virtual void onTransformRotate(float r) {}
+    virtual void onTransformTranslate(float x, float y) = 0;
+    virtual void onTransformScale(float s) = 0;
+    virtual void onTransformRotate(float r) = 0;
     virtual void onTransformMatrix(float a, float b, float c, float d, float e,
-                                   float f) {}
+                                   float f) = 0;
 
     // groups
-    virtual void onGroupBegin() {}
-    virtual void onGroupEnd() {}
-    virtual void onUseBegin() {}
-    virtual void onUseEnd() {}
+    virtual void onGroupBegin() = 0;
+    virtual void onGroupEnd() = 0;
+    virtual void onUseBegin() = 0;
+    virtual void onUseEnd() = 0;
 
-    virtual void onId(const std::string &id_) {}
+    virtual void onId(const std::string &id_) = 0;
 
     // paths
-    virtual void onPathBegin() {}
-    virtual void onPathEnd() {}
-    virtual void onPathMoveTo(float x, float y) {}
-    virtual void onPathClose() {}
-    virtual void onPathLineTo(float x, float y) {}
+    virtual void onPathBegin() = 0;
+    virtual void onPathEnd() = 0;
+    virtual void onPathMoveTo(float x, float y) = 0;
+    virtual void onPathClose() = 0;
+    virtual void onPathLineTo(float x, float y) = 0;
     virtual void onPathCubic(float x1, float y1, float x2, float y2, float x3,
-                             float y3) {}
-    virtual void onPathSCubic(float x2, float y2, float x3, float y3) {}
+                             float y3) = 0;
+    virtual void onPathSCubic(float x2, float y2, float x3, float y3) = 0;
     virtual void onPathArc(float rx, float ry, float x_axis_rotation,
                            int large_arc_flag, int sweep_flag, float x,
-                           float y) {}
-    virtual void onPathRect(float x, float y, float w, float h) {}
-    virtual void onPathHorizontalLine(float x) {}
-    virtual void onPathVerticalLine(float y) {}
+                           float y) = 0;
+    virtual void onPathRect(float x, float y, float w, float h) = 0;
+    virtual void onPathHorizontalLine(float x) = 0;
+    virtual void onPathVerticalLine(float y) = 0;
 
-    virtual void onPathQuad(float x1, float y1, float x2, float y2) {}
+    virtual void onPathQuad(float x1, float y1, float x2, float y2) = 0;
 
     // fill
-    virtual void onPathFillColor(unsigned int color) {}
-    virtual void onPathFillOpacity(float o) {}
-    virtual void onPathFillRule(const std::string &rule) {}
+    virtual void onPathFillColor(unsigned int color) = 0;
+    virtual void onPathFillOpacity(float o) = 0;
+    virtual void onPathFillRule(const std::string &rule) = 0;
 
     // stroke
-    virtual void onPathStrokeColor(unsigned int color) {}
-    virtual void onPathStrokeOpacity(float o) {}
-    virtual void onPathStrokeWidth(float width) {}
+    virtual void onPathStrokeColor(unsigned int color) = 0;
+    virtual void onPathStrokeOpacity(float o) = 0;
+    virtual void onPathStrokeWidth(float width) = 0;
 
     void setRelative(bool r) { _relative = r; }
     bool relative() const { return _relative; }
@@ -84,6 +84,11 @@ class ISVGHandler {
     float minY() { return _minY; }
     float width() { return _width; }
     float height() { return _height; }
+
+    // drawing
+    virtual void draw() = 0;
+    virtual void dump(void **vertices, size_t *size) = 0;
+    virtual void optimize() = 0;
 
   protected:
     ISVGHandler()
@@ -107,10 +112,10 @@ class ISVGHandler {
  */
 class SVG_Parser {
   public:
-    static SVG_Parser* create(ISVGHandler::SmartPtr handler);
-    static void destroy(SVG_Parser* svg_parser);
+    static SVG_Parser *create(ISVGHandler::SmartPtr handler);
+    static void        destroy(SVG_Parser *svg_parser);
 
-    virtual bool parse(std::string &data) = 0;
+    virtual bool parse(const std::string &data) = 0;
     virtual bool parse(const char *data) = 0;
 
   protected:

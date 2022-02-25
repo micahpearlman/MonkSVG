@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
     // Open a window and create its OpenGL context
     GLFWwindow *window; // (In the accompanying source code, this variable is
                         // global for simplicity)
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "MonkVG Hello World",
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "MonkSVG Hello World",
                               NULL, NULL);
     if (window == NULL) {
         fprintf(stderr, "Failed to open GLFW window.\n");
@@ -55,13 +55,14 @@ int main(int argc, char **argv) {
 	MonkSVG::ISVGHandler::SmartPtr svg_handler =  MonkSVG::OpenVG_SVGHandler::create();
 	
     // load an example
-	std::string svgFilePath = "./example_data/tiger.svg";
+	std::string svgFilePath = "./data/tiger.svg";
 	std::fstream is( svgFilePath.c_str(), std::fstream::in );
+    std::stringstream ss;
+    ss << is.rdbuf();
 
     // run it through the svg parser
 	MonkSVG::SVG_Parser* svg_parser = MonkSVG::SVG_Parser::create(svg_handler);
-	// svg_parser.read( buffer );
-
+    svg_parser->parse(ss.str());
 
     // create a paint
     VGPaint paint;
@@ -98,9 +99,9 @@ int main(int argc, char **argv) {
         /// draw the basic path
         vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
         vgLoadIdentity();
-        vgTranslate(width / 2, height / 2);
-        vgSetPaint(paint, VG_FILL_PATH);
-        vgDrawPath(path, VG_FILL_PATH);
+        // vgTranslate(width / 2, height / 2);
+
+        svg_handler->draw();
 
         vgPopOrthoCamera();
 

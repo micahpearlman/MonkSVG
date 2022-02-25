@@ -1,5 +1,6 @@
 # MonkSVG
 
+![Tiger](tiger.png)
 ## Overview
 
 MonkSVG is an SVG parsing and rendering library.  It is designed to use various vector graphics backends with the current backend implementation using [MonkVG](https://github.com/micahpearlman/MonkVG).

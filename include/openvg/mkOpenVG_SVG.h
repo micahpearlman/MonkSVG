@@ -33,9 +33,9 @@ class OpenVG_SVGHandler : public ISVGHandler {
                          // instead of the SmartPtr
     virtual ~OpenVG_SVGHandler();
 
-    void draw();
-    void dump(void **vertices, size_t *size);
-    void optimize();
+    virtual void draw();
+    virtual void dump(void **vertices, size_t *size);
+    virtual void optimize();
 
     const Transform2d &rootTransform() { return _root_transform; }
     void setRootTransform(const Transform2d &t) { _root_transform = t; }

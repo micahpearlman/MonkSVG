@@ -35,6 +35,7 @@ class SVG_Parser_Implementation : public SVG_Parser {
         doc.Parse(data);
 
         if (doc.Error()) {
+            std::cerr << "ERROR: could not parse svg file." << std::endl;
             return false;
         }
 
@@ -89,7 +90,7 @@ class SVG_Parser_Implementation : public SVG_Parser {
         return true;
     }
 
-    bool parse(std::string &data) { return parse(data.c_str()); }
+    bool parse(const std::string &data) { return parse(data.c_str()); }
 
     void recursive_parse(TiXmlElement *element) {
 
@@ -613,7 +614,5 @@ SVG_Parser *SVG_Parser::create(ISVGHandler::SmartPtr handler) {
     return new SVG_Parser_Implementation(handler);
 }
 
-void SVG_Parser::destroy(SVG_Parser* svg_parser) {
-    delete svg_parser;
-}
+void SVG_Parser::destroy(SVG_Parser *svg_parser) { delete svg_parser; }
 }; // namespace MonkSVG
