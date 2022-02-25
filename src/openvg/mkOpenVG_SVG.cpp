@@ -7,7 +7,7 @@
  *
  */
 
-#include "mkOpenVG_SVG.h"
+#include <openvg/mkOpenVG_SVG.h>
 
 namespace MonkSVG {
 	
@@ -77,7 +77,7 @@ namespace MonkSVG {
 		// push the group matrix onto the stack
 		pushTransform( group.transform ); vgLoadMatrix( topTransform().m );
 		
-		for ( list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
+		for ( std::list<path_object_t>::iterator it = group.path_objects.begin(); it != group.path_objects.end(); it++ ) {
 			path_object_t& po = *it;
 			uint32_t draw_params = 0;
 			if ( po.fill ) {
@@ -104,7 +104,7 @@ namespace MonkSVG {
 			popTransform();	vgLoadMatrix( topTransform().m );
 		}
 		
-		for ( list<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
+		for ( std::list<group_t>::iterator it = group.children.begin(); it != group.children.end(); it++ ) {
 			draw_recursive( *it );
 		}
 		
@@ -443,7 +443,7 @@ namespace MonkSVG {
 		}
 	}
 	
-	void OpenVG_SVGHandler::onPathFillRule( const string& rule ) {
+	void OpenVG_SVGHandler::onPathFillRule( const std::string& rule ) {
 		if( _mode == kGroupParseMode ) {
 			if( rule == "nonzero" ) {
 				_current_group->fill_rule = VG_NON_ZERO;
